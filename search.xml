@@ -1,0 +1,2252 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>在openwrt的docker中安装青龙面板赚京豆</title>
+    <url>/posts/7215.html</url>
+    <content><![CDATA[<p><a href="https://github.com/whyour/qinglong">青龙面板</a>，是用来自动化定时执行脚本的控制面板。除了正常的用途之外，还可以用来薅狗东的羊毛。<br>
+刷了F大的openwrt系统之后，已经默认安装了docker的运行环境，用putty直接登录到系统之后执行下面的脚本就可以直接安装最新版本的青龙面板了。</p>
+<h4 id="拉取镜像"><a class="header-anchor" href="#拉取镜像">¶</a>拉取镜像</h4>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker pull whyour/qinglong:latest</span><br></pre></td></tr></table></figure>
+<h4 id="部署容器"><a class="header-anchor" href="#部署容器">¶</a>部署容器</h4>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker run -dit \</span><br><span class="line">-v /mnt/mmcblk2p4/docker/qinglong/config:/ql/config \</span><br><span class="line">-v /mnt/mmcblk2p4/docker/qinglong/log:/ql/log \</span><br><span class="line">-v /mnt/mmcblk2p4/docker/qinglong/db:/ql/db \</span><br><span class="line">-v /mnt/mmcblk2p4/docker/qinglong/scripts:/ql/scripts \</span><br><span class="line">-v /mnt/mmcblk2p4/docker/qinglong/jbot:/ql/jbot \</span><br><span class="line">-v /mnt/mmcblk2p4/docker/qinglong/repo:/ql/repo \</span><br><span class="line">-p 5700:5700 \</span><br><span class="line">-e ENABLE_HANGUP=<span class="literal">true</span> \</span><br><span class="line">-e ENABLE_WEB_PANEL=<span class="literal">true</span> \</span><br><span class="line">--name qinglong \</span><br><span class="line">--hostname qinglong \</span><br><span class="line">--net=host \</span><br><span class="line">--restart always \</span><br><span class="line">whyour/qinglong:latest</span><br></pre></td></tr></table></figure>
+<p>上面的挂载路径需要根据你设备的实际情况做修改，我这里以刷了F大openwrt的N1盒子为例。</p>
+<h4 id="访问测试"><a class="header-anchor" href="#访问测试">¶</a>访问测试</h4>
+<p>容器成功运行之后，在openwrt后台的docker选项卡可以看到刚才创建好的容器，访问openwrt的地址加端口5700就可以访问到青龙面板的网页了。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20220523094120.png" alt="20220523094120"></p>
+<h4 id="安装依赖"><a class="header-anchor" href="#安装依赖">¶</a>安装依赖</h4>
+<p>为了之后脚本的正常运行，我们需要安装一些依赖，直接在面板里面操作就可以<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20220523092903.png" alt="20220523092903"><br>
+复制下面对应类型的字段，添加依赖，选择自动拆分，就可以批量安装了。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20220523093308.png" alt="20220523093308"></p>
+<h5 id="NodeJS"><a class="header-anchor" href="#NodeJS">¶</a>NodeJS</h5>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">crypto-js</span><br><span class="line">prettytable</span><br><span class="line">dotenv</span><br><span class="line">jsdom</span><br><span class="line">date-fns</span><br><span class="line">tough-cookie</span><br><span class="line">tslib</span><br><span class="line">ds</span><br><span class="line">ws@7.4.3</span><br><span class="line">ts-md5</span><br><span class="line">jsdom -g</span><br><span class="line">jieba</span><br><span class="line">fs</span><br><span class="line">form-data</span><br><span class="line">json5</span><br><span class="line">global-agent</span><br><span class="line">png-js</span><br><span class="line">@types/node</span><br><span class="line">require</span><br><span class="line">typescript</span><br><span class="line">js-base64</span><br><span class="line">axios</span><br></pre></td></tr></table></figure>
+<h5 id="Python3"><a class="header-anchor" href="#Python3">¶</a>Python3</h5>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">requests</span><br><span class="line">canvas  </span><br><span class="line">ping3</span><br><span class="line">jieba</span><br><span class="line">aiohttp</span><br></pre></td></tr></table></figure>
+<h5 id="Linux"><a class="header-anchor" href="#Linux">¶</a>Linux</h5>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">bizCode</span><br><span class="line">bizMsg  </span><br><span class="line">lxml</span><br></pre></td></tr></table></figure>
+<h4 id="拉取脚本"><a class="header-anchor" href="#拉取脚本">¶</a>拉取脚本</h4>
+<p>推荐几个不错的库，当然你也可以直接拉取你需要的。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ql repo https://github.com/smiek2121/scripts.git &quot;jd_|gua_&quot; &quot;&quot; &quot;ZooFaker_Necklace.js|JDJRValidator_Pure.js|sign_graphics_validate.js|cleancart_activity.js|jdCookie.js|sendNotify.js&quot;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ql repo https://github.com/KingRan/KR.git &quot;jd_|jx_|jdCookie&quot; &quot;activity|backUp&quot; &quot;^jd[^_]|USER|utils|function|sign|sendNotify|ql|JDJR&quot;</span><br></pre></td></tr></table></figure>
+<h4 id="添加COOKIE"><a class="header-anchor" href="#添加COOKIE">¶</a>添加COOKIE</h4>
+<p>环境变量里面新建一个变量，名称填入JD_COOKIE，值填入你的jd cookie。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20220523093832.png" alt="20220523093832"><br>
+如何获取JD的COOKIE请自行百度。</p>
+<h4 id="运行脚本"><a class="header-anchor" href="#运行脚本">¶</a>运行脚本</h4>
+<p>变量添加之后我们就可以运行拉取回来的脚本了，也可以看到脚本运行的日志和报错信息。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20220523093957.png" alt="20220523093957"></p>
+]]></content>
+      <categories>
+        <category>Docker</category>
+      </categories>
+      <tags>
+        <tag>opnwrt</tag>
+        <tag>docker</tag>
+        <tag>京东</tag>
+        <tag>京豆</tag>
+        <tag>羊毛</tag>
+        <tag>青龙面板</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>清理docker占用空间脚本</title>
+    <url>/posts/32581.html</url>
+    <content><![CDATA[<p><img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20220808135436.png" alt="20220808135436"><br>
+docker运行一段时间后，占用的空间会越来越大，导致升级容器镜像的时候总会报空间不够，导致升级失败，之前我都是重装系统来解决的，这无疑会加大工作量，也不是个明智之举。<br>
+其实运行下面的命令就会自动清理docker无用的空间。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/think01.jpg" alt="think01"></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">docker system df -v</span><br></pre></td></tr></table></figure>
+<p>列出docker使用空间详情</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">docker system prune -a</span><br></pre></td></tr></table></figure>
+<p>该命令会删除暂停中的容器、没有关联容器的镜像、没有 tag 的镜像、没有被使用的数据卷，简单而言，没有在 run 或被使用的东西都被清理掉，注意，如果你有一些暂时暂停的容器，这个命令也会将其清理。<br>
+如果不希望删除镜像，而只是将无用的数据卷、容器等删除，则使用 docker system prune 命令（即不添加 - a 参数）</p>
+]]></content>
+      <categories>
+        <category>Docker</category>
+      </categories>
+      <tags>
+        <tag>docker</tag>
+        <tag>N1</tag>
+        <tag>linux</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>爱普生L3250系列通过docker支持Airprint打印</title>
+    <url>/posts/63379.html</url>
+    <content><![CDATA[<p>最近入手了一台爱普生的L3251彩色喷墨打印机，可以连WIFI实现网络共享，但有点遗憾的是机器原生并不支持苹果的Airprint协议，也就是无法通过iOS设备直接打印，但是官方提供了一款名为“Epson Smart Panel”的软件，在该软件中配置好打印机之后，可以直接通过该软件打印照片或文档等内容，也可以在相册中选择需要打印的图片，点击共享按钮，选择“使用epson打印”，系统可以直接跳到该软件，完成打印任务，如果你在共享中直接选择系统自带的打印服务，是发现不了打印机的。</p>
+<span id="more"></span>
+<p><img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20240225172222.png" alt="20240225172222"><br>
+虽然这样也可以完成手机端的打印操作，但始终没有类似于airprint那样的丝滑和简洁。下面我们来通过在docker中创建cups容器来让机器支持airprint协议。<br>
+首先说下我现在的设备情况及网络环境，打印机已经通过wifi接入到了家里的网络中，并且获取到了ip地址，另外我家里有一台斐讯N1，刷了F大的openwrt系统用作旁路由，并且系统内置了docker环境。<br>
+首先我们浏览器登录打印机获取到的IP地址，选择高级设置。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20240225171145.png" alt="20240225171145"><br>
+登录密码是我们的机器序列号，可以在机身上的标签中找到。<br>
+依次进入services-protocol，然后在右边找到ipp地址并复制出来备用。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20240225171309.png" alt="20240225171309"><br>
+由于N1是基于arm架构的主机，而非我们常用的x86，所以常规的cups容器是无法在N1上运行的，我们需要找到基于arm架构编译的cups容器。<br>
+运行下面的命令，拉取并运行容器：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">docker run \</span><br><span class="line">       --name=cups \</span><br><span class="line">       --restart=always \</span><br><span class="line">       --net=host \</span><br><span class="line">       -v /var/run/dbus:/var/run/dbus \</span><br><span class="line">       -v ~/airprint_data/config:/config \</span><br><span class="line">       -v ~/airprint_data/services:/services \</span><br><span class="line">       -e CUPSADMIN=&#x27;admin&#x27; \</span><br><span class="line">       -e CUPSPASSWORD=&#x27;password&#x27; \</span><br><span class="line">       jysky007/cups:v1</span><br></pre></td></tr></table></figure>
+<p>确保该容器已正常运行，登录N1的ip地址加端口631，进入cups主页面。用户名密码为admin和password。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20240225170901.png" alt="20240225170901"><br>
+点击添加打印机。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20240225170940.png" alt="20240225170940"><br>
+选择ipp协议然后继续。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20240225171030.png" alt="20240225171030"><br>
+输入我们之前复制出来的ipp地址，打印机制造商选EPSON，型号选择如图所示的325，然后添加打印机。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20240225171628.png" alt="20240225171628"><br>
+添加完成之后我们切换到Prints页面，找到刚才添加的打印机，然后打印测试页试一下是否可以正常打印。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20240225171743.png" alt="20240225171743"><br>
+如果打印测试页正常之后，我们回到手机上点打印，然后就可以发现我们添加的打印机了，设置好打印参数之后，直接打印就可以了。</p>
+]]></content>
+      <categories>
+        <category>Docker</category>
+      </categories>
+      <tags>
+        <tag>docker</tag>
+        <tag>L3250</tag>
+        <tag>打印机</tag>
+        <tag>苹果</tag>
+        <tag>Airprint</tag>
+        <tag>iOS</tag>
+        <tag>EPSON</tag>
+        <tag>爱普生</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>群晖Docker部署CentOS系统</title>
+    <url>/posts/62297.html</url>
+    <content><![CDATA[<h2 id="下载镜像"><a class="header-anchor" href="#下载镜像">¶</a>下载镜像</h2>
+<p>打开群晖的DOcker套件，切换到注册表选项卡，找到Centos，下载，标签选择latest。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20220429095414.png" alt="20220429095414"><br>
+下载完成之后我们可以在映像选项卡中找到它。</p>
+<h2 id="配置环境"><a class="header-anchor" href="#配置环境">¶</a>配置环境</h2>
+<p>高级设置里面将自动重启打勾。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20220429095758.png" alt="20220429095758"><br>
+切换到存储空间，配置本地文件夹映射到镜像的data文件夹。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20220429095914.png" alt="20220429095914"><br>
+指定一个本地未使用的端口映射到镜像的22端口。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20220429100121.png" alt="20220429100121"><br>
+完成上面设置之后运行容器。</p>
+<h2 id="系统初始化"><a class="header-anchor" href="#系统初始化">¶</a>系统初始化</h2>
+<p>进入终端机更新系统：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">yum -y update</span><br></pre></td></tr></table></figure>
+<p>安装所需的软件包：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">yum install vim openssl openssh-server net-tools initscripts passwd -y</span><br></pre></td></tr></table></figure>
+<p>如果你在运行上面的更新命令时报错，需要依次执行下方命令：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">cd</span> /etc/yum.repos.d/</span><br><span class="line">sed -i <span class="string">&#x27;s/mirrorlist/#mirrorlist/g&#x27;</span> /etc/yum.repos.d/CentOS-*</span><br><span class="line">sed -i <span class="string">&#x27;s|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g&#x27;</span> /etc/yum.repos.d/CentOS-*</span><br></pre></td></tr></table></figure>
+<h2 id="设置SSH连接"><a class="header-anchor" href="#设置SSH连接">¶</a>设置SSH连接</h2>
+<h3 id="创建SSH-key"><a class="header-anchor" href="#创建SSH-key">¶</a>创建SSH key</h3>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ssh-keygen -q -t rsa -b 2048 -f /etc/ssh/ssh_host_rsa_key -N <span class="string">&#x27;&#x27;</span> </span><br><span class="line"> </span><br><span class="line">ssh-keygen -q -t ecdsa -f /etc/ssh/ssh_host_ecdsa_key -N <span class="string">&#x27;&#x27;</span></span><br><span class="line"> </span><br><span class="line">ssh-keygen -t dsa -f /etc/ssh/ssh_host_ed25519_key -N <span class="string">&#x27;&#x27;</span></span><br></pre></td></tr></table></figure>
+<p>UsePAM yes 改为 UsePAM no</p>
+<h3 id="修改ssh-config"><a class="header-anchor" href="#修改ssh-config">¶</a>修改ssh_config</h3>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">vim /etc/ssh/sshd_config</span><br></pre></td></tr></table></figure>
+<p>UsePAM yes 改为 UsePAM no</p>
+<h3 id="启动ssh"><a class="header-anchor" href="#启动ssh">¶</a>启动ssh</h3>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">/usr/sbin/sshd -D &amp;</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;/usr/sbin/sshd -D &amp;&quot;</span>  &gt;&gt; /etc/rc.local  添加到开机启动，就不用每次重启后运行了</span><br></pre></td></tr></table></figure>
+<h3 id="修改root密码"><a class="header-anchor" href="#修改root密码">¶</a>修改root密码</h3>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">passwd root</span><br></pre></td></tr></table></figure>
+<h3 id="使用第三方SSH工具登录"><a class="header-anchor" href="#使用第三方SSH工具登录">¶</a>使用第三方SSH工具登录</h3>
+<p>设置完成之后我们可以使用其他第三方SSH工具来登录到我们的CentOS系统，比如Putty。<br>
+输入主机IP，SSH端口为我们映射的端口号，用户名root，密码时我们上一步修改的密码。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20220429135856.png" alt="20220429135856"></p>
+<h3 id="收工"><a class="header-anchor" href="#收工">¶</a>收工</h3>
+<p>至此我们就完成了在群晖Docker上安装部署CentOS的过程，接下来我们就可以用SSH工具在我们搭建的CentOS上部署各种服务了<br>
+。</p>
+]]></content>
+      <categories>
+        <category>Docker</category>
+      </categories>
+      <tags>
+        <tag>docker</tag>
+        <tag>群晖</tag>
+        <tag>centos</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>GitHub图床配置</title>
+    <url>/posts/23057.html</url>
+    <content><![CDATA[<p>自从部署了HEXO，就开始寻找一个靠谱的图床系统来用于托管网站的图片。<br>
+之前在群晖NAS上使用Chevereto系统部署了一套私有的图床系统，但是如果用于网站图片的托管，需要24小时开机，不仅费电，而且还会加大硬盘的读写，增加坏盘的风险，所以还是放弃了这个想法。<br>
+接着我在七牛云上部署了图床系统，想着他有10GB免费的额度，也够用了。但部署完成之后，第二天查看账单发现有了费用，名字叫做https-cdn-海外加速费用，咨询了客服工单之后说是因为我使用的域名没有备案，所以只能使用海外站点，如果你从国内访问的话就会产生费用。<br>
+于是我想到了用GitHub来部署图床，网上也有大把的教程，操作起来也很简单，需要配合PicGo来使用。</p>
+<h2 id="创建一个公开仓库"><a class="header-anchor" href="#创建一个公开仓库">¶</a>创建一个公开仓库</h2>
+<h2 id="生成GitHub-Token"><a class="header-anchor" href="#生成GitHub-Token">¶</a>生成GitHub Token</h2>
+<p>进入GitHub账户设置-开发者设置-私人Token，生成一个新的token并复制。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20220423091006.png" alt=""></p>
+<span id="more"></span>
+<h2 id="安装PicGo设置"><a class="header-anchor" href="#安装PicGo设置">¶</a>安装PicGo设置</h2>
+<p>安装完成PicGo之之后按照下图进行设置。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20220423091233.png" alt=""><br>
+如果感觉在国内访问GitHub速度慢的话，可以在设置自定义域名那里填入<a href="https://cdn.miaoyang.win/gh/GitHub%E7%94%A8%E6%88%B7%E5%90%8D/%E4%BB%93%E5%BA%93%E5%90%8D">https://cdn.miaoyang.win/gh/GitHub用户名/仓库名</a><br>
+来使用jsdeliver提供的免费cdn服务加速。<br>
+这样设置就完成了，将图片用PicGo上传之后，图片地址就会自动复制到粘贴板，使用起来很方便</p>
+]]></content>
+      <categories>
+        <category>HEXO</category>
+      </categories>
+      <tags>
+        <tag>图床</tag>
+        <tag>GitHub</tag>
+        <tag>PicGO</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Hexo启用emoji表情支持</title>
+    <url>/posts/41234.html</url>
+    <content><![CDATA[<p>HEXO默认使用的MarkDown渲染器是不支持emoji表情的，即使是你在页面插入了例如‘😃’这样的emoji代码，也无法正常识别为😃表情图标。<br>
+这样就需要替换HEXO默认的渲染器。运行下面的命令，首先卸载原来的渲染器，然后安装新的渲染器，最后安装支持emoji的渲染器插件。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">npm un hexo-renderer-marked --save  </span><br><span class="line">npm i hexo-renderer-markdown-it --save  </span><br><span class="line">npm install markdown-it-emoji --save</span><br></pre></td></tr></table></figure>
+<span id="more"></span>
+<p>插件安装之后，在站点配置文件_config.yml中添加关于markdown的配置字段即可，如果不懂相关配置参数，可无脑复制以下字段。</p>
+<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="comment">## markdown 渲染引擎配置，默认是hexo-renderer-marked，这个插件渲染速度更快，且有新特性  </span></span><br><span class="line"><span class="attr">markdown:</span>  </span><br><span class="line">  <span class="attr">render:</span>  </span><br><span class="line">    <span class="attr">html:</span> <span class="literal">true</span>  </span><br><span class="line">    <span class="attr">xhtmlOut:</span> <span class="literal">false</span>  </span><br><span class="line">    <span class="attr">breaks:</span> <span class="literal">true</span>  </span><br><span class="line">    <span class="attr">linkify:</span> <span class="literal">true</span>  </span><br><span class="line">    <span class="attr">typographer:</span> <span class="literal">true</span>  </span><br><span class="line">    <span class="attr">quotes:</span> <span class="string">&#x27;“”‘’&#x27;</span>  </span><br><span class="line">  <span class="attr">plugins:</span>  </span><br><span class="line">    <span class="bullet">-</span> <span class="string">markdown-it-footnote</span>  </span><br><span class="line">    <span class="bullet">-</span> <span class="string">markdown-it-sup</span>  </span><br><span class="line">    <span class="bullet">-</span> <span class="string">markdown-it-sub</span>  </span><br><span class="line">    <span class="bullet">-</span> <span class="string">markdown-it-abbr</span>  </span><br><span class="line">    <span class="bullet">-</span> <span class="string">markdown-it-emoji</span>  </span><br><span class="line">  <span class="attr">anchors:</span>  </span><br><span class="line">    <span class="attr">level:</span> <span class="number">2</span>  </span><br><span class="line">    <span class="attr">collisionSuffix:</span> <span class="string">&#x27;v&#x27;</span>  </span><br><span class="line">    <span class="attr">permalink:</span> <span class="literal">true</span>  </span><br><span class="line">    <span class="attr">permalinkClass:</span> <span class="string">header-anchor</span>  </span><br><span class="line">    <span class="attr">permalinkSymbol:</span> <span class="string">¶</span></span><br></pre></td></tr></table></figure>
+<p>在需要插入emoji的地方插入对应的代码，最后重新部署HEXO即可。😆<br>
+我复制了一份常用的MarkDown emoji代码，可以参考复制。😃<br>
+▶️ <a href="https://miaoyang.win/about/emoji">https://miaoyang.win/about/emoji</a></p>
+<h2 id="Obsidian-使用emoji-toolbar来快速插入表情"><a class="header-anchor" href="#Obsidian-使用emoji-toolbar来快速插入表情">¶</a>Obsidian 使用emoji toolbar来快速插入表情</h2>
+<p>😋👏😭<br>
+📱🇨🇳🇲🇴</p>
+<h2 id="引用"><a class="header-anchor" href="#引用">¶</a>引用</h2>
+<p><a href="https://blog.kinboy.wang/2018/10/29/Hexo-NexT-%E5%BC%80%E5%90%AF-emoji/">Hexo NexT 开启 emoji | Kinboy’s note</a><br>
+<a href="https://pkmer.cn/Pkmer-Docs/10-obsidian/obsidian%E7%A4%BE%E5%8C%BA%E6%8F%92%E4%BB%B6/obsidian-emoji-toolbar/#:~:text=Emoji%20Tool">PKMer_Obsidian 插件：Emoji Toolbar 快速插入 Emoji 符号</a></p>
+]]></content>
+      <categories>
+        <category>HEXO</category>
+      </categories>
+      <tags>
+        <tag>表情</tag>
+        <tag>emoji</tag>
+        <tag>HEXO</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Obsidian格式化插件-Linter</title>
+    <url>/posts/13016.html</url>
+    <content><![CDATA[<p>今天介绍一款Obsidian神级插件-Linter。<br>
+项目主页<a href="https://github.com/platers/obsidian-linter">platers/obsidian-linter: An Obsidian plugin that formats and styles your notes with a focus on configurability and extensibility. (github.com)</a><br>
+Linter是一款可以让你的Obsidian文件更加整齐统一美观的插件，而我得知到它的途径是我想要实现如何在Obsidian的文章中可以自动更新文章的修改时间。<br>
+Hexo日志的Front-matter有date和updated两个参数，date是文章的创建时间，updated是最后修改时间。之前用vscode通过github action部署之后这两个时间默认是一样的，都是项目最后部署的时间，除非你手动在每篇文章都指定这两个字段。<br>
+转到Obsidian之后，我用templater插件创建了Front-matter模板，虽然可以简化手动输入的操作，但是updated字段在你首次插入模板之后就固定下来了，不会随着你修改的时间而变化，除非你手动去修正。<br>
+然后就是一通搜索，看看有没有办法能获取到每次文章真正修改的时间，并写入到文章的Front-matter中去。<br>
+然后就是有人推荐一款名为Linter的插件。看上去设置比较繁琐，但实际安装调整完之后感觉还好。只要设置正确，都能按照你的预期来执行。</p>
+<span id="more"></span>
+<p>如何搜索安装就不说了。着重写一下我目前实现的功能和相关的设置。还有就是如果设置得当的话，完全可以弃用templater来导入front-matter模板了。</p>
+<h4 id="自动将文件名设置为title并写入front-matter。"><a class="header-anchor" href="#自动将文件名设置为title并写入front-matter。">¶</a>自动将文件名设置为title并写入front-matter。</h4>
+<p>在插件的YAML选项卡找到下图所示的选项设置保存。</p>
+<p><img src="https://img.ycyc.win/img/202409261513814.png" alt="image.png"></p>
+<h4 id="自动将标签和分类字段添加到front-matter"><a class="header-anchor" href="#自动将标签和分类字段添加到front-matter">¶</a>自动将标签和分类字段添加到front-matter</h4>
+<p>在插件的YAML选项卡找到下图所示的选项设置保存。<br>
+<img src="https://img.ycyc.win/img/202409261515814.png" alt="image.png"></p>
+<p>如果你还希望插入其他字段，可以一并在这里输入</p>
+<h4 id="自动将创建时间和最后修改时间写入front-matter"><a class="header-anchor" href="#自动将创建时间和最后修改时间写入front-matter">¶</a>自动将创建时间和最后修改时间写入front-matter</h4>
+<p>在YAML选项卡找到YAML时间戳。<br>
+<img src="https://img.ycyc.win/img/202409261517432.png" alt="image.png"></p>
+<p><img src="https://img.ycyc.win/img/202409261517493.png" alt="image.png"></p>
+<p>日期格式按照图中所示填写。</p>
+<h4 id="设置完成之后在基础选项卡参照下图按需设置"><a class="header-anchor" href="#设置完成之后在基础选项卡参照下图按需设置">¶</a>设置完成之后在基础选项卡参照下图按需设置</h4>
+<p><img src="https://img.ycyc.win/img/202409261519055.png" alt="image.png"></p>
+<h4 id="测试"><a class="header-anchor" href="#测试">¶</a>测试</h4>
+<p>一切就绪之后可以新建一篇文章进行测试。<br>
+手动保存之后会自动添加front-matter内容，并且会更新当前时间修改updated字段的时间。<br>
+目前发现一个问题，如果我打开之前的文章，没有做任何修改，直接保存后，updated时间会更新到当前时间。<br>
+<img src="https://img.ycyc.win/img/202409261529874.png" alt="image.png"></p>
+]]></content>
+      <categories>
+        <category>HEXO</category>
+      </categories>
+      <tags>
+        <tag>HEXO</tag>
+        <tag>obsidian</tag>
+        <tag>linter</tag>
+        <tag>插件</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>picgo422错误代码</title>
+    <url>/posts/2192.html</url>
+    <content><![CDATA[<p>刚刚在vscode中用picgo上传图片失败，提示检查网络或设置。起初真的以为是token到期了或是网络不通，确定了网络正常之后又检查了token，发现也在有效期。<br>
+于是下载了picgo的windows客户端上传同样的图片，发现还是上传失败。好在windows客户端可以查看日志详情。</p>
+<span id="more"></span>
+<p><img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20230322145558.png" alt="20230322145558"><br>
+报错日志如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">2023-03-22 14:45:49 [PicGo INFO] Before transform </span><br><span class="line">2023-03-22 14:45:49 [PicGo INFO] Transforming... Current transformer is [path] </span><br><span class="line">2023-03-22 14:45:49 [PicGo INFO] Before upload </span><br><span class="line">2023-03-22 14:45:49 [PicGo INFO] beforeUploadPlugins: renameFn running </span><br><span class="line">2023-03-22 14:45:49 [PicGo INFO] Uploading... Current uploader is [github] </span><br><span class="line">2023-03-22 14:45:50 [PicGo WARN] failed </span><br><span class="line">2023-03-22 14:45:50 [PicGo ERROR] &#123;</span><br><span class="line">  &quot;method&quot;: &quot;PUT&quot;,</span><br><span class="line">  &quot;url&quot;: &quot;https://api.github.com/repos/miaoyanginfo/hexo-img/contents/img/aaa.png&quot;,</span><br><span class="line">  &quot;statusCode&quot;: 422,</span><br><span class="line">  &quot;message&quot;: &quot;Request failed with status code 422&quot;,</span><br><span class="line">  &quot;stack&quot;: &#123;&#125;,</span><br><span class="line">  &quot;response&quot;: &#123;</span><br><span class="line">    &quot;status&quot;: 422,</span><br><span class="line">    &quot;statusCode&quot;: 422,</span><br><span class="line">    &quot;body&quot;: &#123;</span><br><span class="line">      &quot;message&quot;: &quot;Invalid request.\n\n\&quot;sha\&quot; wasn&#x27;t supplied.&quot;,</span><br><span class="line">      &quot;documentation_url&quot;: &quot;https://docs.github.com/rest/reference/repos#create-or-update-file-contents&quot;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
+<p>网上搜了一下422报错应该是上传的图片文件名和已有的图片重名了，然后修改了文件名之后windows客户端和vscode插件上传正常了。<br>
+水一篇文章记录一下，分享给有相同报错的朋友。</p>
+]]></content>
+      <categories>
+        <category>HEXO</category>
+      </categories>
+      <tags>
+        <tag>图床</tag>
+        <tag>picgo</tag>
+        <tag>报错</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>vscode安装Picgo扩展</title>
+    <url>/posts/45151.html</url>
+    <content><![CDATA[<p>picgo有用于vscode的扩展插件，配置方法类似于桌面版，把Github的开发token信息及仓库源信息填上就可以开始使用了。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20220423143041.png" alt="20220423143041"></p>
+<p>部分快捷键</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Ctrl + Alt + u  ##从剪贴板上传图像</span><br><span class="line"></span><br><span class="line">Ctrl + Alt + e  ##从资源管理器上传图像 </span><br><span class="line"></span><br><span class="line">Ctrl + Alt + o   ##从输入框上传图像</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>HEXO</category>
+      </categories>
+      <tags>
+        <tag>图床</tag>
+        <tag>vscode</tag>
+        <tag>PicGo</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>使用Alist来同步Obsidian项目</title>
+    <url>/posts/60919.html</url>
+    <content><![CDATA[<p>想要多终端同时处理Obisdian怎么搞，可以借助三方插件remotely save配合alist的webdav协议来将文件存到接入Alist的各种网盘。<br>
+Alist是一个可以任意接入主流网盘的平台，并且可以通过alist来同步网盘间的文件，并且部署起来也很简单，只需要一条docker命令即可完成。详细的介绍可以直达官网了解<a href="https://alist.nn.ci/zh/">Home | AList文档 (nn.ci)</a></p>
+<h2 id="安装配置插件"><a class="header-anchor" href="#安装配置插件">¶</a>安装配置插件</h2>
+<p>搜索安装并启用三方插件Remotely Save。这个插件支持多种包括亚马逊S3、微软OneDrive等主流网盘，也支持WEBDAV传输协议。我们今天就是要使用webdav协议来同步obisdian项目中的文件。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20240911150712.png" alt="image.png"></p>
+<span id="more"></span>
+<p>你需要在你家里的NAS或是软路由上搭建了Alist，我的alist是搭建在家里istoreOS路由器上的，并且在公网做了端口转发，这里要确保你的alist可以在外网环境下访问。在如下图的地方填入你的alist地址和用户名密码。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20240911150543.png" alt="image.png"></p>
+<h2 id="需要注意的几点"><a class="header-anchor" href="#需要注意的几点">¶</a>需要注意的几点</h2>
+<p>这里需要注意几点，一个是服务器地址需要https协议，也就是你需要申请并部署SSL证书。如果你只是在电脑客户端使用，http也是可以的，但是在iOS移动端使用，就必须使用https协议。如何申请并部署SSL可自行搜索相关教程，这里不做详细介绍。<br>
+另一点需要注意的是服务器地址的路径，格式为ip或域名+alist的端口号/dav/同步的文件夹名。例如（<a href="https://yourdomain.com:4567/dav/yourfold%EF%BC%89">https://yourdomain.com:4567/dav/yourfold）</a>  。<br>
+插件设置里面还有一个地方需要注意的是“修改远端基文件夹”这个选项，你可以每个终端都设置成不同的，也可以统一设置为一个文件夹，如果你是为了多终端同步，每个终端都要修改成一直的名称。全部设置完成之后，点击下面的检查按钮来确认webdav是否可以正常连接。</p>
+<p><img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20240911151421.png" alt="image.png"></p>
+<p>插件设置完成之后，左侧菜单栏会出现同步按钮，点击等待同步完成之后可以查看alist的相应文件内是否有同步的文件。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20240911151840.png" alt="image.png"><br>
+在插件基本设置里面也可以设置自动同步时间间隔等等。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20240911152337.png" alt="image.png"></p>
+<p>其他客户端的设置都类似，先搜索安装插件，然后进行webdav服务器配置即可。还有一种简便的方法就是在电脑端导出配置链接，然后再导入到其他客户端。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/202409131050293.png" alt=""></p>
+<p><img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/202409131053216.png" alt="image.png"></p>
+]]></content>
+      <categories>
+        <category>HEXO</category>
+      </categories>
+      <tags>
+        <tag>HEXO</tag>
+        <tag>obsidian</tag>
+        <tag>alist</tag>
+        <tag>同步</tag>
+        <tag>webdav</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>使用GitHub Action实现HEXO的自动编译和发布</title>
+    <url>/posts/42824.html</url>
+    <content><![CDATA[<p>经过上一篇的步骤之后，我们已经可以将我们的HEXO站点发布到GitHub上了，并且可以正常访问。但是我们每次更新文章以及站点配置的时候必须先在本地进行编译、然后再部署到GitHub上，也就是每进行一次修改，必须执行以下命令</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">hexo g</span><br><span class="line">hexo clean</span><br><span class="line">hexo d</span><br></pre></td></tr></table></figure>
+<p>那有没有一种方法就是，系统检测到我们发布了新文章，然后自动进行程序的编译和发布呢？<br>
+今天部署的这个GitHub Action服务就是解决这个问题的。在上一篇文章中我们在 GitHub上还新建了一个私人仓库，我们今天用这个私人仓库来进行操作。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20220422151624.png" alt=""></p>
+<span id="more"></span>
+<h2 id="1-修改本地文件"><a class="header-anchor" href="#1-修改本地文件">¶</a>1.修改本地文件</h2>
+<h3 id="删除主题文件夹下隐藏的-git文件夹"><a class="header-anchor" href="#删除主题文件夹下隐藏的-git文件夹">¶</a>删除主题文件夹下隐藏的.git文件夹</h3>
+<h3 id="删除hexo根目录下的-deploy-git文件夹"><a class="header-anchor" href="#删除hexo根目录下的-deploy-git文件夹">¶</a>删除hexo根目录下的.deploy_git文件夹</h3>
+<p>这两个是我踩过的坑，因为主题文件和hexo deploy git工具是git clone到本地的，所以如果直接上传到GitHub仓库的话，只会上传一个空的指针文件夹，之后进行自动化编译的时候会报错，所以必须删除本地的.git相关信息。</p>
+<h2 id="2-将本地HEXO源文件推送到私人仓库"><a class="header-anchor" href="#2-将本地HEXO源文件推送到私人仓库">¶</a>2.将本地HEXO源文件推送到私人仓库</h2>
+<blockquote>
+<p>在hexo文件夹中初始化hexo</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">hexo init</span><br><span class="line">git init</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>关联远程仓库</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git remote add origin git@github.com:miaoyanginfo/hexo-action.git</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>和远程仓库进行一个同步</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git pull --rebase origin main</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>将本地文件添加到暂存库</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git add .</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>添加注释</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git commit -m <span class="string">&quot;init repo&quot;</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>推送到GitHub私人仓库</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git push -u origin main</span><br></pre></td></tr></table></figure>
+<p>如果一切顺利的话，我们就会在GitHub的私人仓库中看到我们PUSH上去的HEXO文件夹和文件。</p>
+<h2 id="3-生成并部署deploy公钥和密钥"><a class="header-anchor" href="#3-生成并部署deploy公钥和密钥">¶</a>3.生成并部署deploy公钥和密钥</h2>
+<blockquote>
+<blockquote>
+<p>定位到本地hexo文件夹运行以下命令创建deploy key:</p>
+</blockquote>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ssh-keygen -f github-deploy-key -C <span class="string">&quot;HEXO CD&quot;</span></span><br></pre></td></tr></table></figure>
+<p>运行完成之后会在hexo根目录下生成github-deploy-key和github-deploy-key.pub两个文件，一个私钥，一个公钥。<br>
+进入github我们创建的私人仓库，settings-secrets添加actions secrets。<br>
+名字输入  SSH_PRIVATE<br>
+value输入生成的github-deploy-key内容，也就是私钥的内容。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20220422151823.png" alt=""><br>
+进入github我们创建的公开仓库，找到settings-deploy keys，<br>
+名字输入  HEXO_DEPLOY_PUB<br>
+内容输入github-deploy-key.pub文件内的所有内容，也就是公钥的内容。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20220422151927.png" alt=""></p>
+<h2 id="4-创建GitHub-Action文件"><a class="header-anchor" href="#4-创建GitHub-Action文件">¶</a>4.创建GitHub Action文件</h2>
+<p>进入GitHub私人仓库页面，切换到Actions选项，创建一个名为deploy.yml的文件，内容复制下面：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">name: Deploy                      # Actions 显示的名字，随意设置</span><br><span class="line">on: [push]                        # 监听到 push 事件后触发</span><br><span class="line">jobs:</span><br><span class="line">  build:</span><br><span class="line">    runs-on: ubuntu-latest</span><br><span class="line">    steps:</span><br><span class="line">    - name: Checkout              # 拉取当前执行 Actions 仓库的指定分支</span><br><span class="line">      uses: actions/checkout@v2</span><br><span class="line">      with:</span><br><span class="line">        ref: main                 # 注意选择私人仓库是main还是master分支</span><br><span class="line"></span><br><span class="line">    - name: Setup Node            # 使用node 14</span><br><span class="line">      uses: actions/setup-node@v2</span><br><span class="line">      with:</span><br><span class="line">        node-version: &quot;14&quot;</span><br><span class="line"></span><br><span class="line">    - name: NPM INSTALL           #安装依赖</span><br><span class="line">      run: |</span><br><span class="line">        npm install hexo-cli -g</span><br><span class="line">        npm install hexo-deployer-git  --save </span><br><span class="line">        npm install</span><br><span class="line"></span><br><span class="line">    - name: Add KEY               #这里需要提供一个ssh私钥，用你平时常用机器里的 ~/.ssh/id_rsa即可</span><br><span class="line">      env:</span><br><span class="line">        SSH_PRIVATE: $&#123;&#123; secrets.SSH_PRIVATE &#125;&#125;</span><br><span class="line">      run: |</span><br><span class="line">        mkdir -p ~/.ssh/</span><br><span class="line">        echo &quot;$SSH_PRIVATE&quot; &gt; ~/.ssh/id_rsa</span><br><span class="line">        chmod 700 -R ~/.ssh</span><br><span class="line">        ssh-keyscan github.com &gt;&gt; ~/.ssh/known_hosts</span><br><span class="line">        git config --global user.email &quot;paulmiao@me.com&quot;</span><br><span class="line">        git config --global user.name &quot;miaoyanginfo&quot;</span><br><span class="line"></span><br><span class="line">    - name: Hexo Deploy           # hexo deploy 会自动build然后上传到github.io项目中</span><br><span class="line">      run: |</span><br><span class="line">        hexo clean</span><br><span class="line">        hexo deploy  </span><br></pre></td></tr></table></figure>
+<h2 id="5-测试Action是否正常运行"><a class="header-anchor" href="#5-测试Action是否正常运行">¶</a>5.测试Action是否正常运行</h2>
+<p>我们现在私人仓库/source/_posts文件夹下新建一个.md的日志文件，然后切换到Actions选项卡看下自动化执行过程是否有报错，如果运行正常的话，我们进入公开仓库，看下文件的最后修改时间是不是最近几秒钟内。<br>
+然后我们再打开我们的github站点地址，看看是不是有新日志已经发布了。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20220422151723.png" alt=""></p>
+<h2 id="总结"><a class="header-anchor" href="#总结">¶</a>总结</h2>
+<blockquote>
+<p>经过两篇文章的操作，我们已经可以实现HEXO在GitHub上面的部署以及使用GitHub的Action功能来实现文章发布时自动编译和部署。如果在部署过程中遇到问题，欢迎和我交流。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>HEXO</category>
+      </categories>
+      <tags>
+        <tag>GitHub</tag>
+        <tag>HEXO</tag>
+        <tag>Action</tag>
+        <tag>编译</tag>
+        <tag>发布</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>使用VScode编辑Markdown文章</title>
+    <url>/posts/59730.html</url>
+    <content><![CDATA[<p><img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20220423144012.png" alt=""></p>
+<h2 id="下载安装Microsoft-Visual-Studio-Code安装包（以下简称VScode）"><a class="header-anchor" href="#下载安装Microsoft-Visual-Studio-Code安装包（以下简称VScode）">¶</a>下载安装Microsoft Visual Studio Code安装包（以下简称VScode）</h2>
+<p>下载地址：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">https://code.visualstudio.com/</span><br></pre></td></tr></table></figure>
+<h2 id="设置显示语言为中文"><a class="header-anchor" href="#设置显示语言为中文">¶</a>设置显示语言为中文</h2>
+<p>软件安装完成之后默认语言是英文，我们在主界面同时按下ctrl+shift+P三个按键，输入configure display language，点击安装其他语言，然后下载安装简体中文包，安装完成之后即可启用切换到中文界面。</p>
+<h2 id="新建MarkDown格式文件"><a class="header-anchor" href="#新建MarkDown格式文件">¶</a>新建MarkDown格式文件</h2>
+<p>新建文件，格式选择MarkDwon即可创建MarkDwon格式的文件。</p>
+]]></content>
+      <categories>
+        <category>HEXO</category>
+      </categories>
+      <tags>
+        <tag>markdown</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>使用Valine来给HEXO添加评论系统</title>
+    <url>/posts/35875.html</url>
+    <content><![CDATA[<p>HEXO默认是不带评论系统的，但后台支持调用许多第三方的评论系统，我们这里以Valine为例来给HEXO站点配置第三方评论系统</p>
+<h2 id="1-注册LeanCloud账户并创建应用"><a class="header-anchor" href="#1-注册LeanCloud账户并创建应用">¶</a>1.注册LeanCloud账户并创建应用</h2>
+<p>进入LeanCloud网站注册账户，进行实名认证，然后创建一个应用，命名为hexo。</p>
+<h2 id="2-获取应用的APP-KEY"><a class="header-anchor" href="#2-获取应用的APP-KEY">¶</a>2.获取应用的APP KEY</h2>
+<p>进入创建好的应用，点击&quot;设置&quot;，然后&quot;应用凭证&quot;，获取APPID和APPKEY。</p>
+<h2 id="3-编辑主题配置文件"><a class="header-anchor" href="#3-编辑主题配置文件">¶</a>3.编辑主题配置文件</h2>
+<p>编辑主题的_config.yml配置文件</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">comments:</span><br><span class="line">  use: Valine</span><br><span class="line">valine:</span><br><span class="line">  appId: </span><br><span class="line">  appKey: </span><br><span class="line">  avatar: monsterid # gravatar style https://valine.js.org/#/avatar</span><br><span class="line">  serverURLs: # This configuration is suitable for domestic custom domain name users, overseas version will be automatically detected (no need to manually fill in)</span><br><span class="line">  bg: # valine background</span><br><span class="line">  visitor: false</span><br><span class="line">  option:</span><br></pre></td></tr></table></figure>
+<p>use字段填入&quot;Valine&quot;<br>
+appid和appkey字段填入获取到的信息，然后保存文件。</p>
+<h2 id="3-添加安全域名"><a class="header-anchor" href="#3-添加安全域名">¶</a>3.添加安全域名</h2>
+<p>进入应用&quot;设置&quot;-“安全中心”，填入你的HEXO站点地址，然后保存。</p>
+<h2 id="4-编译站点并发布"><a class="header-anchor" href="#4-编译站点并发布">¶</a>4.编译站点并发布</h2>
+<p>经过上面步骤之后对站点进行重新编译和发布，就可以在文章结尾看到评论窗口了。</p>
+]]></content>
+      <categories>
+        <category>HEXO</category>
+      </categories>
+      <tags>
+        <tag>HEXO</tag>
+        <tag>valine</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>在GitHub上部署HEXO</title>
+    <url>/posts/31120.html</url>
+    <content><![CDATA[<p><img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20220422151137.png" alt=""><br>
+经过三天的不断网上趴文和自我修炼，参考了众多网上大神的教程和文章，自己又填了无数个坑之后，终于成功在GitHub上部署了HEXO系统发布文章，使用GitHub Action功能自动编译HEXO程序并发布静态页面。我将用两个篇幅来记录部署过程。<br>
+第一部分介绍如何在本地部署HEXO程序，安装主题，本地预览，然后发布到Github Page。<br>
+第二部分介绍如何使用GitHub Action功能实现HEXO程序的自动编译和发布。</p>
+<h2 id="1-GitHub上新建仓库"><a class="header-anchor" href="#1-GitHub上新建仓库">¶</a>1.GitHub上新建仓库</h2>
+<p>登录你的Github，新建两个仓库：<br>
+一个仓库用于发布我们的HEXO站点，为了便于区分，我们在这里叫它公开仓库，新建的时候选在类型为Public，网址那里填入***.github.io，确保你可以使用域名https://***.github.com 访问到你的页面，这篇文章我们主要在这个仓库中进行操作；<br>
+另一个站点用于存放我们的HEXO程序源文件，用于和主仓库实现自动化编译和发布的联动，我们叫它私人仓库，类型选择Pravite，名称随便起，我们这里叫做hexo-action。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20220422151313.png" alt=""></p>
+<span id="more"></span>
+<h2 id="2-本地安装配置环境"><a class="header-anchor" href="#2-本地安装配置环境">¶</a>2.本地安装配置环境</h2>
+<p>需要安装的工具有git和node两个环境，安装包已经上传到了阿里云，大家可以自行下载。<br>
+git x64</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">https://www.aliyundrive.com/s/eWkiy8beBEj</span><br></pre></td></tr></table></figure>
+<p>node x64</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">https://www.aliyundrive.com/s/A6iLQPNecXt</span><br></pre></td></tr></table></figure>
+<p>安装完成之后在cmd窗口运行git --version及node -v 命令确保安装正确。</p>
+<h2 id="3-部署Github通讯密钥"><a class="header-anchor" href="#3-部署Github通讯密钥">¶</a>3.部署Github通讯密钥</h2>
+<blockquote>
+<p>我们在本地运行git bash命令窗，</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config --global user.name <span class="string">&quot;你的GitHub用户名&quot;</span></span><br><span class="line">git config --global user.email <span class="string">&quot;你的GitHub注册邮箱&quot;</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>生成ssh密钥文件:</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ssh-keygen -t rsa -C <span class="string">&quot;你的GitHub注册邮箱&quot;</span></span><br></pre></td></tr></table></figure>
+<p>连续回车，直到命令运行结束。<br>
+在本地用户名文件夹下会看到一个.ssh命名的文件夹，用记事本或是notepad++打开里面的id_rsa.pub文件并复制全部内容。<br>
+打开GitHub_Settings_keys 页面，新建new SSH Key，Title随便填，Key那里把刚才复制的公钥粘贴过去，然后点击Add SSH Key。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20220422151443.png" alt=""></p>
+<blockquote>
+<p>我们可以输入下面命令来测试一下密钥是否配置正确：</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ssh git@github.com</span><br></pre></td></tr></table></figure>
+<h2 id="3-运行安装命令进行HEXO的安装"><a class="header-anchor" href="#3-运行安装命令进行HEXO的安装">¶</a>3.运行安装命令进行HEXO的安装</h2>
+<p>在本地选择一个文件夹，作为你的hexo主目录，在这个文件夹下右键，选择git bash here打开git命令窗口。</p>
+<blockquote>
+<p>运行命令安装hexo：</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">npm install -g hexo</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>运行命令在此文件夹新建站点：</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">hexo init</span><br></pre></td></tr></table></figure>
+<p>如果命令没有报错的话，在你选定的文件夹下应该会下载到hexo的文件。</p>
+<blockquote>
+<p>我们可以编辑根目录下的_config.yml来配置HEXO站点的相关信息。<br>
+编辑完相关信息之后运行以下命令重新生成站点文件：</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">hexo g</span><br></pre></td></tr></table></figure>
+<h2 id="4-打开本地演示模式"><a class="header-anchor" href="#4-打开本地演示模式">¶</a>4.打开本地演示模式</h2>
+<blockquote>
+<p>输入下面命令打开本地演示模式：</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">hexo s</span><br></pre></td></tr></table></figure>
+<p>打开之后在浏览器输入<a href="http://localhost:400">http://localhost:400</a> 就可以访问到网站了。</p>
+<h2 id="5-安装主题butterfly"><a class="header-anchor" href="#5-安装主题butterfly">¶</a>5.安装主题butterfly</h2>
+<p>我们接下来安装一个主题，这里以butterfly这个主题为例，其他主题的安装也类似。</p>
+<blockquote>
+<p>在hexo文件下下运行以下命令：</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git <span class="built_in">clone</span> -b master https://github.com/jerryc127/hexo-theme-butterfly.git themes/butterfly</span><br><span class="line">npm install hexo-renderer-pug hexo-renderer-stylus --save</span><br></pre></td></tr></table></figure>
+<p>运行完成之后我们编辑主题文件夹下的_config.yml文件来对主题进行配置。<br>
+编辑完成之后复制一份这个yml文件到hexo根目录，并命名为_config.butterfly.yml。<br>
+接着编辑根目录下面的站点配置文件_config.yml来更改主题</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">theme: butterfly</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>修改完成之后重新运行下面命令编译HEXO：</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">hexo g</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>然后本地预览新安装的主题：</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">hexo s</span><br></pre></td></tr></table></figure>
+<h2 id="6-将站点发布到Github上"><a class="header-anchor" href="#6-将站点发布到Github上">¶</a>6.将站点发布到Github上</h2>
+<p>如果在本地演示没有报错，我们就可以将站点发布到Github上面了。<br>
+首先我们需要编辑根目录下的_config.yml文件，拉到文件最底部填入你的github地址：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">deploy:</span><br><span class="line">  type: &#x27;git&#x27;</span><br><span class="line">  repo: git@github.com:miaoyanginfo/miaoyanginfo.github.io.git</span><br><span class="line">  branch: master</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>然后运行下面的命令：</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">npm install hexo-deployer-git  --save</span><br><span class="line">hexo clean &amp;&amp; hexo g &amp;&amp; hexo d</span><br></pre></td></tr></table></figure>
+<p>发布完成之后我们直接用域名https://***.github.io<br>
+就可以访问到我们搭建的HEXO站点了。</p>
+]]></content>
+      <categories>
+        <category>HEXO</category>
+      </categories>
+      <tags>
+        <tag>GitHub</tag>
+        <tag>HEXO</tag>
+        <tag>部署</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>在VScode中使用snippets来简化hexo头部matter</title>
+    <url>/posts/61790.html</url>
+    <content><![CDATA[<p>每次写hexo文章的时候都需要手动敲入文章头部的front-matter字段，而且有时候可能会敲错，导致发布失败，那有没有一种简单的方法，输入某个字符就能带出这些内容呢？<br>
+你别说还真有，在vscode中有一个snippets的功能就可以实现上面的需求，下面跟我来操作吧。</p>
+<h3 id="编辑markdown-json文件"><a class="header-anchor" href="#编辑markdown-json文件">¶</a>编辑markdown.json文件</h3>
+<p>ctrl+shift+P打开配置搜索框搜索snippets。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20220525134538.png" alt="20220525134538"><br>
+然后搜索markdown编辑markdown.json文件<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20220525134725.png" alt="20220525134725"><br>
+在文件中插入以下字段并保存。<br>
+这里prefix后面的title可以随意替换，之后输入这个词就会带出相应的内容。body里面的字段也可以随意增减。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;Generate Hexo blog header&quot;: &#123;</span><br><span class="line">		&quot;prefix&quot;: &quot;title&quot;,</span><br><span class="line">		&quot;body&quot;: [</span><br><span class="line">			&quot;---&quot;,</span><br><span class="line">			&quot;title: &quot;,</span><br><span class="line">			&quot;date: $CURRENT_YEAR-$CURRENT_MONTH-$CURRENT_DATE $CURRENT_HOUR:$CURRENT_MINUTE:$CURRENT_SECOND&quot;,</span><br><span class="line">			&quot;categories: &quot;,</span><br><span class="line">			&quot;tags:&quot;,</span><br><span class="line">			&quot;cover: &quot;,</span><br><span class="line">			&quot;sticky: &quot;,</span><br><span class="line">			&quot;---&quot;,</span><br><span class="line">		],</span><br><span class="line">		&quot;description&quot;: &quot;hexo header&quot;</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20220525134901.png" alt="20220525134901"></p>
+<h3 id="编辑settings-json文件"><a class="header-anchor" href="#编辑settings-json文件">¶</a>编辑settings.json文件</h3>
+<p>在vscode中搜索settings.json文件进行编辑。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20220525135009.png" alt="20220525135009"><br>
+插入下面的字段并报错。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&quot;[markdown]&quot;: &#123;</span><br><span class="line">        &quot;editor.wordWrap&quot;: &quot;on&quot;,</span><br><span class="line">        &quot;editor.quickSuggestions&quot;: true</span><br><span class="line">    &#125;,</span><br></pre></td></tr></table></figure>
+<h3 id="大功告成"><a class="header-anchor" href="#大功告成">¶</a>大功告成</h3>
+<p>完成上面设置步骤之后在markdown文件中输入title就可以带出hexo所需的头部matter字段了。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20220525135235.png" alt="20220525135235"></p>
+]]></content>
+      <categories>
+        <category>HEXO</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>多台电脑协作更新HEXO</title>
+    <url>/posts/7251.html</url>
+    <content><![CDATA[<p>家里一台电脑，单位一台电脑，如何用两台电脑同时对HEXO进行更新呢？</p>
+<h2 id="生成密钥并部署到GitHub"><a class="header-anchor" href="#生成密钥并部署到GitHub">¶</a>生成密钥并部署到GitHub</h2>
+<p>我们需要在另一台电脑上安装git、node等必要环境，然后选取一个文件夹作为工作文件夹，在这个文件夹下运行git bash命令窗口。</p>
+<blockquote>
+<p>创建一个新的密钥：</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ssh-keygen -t rsa -C <span class="string">&quot;youremail@example.com&quot;</span></span><br></pre></td></tr></table></figure>
+<p>在本地用户名文件夹下找到.ssh文件夹，复制里面的id_rsa.pub内容，然后前往GitHub的settings页面，添加一个SSH key，title最好取名为你的电脑名称，然后粘贴刚才复制的公钥的内容。<br>
+<a href="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20220422151443.png"></a></p>
+<span id="more"></span>
+<h2 id="克隆远程仓库文件"><a class="header-anchor" href="#克隆远程仓库文件">¶</a>克隆远程仓库文件</h2>
+<blockquote>
+<p>运行下面的命令来克隆GitHub仓库里面的文件：</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git <span class="built_in">clone</span> git@github.com:miaoyanginfo/hexo-action.git</span><br></pre></td></tr></table></figure>
+<p>命令完成之后我们进入文件夹内会看到有一个名为“hexo-action”的文件夹，这个文件夹里面包括我们远程仓库里的所有文件，我们可以在这个文件夹里面更新文件。</p>
+<h2 id="推送到GitHub"><a class="header-anchor" href="#推送到GitHub">¶</a>推送到GitHub</h2>
+<blockquote>
+<p>当我们做完相应的更新之后，运行常规push命令就能直接将更新推送到GitHub了。</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git add .</span><br><span class="line">git commit -m <span class="string">&quot;&quot;</span></span><br><span class="line">git push</span><br></pre></td></tr></table></figure>
+<h3 id="另一台电脑如何操作"><a class="header-anchor" href="#另一台电脑如何操作">¶</a>另一台电脑如何操作</h3>
+<p>当我们在原先那台电脑上工作时，本地代码和远程的代码发生了不一致，为了保持同步，所以需要将GitHub仓库中的代码同步到电脑上。</p>
+<blockquote>
+<p>从远程的origin的main主分支下载最新的版本到origin/master分支上：</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git fetch origin main</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>然后比较本地的master分支和origin/master分支的差别:</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git <span class="built_in">log</span> -p master..origin/master</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>最后进行合并:</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git merge origin/master</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>HEXO</category>
+      </categories>
+      <tags>
+        <tag>HEXO</tag>
+        <tag>github</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>测试使用Obsidian同步github</title>
+    <url>/posts/45920.html</url>
+    <content><![CDATA[<p>最近发现了一款使用体验不错的MarkDown编辑器，Obsidian。之前在电脑端一直使用微软的VScode来更新hexo和同步Github。试用了两天之后，感觉与vscode相比，obsidian轻量不少，启动和反应速度更快，界面更加适于写作。安装了三方插件之后，我觉得是可以取代vscode来作为日常hexo更新工具使用了。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20240911101502.png" alt="image.png"></p>
+<p>目前我安装了三个插件，第一个是Templater，创建相应的模板之后可以直接在文章中调用，用于编辑文章的front-matter。这个插件设置比较简单，只要指定模板存放的文件夹，然后在该文件夹新建模板文件即可。使用的是由在界面左侧有快速插入按钮，选择相应模板即可。</p>
+<span id="more"></span>
+<p><img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20240911100636.png" alt="image.png"></p>
+<p>第二个是Git插件，用于和Github同步，更新文章之后可以很方便的push和pull，可以设置每隔多长时间自动push，前提是你本地安装了git并且账户信息配置无误。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20240911134436.png" alt="image.png"></p>
+<p>最后一个是Image auto upload plugin图片上传插件，与vscode不同的是这个插件需要配合picgo的桌面客户端来使用，而且需要客户端常驻后台。还有就是插件只支持剪切板粘贴上传，如果再加入一个浏览上传按钮就更好了。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20240911101056.png" alt="image.png"></p>
+<p>大概看了一下，Obisdian不仅有丰富的插件库，还支持三方主题，另外付费用户还可以多终端同步文件项目。更多的功能静待以后慢慢探索分享。</p>
+]]></content>
+      <categories>
+        <category>HEXO</category>
+      </categories>
+      <tags>
+        <tag>HEXO</tag>
+        <tag>obsidian</tag>
+        <tag>markdown</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>让HEXO“动起来”-体验Qexo静态博客管理面板</title>
+    <url>/posts/23533.html</url>
+    <content><![CDATA[<h2 id="前言"><a class="header-anchor" href="#前言">¶</a>前言</h2>
+<p>对于习惯了使用WordPress等传统CMS程序的用户来说，使用纯静态的hexo更新网站或多或少还是有些不太适应。缺少了管理后台，无法直观的管理站点的日志和页面，只能通过一个个静态文件来更新。并且想要发布还需要去向github提交更改。</p>
+<h2 id="介绍"><a class="header-anchor" href="#介绍">¶</a>介绍</h2>
+<p><img src="https://img.ycyc.win/img/202409251349501.png" alt="qexo01.png"></p>
+<p>Github上有个开源项目名为Qexo，这是一个为静态站点而生的项目，官方介绍为“Qexo 是一个快速、强大、美观的在线 静态博客编辑器。使用 GPL3.0 开源协议。支持包括且不限于在 Vercel 等平台部署, 为您的静态博客添加动态的元素”。程序方面目前支持Hexo、Hugo和Valaxy。如果你正在使用这些程序，可以尝试一下。这个项目支持在Vercel平台一键部署，免去了额外的花销。而且官方也有较为详细的配置文档，新手也很容易上手。<a href="https://www.oplog.cn/qexo/start.html">Qexo 文档 (oplog.cn)</a><br>
+部署前需要确认你的hexo已经通过github action设置了自动化部署，如何设置github action可以参阅我之前的文章<a href="https://ycyc.win/posts/42824">使用GitHub Action实现HEXO的自动编译和发布 | 渊澄|YCYC.WIN</a><br>
+还需要注意的是如果你是在vercel部署的，需要在项目设置那里将node.js版本降级为18.x。这一点文档里面也着重强调了。</p>
+<span id="more"></span>
+<p>部署完成之后就可以进入站点页面进行配置了。（当然你也可以在vercel设置自定义域名，只需将域名cname解析到vercel即可）。根据页面提示和文档获取相关的github和vercel密钥，然后创建管理员账户之后就可以登录了。<br>
+<img src="https://img.ycyc.win/img/202409251036113.png" alt="qexo00.png"></p>
+<p><s>Qexo同样支持图床的配置，但是我配置完Github图床之后有系统报错，看报错代码像是仓库中有同名文件，<a href="https://ycyc.win/posts/2192?highlight=picgo">picgo422错误代码 | 渊澄|YCYC.WIN</a>，但已排除。不知何故，已经在项目issues提问了。</s>—</p>
+<p>经过排查，问题为设置界面的“保存路径”输入有误，需要按照Qexo的格式来填写，和其他图床插件不一样。<a href="https://www.oplog.cn/qexo/configs/upload.html#%E8%87%AA%E5%AE%9A%E4%B9%89%E5%9F%9F%E5%90%8D-2">Qexo 文档 (oplog.cn)</a></p>
+<p><img src="https://img.ycyc.win/Qexo/24/9/image_547c7788639701b124967757991368f9.png" alt="https://img.ycyc.win/Qexo/24/9/image_547c7788639701b124967757991368f9.png"></p>
+<p>界面上的日志新增、编辑、删除都会push到Github仓库。<br>
+虽然面板上还无法像wordpress那样对种主题和插件进行可视化设置，但是可以从配置选项卡直接编辑对应的配置文件，也算是弥补了一些遗憾。<br>
+<img src="https://img.ycyc.win/img/202409251041205.png" alt="image.png"></p>
+<p>另外Qexo还提供了一个说说和友情链接的模块可供选用，部署也简单，只需新建相关页面，然后插入代码对应即可。另外说说的编辑是不会产生仓库push的。实际测试该模块在国内的网络环境下好像加载不出来，可能与Qexo部署在vercel有关。<br>
+<img src="https://img.ycyc.win/img/202409251143690.png" alt="image.png"></p>
+<h2 id="后记"><a class="header-anchor" href="#后记">¶</a>后记</h2>
+<p>整体体验下来还算可以，界面设计和布局都比较容易上手。只是响应速度有点慢，可能与vercel访问速度慢有关。<s>还有一个问题我发现站点实际的文章总数与Qexo界面显示的文章总数不一致，可能是我新发的两篇文章是在安装了Qexo之后用Obsidian发布的，没有统计进去。</s>（这个问题在界面刷新界面清除缓存或者设置webhook可解决）。<a href="https://www.oplog.cn/qexo/start/questions.html#%E4%B8%BA%E4%BB%80%E4%B9%88%E6%88%91%E6%96%B0%E5%BB%BA%E7%9A%84%E6%96%87%E7%AB%A0%E6%B2%A1%E6%9C%89%E6%98%BE%E7%A4%BA-qexo-%E5%A6%82%E4%BD%95%E4%BF%9D%E8%AF%81%E6%96%87%E4%BB%B6%E6%9C%80%E6%96%B0">常见问题 | Qexo 文档 (oplog.cn)</a></p>
+<p><img src="https://img.ycyc.win/Qexo/24/9/image_636f76ab9a82fe2264b49d3f2e4a0d66.png" alt="https://img.ycyc.win/Qexo/24/9/image_636f76ab9a82fe2264b49d3f2e4a0d66.png"></p>
+<p>另外我目前已经习惯了在Obsidian编写hexo，大部分情况可能不会去用Qexo编写，但是如果在移动端等其他不方便部署环境的地方，会选择用Qexo来进行站点的更新。可以作为一个备选方案。</p>
+<p><img src="https://img.ycyc.win/img/202409251049070.png" alt="f5c3d9a5b0a822be70c754af795b6c7.jpg"></p>
+<h2 id="引用"><a class="header-anchor" href="#引用">¶</a>引用</h2>
+<p><a href="https://www.oplog.cn/qexo/start.html">Qexo 文档 (oplog.cn)</a><br>
+<a href="https://github.com/Qexo/Qexo">Qexo/Qexo: A fast, powerful and beautiful online manager for all static blog frameworks. (github.com)</a></p>
+]]></content>
+      <categories>
+        <category>HEXO</category>
+      </categories>
+      <tags>
+        <tag>HEXO</tag>
+        <tag>QEXO</tag>
+        <tag>vercel</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>N1重装OPENWRT升级Homeassistant版本</title>
+    <url>/posts/7119.html</url>
+    <content><![CDATA[<p>现在我使用的HomeAssistant是用Docker跑在OPENWRT系统上的，目前版本是2021.12.5，之前尝试过直接拉取Dcoker镜像来升级，但是提示空间不足报错，后来就一直没有理他，运行了大半年还算稳定。今天打开HA官网看到最新版本已经更新到了2022.5.5版本了，所以是时候来一次升级操作了。<br>
+本周末的任务就是升级我的HomeAssistant系统到最新的2022.5.5版本。<br>
+如果不能直接升级，就只能备份现有的配置，然后删除容器，重新部署了。<br>
+2022-5-22更新：<br>
+今天抽时间试着做了更新操作，不出意外，还是由于空间不足，在拉取最新docker镜像的时候报错了。<br>
+所以只能重新安装openwrt，然后再拉取镜像操作。<br>
+下载了F大5月9日编译的最新openwrt固件，写入U盘镜像。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/202205221452091.png" alt=""><br>
+从U盘启动openwrt系统，执行命令将系统安装到N1的emmc上。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">cd</span>  /root   &amp;&amp;   ./install-to-emmc.sh</span><br></pre></td></tr></table></figure>
+<p>将N1盒子用网线和电脑直连，电脑设置为192.168.1的网段，进入openwrt的WEB界面修改LAN口地址为你网络环境的网段，保存设置之后将设备接入你的网络中。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/202205221452385.png" alt=""><br>
+如果和我一样作为旁路由来使用，还需要关闭LAN口的DHCP功能。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/202205221453148.png" alt=""><br>
+用putty登录到openwrt系统，执行下面的命令来拉取镜像和运行容器。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker pull homeassistant/aarch64-homeassistant:latest</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">docker run -d -v /mnt/mmcblk2p4/docker/homeassisatant/config:/config -v /etc/localtime:/etc/localtime:ro --net=host homeassistant/aarch64-homeassistant:latest</span><br></pre></td></tr></table></figure>
+<p>一切顺利的话，访问openwrt的地址:8123就会看到最新版本的HomeAssistant系统界面了<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/202205221453617.png" alt=""></p>
+]]></content>
+      <categories>
+        <category>HomeAssistant</category>
+      </categories>
+      <tags>
+        <tag>docker</tag>
+        <tag>N1</tag>
+        <tag>HomeAssistant</tag>
+        <tag>智能家居</tag>
+        <tag>openwrt</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>docker运行appdaemon容器创建UI触控界面</title>
+    <url>/posts/41924.html</url>
+    <content><![CDATA[<p>Appdaemon是一个可以让HomeAssistant界面更适合触控操作的三方UI面板，可以通过docker容器来运行。<br>
+HA_URL字段是你的homeassistant地址，别忘了加端口号；<br>
+TOKEN字段填入你的homeassistant长期访问令牌token；<br>
+-v后面填入本地映射的appdaemon文件夹，需要提前创建好；<br>
+访问端口使用默认的5050，当然你也可以改成其他。</p>
+<span id="more"></span>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">docker run --name=appdaemon -d -p 5050:5050 \</span><br><span class="line">  --restart=always \</span><br><span class="line">  -e HA_URL=&quot;&lt;your HA_URL value&gt;&quot; \</span><br><span class="line">  -e TOKEN=&quot;&lt;your TOKEN value&gt;&quot; \</span><br><span class="line">  -e DASH_URL=&quot;http://$HOSTNAME:5050&quot; \</span><br><span class="line">  -v &lt;your_conf_folder&gt;:/conf \</span><br><span class="line">  acockburn/appdaemon:latest</span><br></pre></td></tr></table></figure>
+<p>之后运行上面的命令就可以创建docker容器了。<br>
+运行下面的命令查看docker容器运行日志：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">docker logs appdaemon </span><br></pre></td></tr></table></figure>
+<p><img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20230215140309.png" alt="20230215140309"><br>
+首次运行日志如果和上面显示的一样，则说明容器已经正常运行了。成功运行之后会在你映射的文件夹内自动生成默认配置文件，你可以编辑这些文件来打造属于你自己的控制界面。<br>
+最后的效果可以访问ip:5050看到。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20230215111207.png" alt="20230215111207"><br>
+其实这个面板的作用很简单，你可以在在家里面墙上镶嵌一个ipad之类的平板电脑，用浏览器打开这个界面，就可以得到一个界面优美的家庭智能控制中枢了。<br>
+像这样:<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20230215113057.png" alt="20230215113057"></p>
+]]></content>
+      <categories>
+        <category>HomeAssistant</category>
+      </categories>
+      <tags>
+        <tag>docker</tag>
+        <tag>HomeAssistant</tag>
+        <tag>appdaemon</tag>
+        <tag>UI</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>使用openwrt的docker容器来运行mqtt服务</title>
+    <url>/posts/64809.html</url>
+    <content><![CDATA[<p>putty登录主机<br>
+拉取镜像</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">docker pull eclipse-mosquitto</span><br></pre></td></tr></table></figure>
+<p>新建配置文件夹<br>
+下面的文件夹路径根据你自己设备的实际情况做相应的更改</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">mkdir -p /mnt/mmcblk2p4/docker/mqtt/config</span><br><span class="line">mkdir -p /mnt/mmcblk2p4/docker/mqtt/data</span><br><span class="line">mkdir -p /mnt/mmcblk2p4/docker/mqtt/log</span><br></pre></td></tr></table></figure>
+<p>新建配置文件</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">nano /mnt/mmcblk2p4/docker/mqtt/config/mosquitto.conf</span><br></pre></td></tr></table></figure>
+<p>复制下面的内容，然后保存。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">persistence true</span><br><span class="line">persistence_location /mosquitto/data</span><br><span class="line">log_dest file /mosquitto/log/mosquitto.log</span><br><span class="line">listener 1883</span><br><span class="line">allow_anonymous true</span><br></pre></td></tr></table></figure>
+<p>文件夹赋予权限</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">chmod -R 755 /mnt/mmcblk2p4/docker/mqtt</span><br><span class="line">chmod -R 777 /mnt/mmcblk2p4/docker/mqtt/log </span><br></pre></td></tr></table></figure>
+<p>运行容器</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">docker run -it --name=mosquitto --privileged  -p 1883:1883 -p 9001:9001 -v /mnt/mmcblk2p4/docker/mqtt/config/mosquitto.conf:/mosquitto/config/mosquitto.conf  -v /mnt/mmcblk2p4/docker/mqtt/data:/mosquitto/data -v /mnt/mmcblk2p4/docker/mqtt/log:/mosquitto/log -d  eclipse-mosquitto </span><br></pre></td></tr></table></figure>
+<p>目前可以使用IP加1883端口直接连接mqtt服务器，无需使用用户名密码登录。<br>
+如果需要设置用户名密码，则需要在mosquitto.conf文件中将allow_anonymous true字段改成fasle，然后声明密码文件保存路径。详细配置参考下面：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">persistence true</span><br><span class="line">persistence_location /mosquitto/data</span><br><span class="line">log_dest file /mosquitto/log/mosquitto.log</span><br><span class="line">listener 1883</span><br><span class="line">allow_anonymous false</span><br><span class="line">password_file /mosquitto/config/pwfile.conf</span><br></pre></td></tr></table></figure>
+<p>找到容器的id并将下面命令行中的id字段进行替换</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">docker ps </span><br></pre></td></tr></table></figure>
+<p>进入到容器中</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">docker exec -it id sh </span><br></pre></td></tr></table></figure>
+<p>运行下面的命令创建用户和密码。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">mosquitto_passwd /mosquitto/config/pwfile.conf mqtt</span><br></pre></td></tr></table></figure>
+<p>完成之后ctrl+p ctrl+q保存退出。<br>
+重启docker容器</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">docker restart id</span><br></pre></td></tr></table></figure>
+<p>之后就可以使用设置的用户名和密码连接mqtt服务器了。</p>
+]]></content>
+      <categories>
+        <category>HomeAssistant</category>
+      </categories>
+      <tags>
+        <tag>docker</tag>
+        <tag>HomeAssistant</tag>
+        <tag>智能家居</tag>
+        <tag>mqtt</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>华为AX3 WS7100路由器接入HomeAssistant</title>
+    <url>/posts/65048.html</url>
+    <content><![CDATA[<p>使用华为的AX3路由器已经快三年的时间了，一直没有适合的插件将其接入HomeAssistant当中，中间还用了一段时间的小米路由器。<br>
+最近在github上闲逛的时候发现有大神已经开发出了相应的插件，接入到HA之后不仅可以实现device_tracker设备跟踪，还可以实现一键重启路由的功能。废话不多，直接放出作者的github地址<br>
+<a href="https://github.com/vmakeev/huawei_mesh_router">https://github.com/vmakeev/huawei_mesh_router</a><br>
+下载下来放到ha的custom_compents文件夹中，之后在界面中搜索Huawei Mesh Router即可进行配置。如果你装了HACS商店，在里面直接搜索安装更方便。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20230213103412.png" alt="20230213103412"><br>
+填入路由器地址、密码即可完成配置，配置完成之后就可以看到相关设备实体了。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20230213103507.png" alt="20230213103507"><br>
+下面是插件自带的可供使用的开关和传感器<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20230213103600.png" alt="20230213103600"><br>
+我用了一段时间，插件运行很稳定。如果你在使用中发现bug可以在作者的github主页提交issues。</p>
+]]></content>
+      <categories>
+        <category>HomeAssistant</category>
+      </categories>
+      <tags>
+        <tag>HomeAssistant</tag>
+        <tag>华为</tag>
+        <tag>路由器</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>多模网关升级最新版后接入homeassistant 出现telnet报错的解决方法</title>
+    <url>/posts/7421.html</url>
+    <content><![CDATA[<p>在用的小米多模网关2在升级到最新的v1.0.7_0019后，在homeassistant使用XiaomiGateway3接入时会有telnet_wrong的报错信息，导致接入网关的设备无法正常在homeassistant正常使用。原因是小米在最新的固件里封堵了telnet入口，导致插件无法正常获取到网关的key字段。</p>
+<span id="more"></span>
+<p>在插件作者的Github里面找到了暂时解决方法如下：<br>
+如果你之前已经将网关接入过homeassistant，会在~/config/.storage/xiaomi_gateway3文件夹内生成一个key.json文件，该文件内存储着我们需要用到的key字段，将该字段复制出来。在homessistant前端按照之前的步骤添加网关，然后在下图的位置将key粘贴过来就可以完成接入了。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20231114151859.png" alt="20231114151859"><br>
+还需要注意的是，需要将XiaomiGateway插件版本升级到最新的v3.3.4。<br>
+Github插件主页：<a href="https://github.com/AlexxIT/XiaomiGateway3">https://github.com/AlexxIT/XiaomiGateway3</a></p>
+]]></content>
+      <categories>
+        <category>HomeAssistant</category>
+      </categories>
+      <tags>
+        <tag>HomeAssistant</tag>
+        <tag>小米</tag>
+        <tag>网关</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>用支付宝给美区appleID充值</title>
+    <url>/posts/25411.html</url>
+    <content><![CDATA[<p>之前使用了一个网友共享的appleID来下载小火箭，最近刚换了手机，密码早已失效，于是想着用自己的美区ID买下软件，也不贵，2.99美元，折合人民币算下来不到30块钱，而且是终身免费升级，自己平时也是要用到的，干脆买下来也不亏。<br>
+美区ID已经有了，接下来的问题就是如何付款购买，手头没有外币信用卡，也没有paypal，所以只能用礼品卡充值了。网上搜了很多方法，其中比较简单，速度也比较快的是使用支付宝来购买。</p>
+<span id="more"></span>
+<p>首先需要进入支付宝，左上角地区那里切换带海外，美国，旧金山。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/ad001.jpg" alt="ad001"><br>
+然后搜索Pockytshop，进入小程序。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/ad002.jpg" alt="ad002"><br>
+找到App Store图标，点金进去之后可以任意选择2-500美金进行充值，首次使用需要输入姓名和邮箱注册Pockytshop账户。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/ad003.jpg" alt="ad003"><br>
+接着付款成功之后页面会出现礼品卡兑换码，复制兑换码，到APPstore进行充值就可以了。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/ad004.jpg" alt="ad004"></p>
+]]></content>
+      <categories>
+        <category>apple</category>
+      </categories>
+      <tags>
+        <tag>美区</tag>
+        <tag>appleID</tag>
+        <tag>支付宝</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>苹果又发新iPhone了</title>
+    <url>/posts/20537.html</url>
+    <content><![CDATA[<p><img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20240910152713.png" alt="20240910152713"><br>
+昨儿个凌晨，苹果召开了一年一度的秋季新品发布会，不知道从什么时候开始被誉为了科技界的春晚。<br>
+早上起来看苹果的公众号大概了解了一下发布的新品，依旧是没有什么亮点可言，都是一些常规升级：iPhone16系列，包括pro Max机型，Apple Watch 10代，还有Airpods第四代，包括一款支持主动降噪的型号。<br>
+没有期待中的新款Apple TV。<br>
+但是iPhone16系列会搭载最新的iOS18操作系统，在苹果iOS18的页面(<a href="https://www.apple.com/ios/ios-18/">https://www.apple.com/ios/ios-18/</a>) 增强了AI（Apple Intelligence）功能，期待在iPhone上有惊艳表现，但据介绍最低只支持到iPhone 15Pro。</p>
+<span id="more"></span> 
+<p>今天不对新品做什么评论，只是想单纯吐槽一下苹果的创新已经大不如前了，虽然这是众所周知、无可奈何的事实。近年来发布的新品除了Apple vision pro之外，很难再找到一款类似于当年iPhone4那么跨时代、让人兴奋的产品了，而这个vision pro 居然还需要用一根线外接一个充电宝才能用。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20240910155144.png" alt="20240910155144"><br>
+第一次用苹果的手机就是iPhone4，经典的设计，玻璃背板，金属机框，retina高清屏，还有流畅的iOS系统；然后是iPhone4S，在外形与上一代保持一致的情况下，首次搭载了siri语音助手；iphone5是更大的屏幕，更薄的机身；iPhone5s首次在home键上融入了TouchID,让解锁更方便，并且首次使用了土豪金配色。。。<br>
+接下来的每代iPhone就没什么值得记忆的亮点了，无非是更快的处理器，更高的摄像头像素，还有更大的屏幕。就算是这些毫无亮点毫无新意的换代，也让国内友商竞相模仿，最不能忍受的是为了降低机身厚度，居然砍掉了3.5mm耳机孔，发展到现在市面上主流的手机，都不带耳机孔了。。。还有机身左侧的静音按钮，也在最新款的iphone上被砍掉了。。<br>
+但不可否认苹果依然是当今最具影响力的手机公司，而且iPhone的市场占有率好像也越来越高了（是不是得益于国产手机的售价也不便宜？），其他地方不周到，我周边平均每10个人至少有3-4个是用苹果手机的。当年iphone4-iphoneX时代应该没有这么高的占有率，毕竟当时苹果的售价是遥遥领先的。<br>
+当然作为一名三流果粉，还是希望苹果越来越好，发布更多改变时代的好产品。</p>
+]]></content>
+      <categories>
+        <category>apple</category>
+      </categories>
+      <tags>
+        <tag>苹果</tag>
+        <tag>Apple</tag>
+        <tag>iPhone</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Github+Cloudflare Pages图床部署</title>
+    <url>/posts/20185.html</url>
+    <content><![CDATA[<p>将Github的图床部署到Cloudflare的Pages，可以享受cloudflare的加速服务，速度虽然比不上国内，但比起github原生的速度还是要强上不少。过程很简单，在Cloudflare新建一个Pages项目，链接到Github账户，选择图床源，一路下一步，完成部署。<br>
+然后设置自定义域名，例如img.ycyc.win，使用cname协议解析到Cloudflare分配的默认项目地址。<br>
+<img src="https://img.ycyc.win//img/202409191630571.png" alt="image.png"></p>
+<p>例如原来在Github的图片地址为’<a href="https://raw.githubusercontent.com/miaoyanginfo/hexo-img/main/img/202409131248235.png">https://raw.githubusercontent.com/miaoyanginfo/hexo-img/main/img/202409131248235.png</a>’<br>
+现在替换为‘<a href="https://img.ycyc.win/img/202409131248235.png">https://img.ycyc.win/img/202409131248235.png</a> ’即可。</p>
+]]></content>
+      <categories>
+        <category>cloudflare</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>cloudflare pages同步github Hexo</title>
+    <url>/posts/38710.html</url>
+    <content><![CDATA[<p>Cloudflare有一个pages的功能，类似于Github Page,可以用来托管静态网站。那有没有可能将hexo站点托管到CF pages呢？<br>
+下面来操作吧。</p>
+<h3 id="创建build-sh脚本"><a class="header-anchor" href="#创建build-sh脚本">¶</a>创建build.sh脚本</h3>
+<p>首先确保你在Github上有Hexo的仓库，我们在仓库的根目录新建一个名为build.sh的文件，内容如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#!/bin/bash</span><br><span class="line"></span><br><span class="line"># 配置环境</span><br><span class="line">npm install -g hexo-cli</span><br><span class="line">mkdir hexo</span><br><span class="line">cd hexo</span><br><span class="line">hexo init</span><br><span class="line">npm install</span><br><span class="line">rm -rf source/_posts</span><br><span class="line">mkdir -p source/_posts</span><br><span class="line"></span><br><span class="line"># 安装主题(你们可以改成自己喜欢的主题)</span><br><span class="line">git clone -b master https://github.com/jerryc127/hexo-theme-butterfly.git themes/butterfly</span><br><span class="line"></span><br><span class="line"># 使用新的渲染器</span><br><span class="line">npm un hexo-renderer-marked --save</span><br><span class="line">npm i hexo-renderer-markdown-it --save</span><br><span class="line"># 处理图片</span><br><span class="line">npm i hexo-image-link --save</span><br><span class="line"></span><br><span class="line"># 复制文章到指定目录</span><br><span class="line">cd ../</span><br><span class="line">cp -r `ls | grep -v hexo | grep -v config.yml | xargs` hexo/source/_posts</span><br><span class="line"># 复制配置文件</span><br><span class="line">cp config.yml hexo</span><br><span class="line"></span><br><span class="line"># 开始构建</span><br><span class="line">cd hexo &amp;&amp; hexo g --config config.yml </span><br></pre></td></tr></table></figure>
+<h3 id="登录CF创建应用"><a class="header-anchor" href="#登录CF创建应用">¶</a>登录CF创建应用</h3>
+<p>登录到Cloudflare，切换到pages选项卡，新建一个项目，选择“连接到git”，使用Github账户登录<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20220725160214.png" alt="20220725160214"><br>
+然后选择你的hexo仓库，点击下一步<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20220725160035.png" alt="20220725160035"><br>
+按图片所示填入信息，然后点击保存并部署。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20220725160435.png" alt="20220725160435"><br>
+部署完成之后我们就可以使用系统分配的pages.dev域名来访问部署在Cloudflare的站点了。</p>
+<h3 id="测试同步"><a class="header-anchor" href="#测试同步">¶</a>测试同步</h3>
+<p>现在看下在github上发布一篇文章，看看会不会自动同步更新。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20220725160708.png" alt="20220725160708"></p>
+]]></content>
+      <categories>
+        <category>cloudflare</category>
+      </categories>
+      <tags>
+        <tag>github</tag>
+        <tag>Cloudflare</tag>
+        <tag>hexo</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>使用cloudflare+jsdmirror加速github图床访问</title>
+    <url>/posts/54996.html</url>
+    <content><![CDATA[<p><img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/202409111646715.png" alt="image.png"></p>
+<h2 id="前言"><a class="header-anchor" href="#前言">¶</a>前言</h2>
+<p>之前写过一篇文章，如何设置github图床(<a href="https://miaoyang.win/posts/23057">https://miaoyang.win/posts/23057</a>) ，由于github在国内的访问时长抽风，导致浏览体验不太理想，所以当初使用了Jsdelivr的加速服务，也就是在Picgo自定义域名那里填写<a href="https://cdn.jsdelivr.net/gh/GitHub%E7%94%A8%E6%88%B7%E5%90%8D/%E4%BB%93%E5%BA%93%E5%90%8D">https://cdn.jsdelivr.net/gh/GitHub用户名/仓库名</a> 使用Jsdelivr的cdn来加速图床的访问。<br>
+但是最近Jsdelivr在国内的访问也是时断时续，经常出现打不开的情况。于是想着看看还有什么可用的国内加速服务。一路搜索找到了jsdmirror这个服务，详细介绍可查看项目Github页面（<a href="https://github.com/54ayao/JSDMirror%EF%BC%89">https://github.com/54ayao/JSDMirror）</a> ，太深奥的专业术语咱也看不懂，只知道这个服务可以代替Jsdelivr，加速国内的访问。<br>
+然后拜读了Leehow的这篇文章<a href="https://www.haoyep.com/posts/github-graph-beds-cdn/">通过 Cloudflare 和 JsDelivr 免费加速博客 GitHub 图床等静态资源</a> ，于是决定放手一试，用cloudflare来加速图床的访问。</p>
+<h2 id="实现的效果"><a class="header-anchor" href="#实现的效果">¶</a>实现的效果</h2>
+<p>最终实现的效果：使用自己的二级域名<a href="https://cdn.miaoyang.win">https://cdn.miaoyang.win</a> 来替换jsdelivr的<a href="https://cdn.jsdelivr.net">https://cdn.jsdelivr.net</a> 来加速github图床，并且根据访问者的ip匹配规则，国内ip调用jsdmirror的服务，国外ip调用jsdelivr。</p>
+<span id="more"></span>
+<h2 id="操作前提"><a class="header-anchor" href="#操作前提">¶</a>操作前提</h2>
+<p>1.github图床已经设置完成并且可以正常访问，具体设置教程请参与(<a href="https://miaoyang.win/posts/23057">https://miaoyang.win/posts/23057</a>);<br>
+2.域名已经停靠到了cloudflare。<br>
+3.有一个绑定了银行卡的paypal账户，无需付款。</p>
+<h2 id="操作步骤"><a class="header-anchor" href="#操作步骤">¶</a>操作步骤</h2>
+<h3 id="二级域名cdn-miaoyang-win使用cname解析到cdn-jsdmirror-com，并且勾选代理云朵图标。"><a class="header-anchor" href="#二级域名cdn-miaoyang-win使用cname解析到cdn-jsdmirror-com，并且勾选代理云朵图标。">¶</a><a href="http://xn--cdn-pi9dr5ww6fu92f.miaoyang.xn--wincnamecdn-yd2r83z161fjv0bhl4d.jsdmirror.com">二级域名cdn.miaoyang.win使用cname解析到cdn.jsdmirror.com</a>，并且勾选代理云朵图标。</h3>
+<p><img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20240910140410.png" alt="20240910140410"></p>
+<h3 id="设置重定向规则"><a class="header-anchor" href="#设置重定向规则">¶</a>设置重定向规则</h3>
+<p>根据访问者ip来设置重定向规则。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20240910140544.png" alt="20240910140544"></p>
+<p>国内ip规则设置如下图所示：<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20240910140922.png" alt="20240910140922"><br>
+表达式为：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">concat(&quot;https://cdn.jsdmirror.com&quot;, http.request.uri.path)</span><br></pre></td></tr></table></figure>
+<p>国外ip规则设置如下图所示：<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20240910140834.png" alt="20240910140834"><br>
+表达式为：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">concat(&quot;https://cdn.jsdelivr.net&quot;, http.request.uri.path)</span><br></pre></td></tr></table></figure>
+<h3 id="订阅saas申请SSL证书"><a class="header-anchor" href="#订阅saas申请SSL证书">¶</a>订阅saas申请SSL证书</h3>
+<p>进入如下图所示的“自定义主机名”页面，申请saas服务，申请过程需要外币卡或是绑定了银行卡的paypal账号，但并不会实际发生扣款。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20240910141119.png" alt="20240910141119"><br>
+开通saas服务之后添加二级域名并进行认证，之后等待域名状态和证书状态为“有效”即可。</p>
+<h2 id="测试效果"><a class="header-anchor" href="#测试效果">¶</a>测试效果</h2>
+<p>在picgo插件中将原有的delivr网址替换为自己设置的cdn.miaoyang.win即可测试服务是否正常。<br>
+将图片链接复制到浏览器中，切换国内外ip观察其是否会跳转到指定的加速站点。</p>
+<h2 id="后记"><a class="header-anchor" href="#后记">¶</a>后记</h2>
+<p>在部署过程中遇到了图片无法正常显示以及https无法访问异常的情况，试着在jsdmirror的github主页试着提交了issus，得到了作者54ayao的指点，才得以最终部署完成，特此感谢。</p>
+<h2 id="引用"><a class="header-anchor" href="#引用">¶</a>引用</h2>
+<p><a href="https://www.haoyep.com/posts/github-graph-beds-cdn/">通过 Cloudflare 和 JsDelivr 免费加速博客 GitHub 图床等静态资源</a></p>
+]]></content>
+      <categories>
+        <category>cloudflare</category>
+      </categories>
+      <tags>
+        <tag>图床</tag>
+        <tag>github</tag>
+        <tag>Cloudflare</tag>
+        <tag>jsdmirror</tag>
+        <tag>jsdelivr</tag>
+        <tag>加速</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>使用cloudflare的worker加速docker镜像下载</title>
+    <url>/posts/11994.html</url>
+    <content><![CDATA[<p><img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20240904100521.png" alt="20240904100521"><br>
+进入六月份以后国内众多的docker加速镜像突然停止了服务，外加docker官方源在国内被屏蔽，导致拉取docker镜像成了难题，就算是挂上梯子，速度也不理想。有网友发布了通过cloudflare的worker服务来加速docker镜像拉取的教程，我也实际操作了一遍，操作不复杂，而且加速效果明显，感兴趣的同学可以根据我下面的步骤操作。</p>
+<h3 id="将域名停靠到cloudflare"><a class="header-anchor" href="#将域名停靠到cloudflare">¶</a>将域名停靠到cloudflare</h3>
+<p>先去注册cloudflare账号，然后添加你的域名，将域名的NS地址改到cloudflare，等待生效。</p>
+<span id="more"></span>
+<h3 id="新建worker项目"><a class="header-anchor" href="#新建worker项目">¶</a>新建worker项目</h3>
+<p>进入左侧的worker和pages菜单<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20240708094217.png" alt="20240708094217"><br>
+新建一个worker项目，然后自己随意起个项目名字，最后点击右下角的部署按钮。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20240708094525.png" alt="20240708094525"></p>
+<h3 id="复制代码"><a class="header-anchor" href="#复制代码">¶</a>复制代码</h3>
+<p>创建成功之后点击如图所示的编辑代码按钮。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20240708094650.png" alt="20240708094650"><br>
+将下面的代码全部复制过去,然后点击右上角的部署按钮。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20240708094926.png" alt="20240708094926"></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#x27;use strict&#x27;</span><br><span class="line">const hub_host = &#x27;registry-1.docker.io&#x27;</span><br><span class="line">const auth_url = &#x27;https://auth.docker.io&#x27;</span><br><span class="line">const workers_url = &#x27;https://docker.miaoyang.win&#x27;</span><br><span class="line">const PREFLIGHT_INIT = &#123;</span><br><span class="line">    status: 204,</span><br><span class="line">    headers: new Headers(&#123;</span><br><span class="line">        &#x27;access-control-allow-origin&#x27;: &#x27;*&#x27;,</span><br><span class="line">        &#x27;access-control-allow-methods&#x27;: &#x27;GET,POST,PUT,PATCH,TRACE,DELETE,HEAD,OPTIONS&#x27;,</span><br><span class="line">        &#x27;access-control-max-age&#x27;: &#x27;1728000&#x27;,</span><br><span class="line">    &#125;),</span><br><span class="line">&#125;</span><br><span class="line">function makeRes(body, status = 200, headers = &#123;&#125;) &#123;</span><br><span class="line">    headers[&#x27;access-control-allow-origin&#x27;] = &#x27;*&#x27;</span><br><span class="line">    return new Response(body, &#123;status, headers&#125;)</span><br><span class="line">&#125;</span><br><span class="line">function newUrl(urlStr) &#123;</span><br><span class="line">    try &#123;</span><br><span class="line">        return new URL(urlStr)</span><br><span class="line">    &#125; catch (err) &#123;</span><br><span class="line">        return null</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">addEventListener(&#x27;fetch&#x27;, e =&gt; &#123;</span><br><span class="line">    const ret = fetchHandler(e)</span><br><span class="line">        .catch(err =&gt; makeRes(&#x27;cfworker error:n&#x27; + err.stack, 502))</span><br><span class="line">    e.respondWith(ret)</span><br><span class="line">&#125;)</span><br><span class="line">async function fetchHandler(e) &#123;</span><br><span class="line">  const getReqHeader = (key) =&gt; e.request.headers.get(key);</span><br><span class="line">  let url = new URL(e.request.url);</span><br><span class="line">  if (url.pathname === &#x27;/token&#x27;) &#123;</span><br><span class="line">      let token_parameter = &#123;</span><br><span class="line">        headers: &#123;</span><br><span class="line">        &#x27;Host&#x27;: &#x27;auth.docker.io&#x27;,</span><br><span class="line">        &#x27;User-Agent&#x27;: getReqHeader(&quot;User-Agent&quot;),</span><br><span class="line">        &#x27;Accept&#x27;: getReqHeader(&quot;Accept&quot;),</span><br><span class="line">        &#x27;Accept-Language&#x27;: getReqHeader(&quot;Accept-Language&quot;),</span><br><span class="line">        &#x27;Accept-Encoding&#x27;: getReqHeader(&quot;Accept-Encoding&quot;),</span><br><span class="line">        &#x27;Connection&#x27;: &#x27;keep-alive&#x27;,</span><br><span class="line">        &#x27;Cache-Control&#x27;: &#x27;max-age=0&#x27;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;;</span><br><span class="line">      let token_url = auth_url + url.pathname + url.search</span><br><span class="line">      return fetch(new Request(token_url, e.request), token_parameter)</span><br><span class="line">  &#125;</span><br><span class="line">  url.hostname = hub_host;</span><br><span class="line">  let parameter = &#123;</span><br><span class="line">    headers: &#123;</span><br><span class="line">      &#x27;Host&#x27;: hub_host,</span><br><span class="line">      &#x27;User-Agent&#x27;: getReqHeader(&quot;User-Agent&quot;),</span><br><span class="line">      &#x27;Accept&#x27;: getReqHeader(&quot;Accept&quot;),</span><br><span class="line">      &#x27;Accept-Language&#x27;: getReqHeader(&quot;Accept-Language&quot;),</span><br><span class="line">      &#x27;Accept-Encoding&#x27;: getReqHeader(&quot;Accept-Encoding&quot;),</span><br><span class="line">      &#x27;Connection&#x27;: &#x27;keep-alive&#x27;,</span><br><span class="line">      &#x27;Cache-Control&#x27;: &#x27;max-age=0&#x27;</span><br><span class="line">    &#125;,</span><br><span class="line">    cacheTtl: 3600</span><br><span class="line">  &#125;;</span><br><span class="line">  if (e.request.headers.has(&quot;Authorization&quot;)) &#123;</span><br><span class="line">    parameter.headers.Authorization = getReqHeader(&quot;Authorization&quot;);</span><br><span class="line">  &#125;</span><br><span class="line">  let original_response = await fetch(new Request(url, e.request), parameter)</span><br><span class="line">  let original_response_clone = original_response.clone();</span><br><span class="line">  let original_text = original_response_clone.body;</span><br><span class="line">  let response_headers = original_response.headers;</span><br><span class="line">  let new_response_headers = new Headers(response_headers);</span><br><span class="line">  let status = original_response.status;</span><br><span class="line">  if (new_response_headers.get(&quot;Www-Authenticate&quot;)) &#123;</span><br><span class="line">    let auth = new_response_headers.get(&quot;Www-Authenticate&quot;);</span><br><span class="line">    let re = new RegExp(auth_url, &#x27;g&#x27;);</span><br><span class="line">    new_response_headers.set(&quot;Www-Authenticate&quot;, response_headers.get(&quot;Www-Authenticate&quot;).replace(re, workers_url));</span><br><span class="line">  &#125;</span><br><span class="line">  if (new_response_headers.get(&quot;Location&quot;)) &#123;</span><br><span class="line">    return httpHandler(e.request, new_response_headers.get(&quot;Location&quot;))</span><br><span class="line">  &#125;</span><br><span class="line">  let response = new Response(original_text, &#123;</span><br><span class="line">            status,</span><br><span class="line">            headers: new_response_headers</span><br><span class="line">        &#125;)</span><br><span class="line">  return response;</span><br><span class="line">&#125;</span><br><span class="line">function httpHandler(req, pathname) &#123;</span><br><span class="line">    const reqHdrRaw = req.headers</span><br><span class="line">    // preflight</span><br><span class="line">    if (req.method === &#x27;OPTIONS&#x27; &amp;&amp;</span><br><span class="line">        reqHdrRaw.has(&#x27;access-control-request-headers&#x27;)</span><br><span class="line">    ) &#123;</span><br><span class="line">        return new Response(null, PREFLIGHT_INIT)</span><br><span class="line">    &#125;</span><br><span class="line">    let rawLen = &#x27;&#x27;</span><br><span class="line">    const reqHdrNew = new Headers(reqHdrRaw)</span><br><span class="line">    const refer = reqHdrNew.get(&#x27;referer&#x27;)</span><br><span class="line">    let urlStr = pathname</span><br><span class="line">    const urlObj = newUrl(urlStr)</span><br><span class="line">    /** @type &#123;RequestInit&#125; */</span><br><span class="line">    const reqInit = &#123;</span><br><span class="line">        method: req.method,</span><br><span class="line">        headers: reqHdrNew,</span><br><span class="line">        redirect: &#x27;follow&#x27;,</span><br><span class="line">        body: req.body</span><br><span class="line">    &#125;</span><br><span class="line">    return proxy(urlObj, reqInit, rawLen, 0)</span><br><span class="line">&#125;</span><br><span class="line">async function proxy(urlObj, reqInit, rawLen) &#123;</span><br><span class="line">    const res = await fetch(urlObj.href, reqInit)</span><br><span class="line">    const resHdrOld = res.headers</span><br><span class="line">    const resHdrNew = new Headers(resHdrOld)</span><br><span class="line">    // verify</span><br><span class="line">    if (rawLen) &#123;</span><br><span class="line">        const newLen = resHdrOld.get(&#x27;content-length&#x27;) || &#x27;&#x27;</span><br><span class="line">        const badLen = (rawLen !== newLen)</span><br><span class="line">        if (badLen) &#123;</span><br><span class="line">            return makeRes(res.body, 400, &#123;</span><br><span class="line">                &#x27;--error&#x27;: `bad len: $&#123;newLen&#125;, except: $&#123;rawLen&#125;`,</span><br><span class="line">                &#x27;access-control-expose-headers&#x27;: &#x27;--error&#x27;,</span><br><span class="line">            &#125;)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    const status = res.status</span><br><span class="line">    resHdrNew.set(&#x27;access-control-expose-headers&#x27;, &#x27;*&#x27;)</span><br><span class="line">    resHdrNew.set(&#x27;access-control-allow-origin&#x27;, &#x27;*&#x27;)</span><br><span class="line">    resHdrNew.set(&#x27;Cache-Control&#x27;, &#x27;max-age=1500&#x27;)</span><br><span class="line">    resHdrNew.delete(&#x27;content-security-policy&#x27;)</span><br><span class="line">    resHdrNew.delete(&#x27;content-security-policy-report-only&#x27;)</span><br><span class="line">    resHdrNew.delete(&#x27;clear-site-data&#x27;)</span><br><span class="line">    return new Response(res.body, &#123;</span><br><span class="line">        status,</span><br><span class="line">        headers: resHdrNew</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="添加自定义域名"><a class="header-anchor" href="#添加自定义域名">¶</a>添加自定义域名</h3>
+<p>之后进入到worker项目页面点击设置-触发器，添加一个自定义域，这个自定义域可以是你解析到cloudflare的域名的一个二级域名，<a href="http://xn--docker-9v9ii49d.example.com">例如docker.example.com</a> 。然后将该域名添加一条路由。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20240708104819.png" alt="20240708104819"></p>
+<h3 id="测试加速效果"><a class="header-anchor" href="#测试加速效果">¶</a>测试加速效果</h3>
+<p>如果你需要拉取的镜像homeassistant/aarch64-homeassistant:latest<br>
+现在需要在docker镜像前面加上你的自定义域，命令如下</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">docker pull docker.example.com/homeassistant/aarch64-homeassistant:latest</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>cloudflare</category>
+      </categories>
+      <tags>
+        <tag>docker</tag>
+        <tag>Cloudflare</tag>
+        <tag>worker</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>出国不求人，Cloudflare pages+BPB项目搭建免费个人节点</title>
+    <url>/posts/39778.html</url>
+    <content><![CDATA[<h2 id="前提"><a class="header-anchor" href="#前提">¶</a>前提</h2>
+<p>注册Github/Cloudflare账户并处于正常状态。</p>
+<h2 id="Github操作"><a class="header-anchor" href="#Github操作">¶</a>Github操作</h2>
+<p>Fork BPB项目到你的Github仓库。<br>
+BPB项目地址：<a href="https://github.com/bia-pain-bache/BPB-Worker-Panel">bia-pain-bache/BPB-Worker-Panel: A GUI Panel providing Worker subscriptions and Fragment settings and Warp configs, providing configs for cross-platform clients using (singbox-core and xray-core) (github.com)</a><br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/202409120841448.png" alt="image.png"><br>
+Fork之后就会得到以你的用户为为开头的BPB项目地址。我Fork后的项目地址为<a href="https://github.com/miaoyanginfo/BPB">miaoyanginfo/BPB: A GUI Panel providing Worker subscriptions and Fragment settings and Warp configs, providing configs for cross-platform clients using (singbox-core and xray-core) (github.com)</a></p>
+<p>Github这边的操作就基本上完成了。接着我们需要去到Cloudflare操作。</p>
+<span id="more"></span>
+<h2 id="Cloudflare操作"><a class="header-anchor" href="#Cloudflare操作">¶</a>Cloudflare操作</h2>
+<h3 id="创建KV空间"><a class="header-anchor" href="#创建KV空间">¶</a>创建KV空间</h3>
+<p>登录Cloudflare后按照下图指示创建KV空间并命名。我这边命名为MYBPB。</p>
+<p><img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/202409120847516.png" alt="image.png"></p>
+<h3 id="创建Pages并绑定KV"><a class="header-anchor" href="#创建Pages并绑定KV">¶</a>创建Pages并绑定KV</h3>
+<p>按照下图指示创建Cloudflare Pages，<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/202409120850439.png" alt="image.png"></p>
+<p>链接到你的Github账户。<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/202409120851682.png" alt="image.png"><br>
+选择你之前Fork的BPB项目的源，然后点击右下角的“开始设置”，其他选项无需更改，保存部署即可。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/202409120852710.png" alt="image.png"></p>
+<p>部署完成之后回到Pages页面找到刚才创建的项目，按下图指示找到KV命名空间绑定，将之前创建的KV空间与Pages绑定。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/202409120855179.png" alt=""></p>
+<h3 id="设置环境变量"><a class="header-anchor" href="#设置环境变量">¶</a>设置环境变量</h3>
+<p>按下图指示编辑环境变量。添加PROXYIP 以及UUID字段。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/202409120858714.png" alt="image.png"></p>
+<p>UUID可使用在线生成器随机生成，例如这个网站<a href="https://1024tools.com/uuid">UUID在线生成 - 1024Tools</a>。PROXY可以前往这个站点<a href="https://www.nslookup.io/domains/cdn.xn--b6gac.eu.org/dns-records/">DNS records for cdn.↗↘↗.eu.org (nslookup.io)</a>选择一个与你本地网络延迟较小的IP地址。<br>
+全部填入之后进入部署选项卡，重新部署项目即可。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/202409120905727.png" alt="image.png"></p>
+<h2 id="登录面板进行设置"><a class="header-anchor" href="#登录面板进行设置">¶</a>登录面板进行设置</h2>
+<p>重新部署完成之后我们可以使用cloudfalre pages随机生成的网址加/panel访问项目设置面板。<br>
+设置访问密码之后即可登录。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/202409120909404.png" alt="image.png"><br>
+其他选项无需大动。点击拷贝订阅链接之后粘贴到v2rayN即可。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/202409120911963.png" alt="image.png"></p>
+<h2 id="v2rayN订阅"><a class="header-anchor" href="#v2rayN订阅">¶</a>v2rayN订阅</h2>
+<p>将复制的订阅地址粘贴到v2rayN，然后更新订阅之后，会出现许多节点。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/202409120912768.png" alt="image.png"></p>
+<p>v2rayN下载<a href="https://github.com/2dust/v2rayN">2dust/v2rayN: A GUI client for Windows, support Xray core and v2fly core and others (github.com)</a></p>
+<p>对节点进行速度测试，选择一个连接正常的节点应用。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/202409120914367.png" alt="image.png"><br>
+不出意外的话就可以打开谷歌油管了。</p>
+<p><img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/202409120914335.png" alt="image.png"></p>
+<h2 id="引用"><a class="header-anchor" href="#引用">¶</a>引用</h2>
+<p><a href="https://uzbox.com/tech/bpb-vpn.html">免费VPN 永久免费节点订阅 BPB Panel+CloudFlare 实现WARP IP优选 - 优质盒子 (uzbox.com)</a></p>
+]]></content>
+      <categories>
+        <category>cloudflare</category>
+      </categories>
+      <tags>
+        <tag>GitHub</tag>
+        <tag>Cloudflare</tag>
+        <tag>bpb</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>曲线救国，使用Alist挂载CloudflareR2存储桶</title>
+    <url>/posts/36618.html</url>
+    <content><![CDATA[<h2 id="前言"><a class="header-anchor" href="#前言">¶</a>前言</h2>
+<p>之前一直在用RaiDrive这款软件在windows端挂载WEBDAV网盘，RaiDrive除了支持WEBDAV协议之外，还支持其他主流的网盘服务，比如OneDrive，Google Drive等等，这些都是支持读写操作的。然后RaiDrive也支持比如亚马逊AWS S3和CloudflareR2等等对象存储的接入，但是RaiDrive的免费计划仅支持这些存储的读取，不支持写入，想要写入的话还需要至少每月4.84美元以上的付费计划。<br>
+<img src="https://img.ycyc.win/img/202410091757081.png" alt="RaiDrive付费权益计划"></p>
+<p>除了使用付费RaiDrive套餐之后，还可以选择我们之前提到的Alist来挂载CloudflareR2（当然也包括AWS S3，R2是兼容S3协议的）。</p>
+<span id="more"></span>
+<h2 id="操作"><a class="header-anchor" href="#操作">¶</a>操作</h2>
+<p>添加之前我们需要先创建一个R2令牌。<br>
+<img src="https://img.ycyc.win/img/202410091108554.png" alt="获取R2令牌"><br>
+创建令牌的时候需要按需选择密钥权限。在使用过程中发现权限不足的话，也可以再次进入该页面进行编辑，赋予更高的权限。<br>
+<img src="https://img.ycyc.win/img/202410091117924.png" alt="R2令牌权限类型"></p>
+<p>获取到访问密钥ID，机密访问密钥以及终结点地址三个信息。<br>
+<img src="https://img.ycyc.win/img/202410091110196.png" alt="R2密钥获取"></p>
+<p>然后在Alist后台添加存储，类型选择“对象存储”，根据下图所示将获取到的R2相关密钥填入相应参数即可完成添加。</p>
+<p><img src="https://img.ycyc.win/img/202410091106160.png" alt="Alist添加R2对象存储"><br>
+添加完成之后就可以在Alist首页看到我们添加的R2存储文件夹了，并且支持读写操作。这样再通过WebDav协议利用RaiDrive挂载到windows本地就可以读写操作了。<br>
+如果你需要添加更多类似的对象存储，可访问文章结尾的Alist官网文档。</p>
+<h2 id="引用"><a class="header-anchor" href="#引用">¶</a>引用</h2>
+<p><a href="https://alist.nn.ci/zh/guide/drivers/s3.html">对象存储 | AList文档</a></p>
+]]></content>
+      <categories>
+        <category>cloudflare</category>
+      </categories>
+      <tags>
+        <tag>alist</tag>
+        <tag>webdav</tag>
+        <tag>Cloudflare</tag>
+        <tag>R2</tag>
+        <tag>S3</tag>
+        <tag>RaiDrive</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>群晖安装cloudflare的ddns服务</title>
+    <url>/posts/44166.html</url>
+    <content><![CDATA[<p>项目Github 主页 <a href="https://github.com/joshuaavalon/SynologyCloudflareDDNS">https://github.com/joshuaavalon/SynologyCloudflareDDNS</a><br>
+前提是你的域名已经停靠到了cloudflare并可以正常在cloudflare做解析。</p>
+<h2 id="开启并登录SSH服务"><a class="header-anchor" href="#开启并登录SSH服务">¶</a>开启并登录SSH服务</h2>
+<p>进入路径：群晖后台-控制面板-终端机和SNMP。启动SSH功能。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20240219101051.png" alt="20240219101051"><br>
+用putty等ssh终端登录群晖，然后输入sudo -i切换到管理员账户。</p>
+<span id="more"></span>
+<h2 id="下载运行脚本"><a class="header-anchor" href="#下载运行脚本">¶</a>下载运行脚本</h2>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">wget https://raw.githubusercontent.com/joshuaavalon/SynologyCloudflareDDNS/master/cloudflareddns.sh -O /sbin/cloudflareddns.sh</span><br><span class="line">chmod +x /sbin/cloudflareddns.sh</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">cat &gt;&gt; /etc.defaults/ddns_provider.conf &lt;&lt; &#x27;EOF&#x27;</span><br><span class="line">[Cloudflare]</span><br><span class="line">        modulepath=/sbin/cloudflareddns.sh</span><br><span class="line">        queryurl=https://www.cloudflare.com</span><br><span class="line">        website=https://www.cloudflare.com</span><br><span class="line">E*.</span><br></pre></td></tr></table></figure>
+<h2 id="生成cloudflare的api-token"><a class="header-anchor" href="#生成cloudflare的api-token">¶</a>生成cloudflare的api token</h2>
+<p><img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20240219100721.png" alt="20240219100721"><br>
+登录cloudflare域名主页，在上图所示区域复制zoneID，并生成API token。</p>
+<h2 id="群晖添加服务"><a class="header-anchor" href="#群晖添加服务">¶</a>群晖添加服务</h2>
+<p>进入路径：群晖后台-控制面板-外部访问-DDNS</p>
+<p><img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20240219100241.png" alt="20240219100241"><br>
+如上图所示，主机名称处填DDNS域名，用户名填cloudflare的zoneID，密码填api token。</p>
+]]></content>
+      <categories>
+        <category>cloudflare</category>
+      </categories>
+      <tags>
+        <tag>群晖</tag>
+        <tag>Cloudflare</tag>
+        <tag>DDNS</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>0成本serv00搭建wordpress</title>
+    <url>/posts/52893.html</url>
+    <content><![CDATA[<h2 id="楔子"><a class="header-anchor" href="#楔子">¶</a>楔子</h2>
+<p>serv00是一家提供免费虚拟主机空间的厂商，除了免费空间外，还提供免费的数据库和企业邮箱等服务。并且提供的虚拟空间基于freeBSD操作系统，3GB存储，512MB内存，支持SSH登录，支持PHP多版本切换，支持多种数据库类型。关键的关键是这一切都是免费的，只需要你每隔三个月至少登录一次主机SSH或是管理面板，否则账户将被注销。<br>
+<img src="https://img.ycyc.win/img/202410100830523.png" alt="image.png"></p>
+<h2 id="目标"><a class="header-anchor" href="#目标">¶</a>目标</h2>
+<p>0成本使用serv00提供的虚拟空间服务搭建基于wordpress的站点，并且使用cloudflare加速站点国内访问速度，支持https。<br>
+<img src="https://img.ycyc.win/img/202410091747007.png" alt="image.png"></p>
+<span id="more"></span>
+<h2 id="前提准备"><a class="header-anchor" href="#前提准备">¶</a>前提准备</h2>
+<p>1.一个挂靠在Cloudflare的域名，下文以miaoyang.win演示，搭建站点的二级域名为wp.miaoyang.win。<br>
+2.serv00账号（注册地址：<a href="https://www.serv00.com/offer/create_new_account">Serv00.com » Create an account</a>）提交注册信息时如出现报错，需更换代理IP或注册邮箱地址尝试。<br>
+3.科学上网环境（以下全部操作默认在科学环境下操作）。</p>
+<h2 id="开干"><a class="header-anchor" href="#开干">¶</a>开干</h2>
+<h3 id="创建站点"><a class="header-anchor" href="#创建站点">¶</a>创建站点</h3>
+<p>serv00注册成功后邮箱会收到一封邮件，里面包含serv00的用户名、密码、panel登录地址等信息。根据邮件提供的信息登录控制面板，按照下图所示新建一个站点，输入站点域名。然后点击Add。<br>
+<img src="https://img.ycyc.win/img/202410091646803.png" alt="image.png"><br>
+创建成功之后会在Website list选项卡看到新建的站点信息，在File manager中可以看到站点文件夹。<br>
+<img src="https://img.ycyc.win/img/202410091650439.png" alt="image.png"></p>
+<h3 id="上传wordpress文件"><a class="header-anchor" href="#上传wordpress文件">¶</a>上传wordpress文件</h3>
+<p>前往WordPress网站下载压缩包到本地（<a href="https://cn.wordpress.org/download/">下载 – WordPress.org China 简体中文</a>）。<br>
+<img src="https://img.ycyc.win/img/202410091653866.png" alt="image.png"></p>
+<p>默认的站点文件夹为/domains/wp.miaoyang.win/public_html，我们需要先将文件夹内的index.html文件手动删除，然后wordpress的全部文件上传到此目录。<br>
+上传可以通过网页端的File manager上传，也可以使用winSCP等支持FTP和SFTP的客户端上传。我这边实际测试了速度都不太理想，推荐使用SSH 命令直接从wordpress下载。<br>
+使用SSH登录之后</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">cd /domains/wp.miaoyang.win/public_html</span><br><span class="line">wget https://cn.wordpress.org/latest-zh_CN.zip</span><br></pre></td></tr></table></figure>
+<p>然后通过File manager将压缩包内的wordpress文件夹解压到public_html文件夹。<br>
+<img src="https://img.ycyc.win/img/202410091700532.png" alt="image.png"><br>
+最终的文件架构如下图所示。<br>
+<img src="https://img.ycyc.win/img/202410091701514.png" alt="image.png"></p>
+<h3 id="域名解析"><a class="header-anchor" href="#域名解析">¶</a>域名解析</h3>
+<p>进入DNS zones，然后找到之前添加的域名点击Edit。进来之后找到域名的A记录目标IP记录下来。<br>
+<img src="https://img.ycyc.win/img/202410091704349.png" alt="image.png"></p>
+<p>前往Cloudflare的DNS界面，创建一个A记录将wp.miaoyang.win 解析到上面的IP地址，并开启代理云朵。<br>
+<img src="https://img.ycyc.win/img/202410091711779.png" alt="image.png"><br>
+这时候要是访问域名的话会提示证书错误，我们还需要去设置一下域名的证书。</p>
+<h3 id="证书设置"><a class="header-anchor" href="#证书设置">¶</a>证书设置</h3>
+<p>如下图所示进入Cloudflare的自定义主机名，添加wp.miaoyang.win。<br>
+<img src="https://img.ycyc.win/img/202410091721749.png" alt="image.png"></p>
+<p>然后根据提示新建txt记录验证域名所有权，直到证书状态和主机状态都为绿色有效。<br>
+<img src="https://img.ycyc.win/img/202410091721240.png" alt="image.png"></p>
+<p>现在就可以通过 <a href="https://wp.miaoyang.win">https://wp.miaoyang.win</a> 来访问站点了。</p>
+<h3 id="创建MySQL数据库"><a class="header-anchor" href="#创建MySQL数据库">¶</a>创建MySQL数据库</h3>
+<p>安装WordPress需要MySQL数据库。如下图所示新建一个数据库，记录下数据库名、数据库用户名、密码，以及数据库地址。<br>
+<img src="https://img.ycyc.win/img/202410091726668.png" alt="image.png"></p>
+<h3 id="安装WordPress"><a class="header-anchor" href="#安装WordPress">¶</a>安装WordPress</h3>
+<p>访问<a href="https://my.miaoyang.win">https://my.miaoyang.win</a> 根据提示进行安装，期间需要输入数据库相关信息。需要注意的是在数据库主机那里，将默认的localhost删除，填入上一步记录下来的数据库地址。<br>
+<img src="https://img.ycyc.win/img/202410091729872.png" alt="image.png"><br>
+设置完站点基础信息以及用户名和密码之后就完成了WordPress的安装。</p>
+<h2 id="站点访问"><a class="header-anchor" href="#站点访问">¶</a>站点访问</h2>
+<p>现在我们就可以使用 <a href="https://wp.miaoyang.win">https://wp.miaoyang.win</a> 来访问wordpress了！<br>
+<img src="https://img.ycyc.win/img/202410091743938.png" alt="image.png"></p>
+<p>因为我们在Cloudflare设置了cdn代理加速，所以现在停掉科学代理，也可以访问到站点了，而且速度也不错。<br>
+<img src="https://img.ycyc.win/img/202410091739340.png" alt="image.png"></p>
+<p>那如果直接使用serv00默认的ip访问站点的话，可以看到国内是全部被墙的。<br>
+<img src="https://img.ycyc.win/img/202410091739861.png" alt="image.png"></p>
+<blockquote>
+<p>类似的我们可以使用serv00的免费空间来搭建更多的基于PHP+MySQL的站点。</p>
+<p>另外需要注意的是serv00需要至少每隔三个月登录一次SSH或是管理面板，否则账户会被删除！</p>
+</blockquote>
+<h2 id="引用"><a class="header-anchor" href="#引用">¶</a>引用</h2>
+<p><a href="https://post.smzdm.com/p/aqq6o08p/">玩转serv00虚拟主机（一）：零成本搭建wordpress个人博客&amp;入门_服务器_什么值得买</a></p>
+]]></content>
+      <categories>
+        <category>应用</category>
+      </categories>
+      <tags>
+        <tag>Cloudflare</tag>
+        <tag>wordpress</tag>
+        <tag>serv00</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>iOS端收发163域名邮箱邮件IMAP</title>
+    <url>/posts/37524.html</url>
+    <content><![CDATA[<h2 id="引言"><a class="header-anchor" href="#引言">¶</a>引言</h2>
+<p>随着移动互联网的普及，现在电子邮箱的用处已经没有原先那么大了，但是有些网站注册和敏感的操作还是需要邮箱验证码。常用的类似于163、QQ、微软的主流邮箱服务的配置已经在手机邮件客户端内置了，只要输入邮箱地址和密码就可以很方便的接入手机邮件客户端。但是诸如一些非主流的企业邮箱想要接入手机端邮件APP就有些繁琐了，除了需要邮箱地址密码等基础信息外，还需要获取邮件服务器的地址和端口、加密方式等额外信息。下面记录一下如何将基于163服务的企业邮箱接入到iOS的邮件APP来进行邮件的收发。<br>
+<img src="https://cdn.ycyc.win/gh/miaoyanginfo/hexo-img/img/202409141606361.png" alt="image.png"></p>
+<h2 id="相关协议"><a class="header-anchor" href="#相关协议">¶</a>相关协议</h2>
+<p>之前想要在三方客户端收发邮件是需要开通邮箱的POP3和SMTP协议的，然后在三方客户端输入pop3和smtp地址以及邮箱和密码就可以接入三方客户端了。而现在越来越多的邮箱已经取消的对POP3协议的支持，改用IMAP协议。其实原理差不多，只是IMAP输入的不是邮箱的登录密码，而是随机生成的授权码。</p>
+<span id="more"></span>
+<p>下面是往上关于IMAP、POP、SMTP三者的介绍：<br>
+SMTP相对于其他两者协议，更多的侧重点在于发送与中继，与POP、IMAP太多不同；正常情况下只需去考虑POP和IMAP的情况进行解析，因为POP和IMAP对客户是进行实实在在的接收；唯一比较特殊的是SMTP是注重于”推送“而不是”拉取“这是区别于其他两种协议的方式之一，此外，SMTP是明确的在TCP/IP协议簇里，其他两者只是通过TCP/IP协议进行传输。<br>
+POP与IMAP主要区别就在于POP是单一的离线模式对邮件进行传输，IMAP是在线和离线两种模式对邮件进行传输，上述对离线和在线有解释，就不做过多解释，简单来说，离线就得下载之后对邮件进行查看、删除等一系列操作，且客户端与服务端消息不互通；在线就是无需下载就能进行查看、删除等操作，且他们之间的消息处于互通。</p>
+<h2 id="授权码获取"><a class="header-anchor" href="#授权码获取">¶</a>授权码获取</h2>
+<p>我的邮箱地址是以ycyc.win结尾的企业邮箱，使用网易企业邮免费版。接入步骤很简单，在域名DNS那里修改相关的TXT及MX记录到网易指定的地址，等待解析生效就可以了。<a href="https://qy.163.com/login/?from=ym">网易企业邮箱 - 登录入口 (163.com)</a><br>
+其实我现在使用的这个并不是真正意义上的企业邮箱，只是将域名接入到网易使用其邮箱服务。而真正意义上的企业邮箱是需要自己搭建单独的邮件服务器的。当然如果你有群晖NAS，可以使用群晖的套件来搭建自己的邮件服务。<br>
+其实不管什么邮箱，要接入第三方邮件收发客户端，所需要的信息都类似，首先需要邮箱地址和密码，或是上面说到的授权码，其次就是邮箱服务器的POP3地址、IMAP地址、SMTP地址以及端口。<br>
+获取163企业邮箱的授权码根据下图所示操作：</p>
+<p><img src="https://cdn.ycyc.win/gh/miaoyanginfo/hexo-img/img/202409141550390.png" alt="qiyeyou.png"></p>
+<p>这里的协议类型可以选POP或是IMAP协议，推荐IMAP协议。<br>
+<img src="https://cdn.ycyc.win/gh/miaoyanginfo/hexo-img/img/202409141551881.png" alt="qiyeyou2.png"></p>
+<p>将授权码复制到手机上备用。</p>
+<h2 id="iOS端添加邮箱服务"><a class="header-anchor" href="#iOS端添加邮箱服务">¶</a>iOS端添加邮箱服务</h2>
+<p>iOS进入设置-邮件-账户，添加账户，选择其他。</p>
+<p><img src="https://cdn.ycyc.win/gh/miaoyanginfo/hexo-img/img/202409141556932.png" alt="image.png|200"></p>
+<p>选择添加邮件账户<br>
+<img src="https://cdn.ycyc.win/gh/miaoyanginfo/hexo-img/img/202409141557901.png" alt="image.png|200"></p>
+<p>然后根据类型选择POP协议还是IMAP协议，输入邮箱地址，IMAP地址，SMTP地址及端口，用户名处输入邮箱地址，密码处输入授权码，等待授权完成。<br>
+<img src="https://cdn.ycyc.win/gh/miaoyanginfo/hexo-img/img/202409141559720.png" alt="image.png|200"></p>
+<p>设置完成之后就可以通过邮件APP来收发邮件了。<br>
+以下为163企业邮箱IMAP地址及端口：</p>
+<table>
+<thead>
+<tr>
+<th><strong>类型</strong></th>
+<th><strong>推荐</strong></th>
+<th><strong>备用（尽量别用）</strong></th>
+<th><strong>SSL端口</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>收信服务器</td>
+<td><a href="http://hwhzimap.qiye.163.com">hwhzimap.qiye.163.com</a></td>
+<td><a href="http://imap.qiye.163.com">imap.qiye.163.com</a></td>
+<td>993</td>
+</tr>
+<tr>
+<td>发信服务器</td>
+<td><a href="http://hwhzsmtp.qiye.163.com">hwhzsmtp.qiye.163.com</a></td>
+<td><a href="http://smtp.qiye.163.com">smtp.qiye.163.com</a></td>
+<td>465</td>
+</tr>
+<tr>
+<td><strong><em>说明</em></strong></td>
+<td>推荐使用这个服务器配置</td>
+<td>推荐服务器不可用，可用备用替代</td>
+<td>​</td>
+</tr>
+</tbody>
+</table>
+<h2 id="引用"><a class="header-anchor" href="#引用">¶</a>引用</h2>
+<p><a href="https://www.laifa.email/youxiang/204-wangyi-qiyeyouxiang-netease-enterprise-mailbox.html#%E4%B8%80%E3%80%81%E6%94%B6%E5%8F%91%E5%8F%82%E6%95%B0">网易企业邮箱：授权码登录 | 来发信 (laifa.email)</a></p>
+]]></content>
+      <categories>
+        <category>应用</category>
+      </categories>
+      <tags>
+        <tag>邮箱</tag>
+        <tag>企业邮箱</tag>
+        <tag>域名</tag>
+        <tag>网易</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>mac os 配置图床上传工具picgo</title>
+    <url>/posts/58482.html</url>
+    <content><![CDATA[<p>如果电脑没有安装homebrew，需要先安装homebrew。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">/bin/bash -c <span class="string">&quot;<span class="subst">$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)</span>&quot;</span></span><br></pre></td></tr></table></figure>
+<p>之前我在安装git的时候已经安装过了所以这里跳过。执行下面命令安装picgo。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">brew install picgo --cask</span><br></pre></td></tr></table></figure>
+<p><img src="https://img.ycyc.win/img/202409221641180.png" alt="截屏2024-09-21 21.44.41.png|300"></p>
+<p>安装完成之后在启动台就可以看到picgo的图标了，不出意外的话是无法直接打开的。这里我们需要设置一下mac的安全性策略，将允许从以下位置下载的app更改为“任何来源”。<br>
+<img src="https://img.ycyc.win/img/20240922111802.png" alt="image.png|475"></p>
+<span id="more"></span>
+<p>如果你没有这个选项，需要在终端中执行下面的命令来打开。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">sudo</span> spctl --master-disable</span><br></pre></td></tr></table></figure>
+<p>打开picgo之后就可以像windows平台那样进行图床设置了。<br>
+<img src="https://img.ycyc.win/img/20240922112121.png" alt="image.png|475"><br>
+Obsidian安装 image auto upload plugin插件之后就可以正常上传图片了。<br>
+<img src="https://img.ycyc.win/img/20240922112245.png" alt="image.png|475"></p>
+]]></content>
+      <categories>
+        <category>应用</category>
+      </categories>
+      <tags>
+        <tag>图床</tag>
+        <tag>GitHub</tag>
+        <tag>PicGO</tag>
+        <tag>macos</tag>
+        <tag>mac</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>serv00搭建Alist记录</title>
+    <url>/posts/36597.html</url>
+    <content><![CDATA[<h2 id="楔子"><a class="header-anchor" href="#楔子">¶</a>楔子</h2>
+<p>昨天撸了一个免费的serv00虚拟空间，并且成功搭建了WordPress站点。在搜索serv00相关信息期间看到有大神写了用serv00搭建Alist的教程。自己的Alist之前是搭建在家里的openwrt上面的，于是决定将其迁移到serv00上面来，以下记录在serv00搭建Alist以及数据迁移的过程，供有需求的朋友参考。</p>
+<h2 id="Alist数据备份导出"><a class="header-anchor" href="#Alist数据备份导出">¶</a>Alist数据备份导出</h2>
+<p>如下图所示登录原Alist管理后台将数据备份并导出到本地。<br>
+<img src="https://img.ycyc.win/img/202410101043611.png" alt="image.png"></p>
+<span id="more"></span>
+<h2 id="serv00开放端口"><a class="header-anchor" href="#serv00开放端口">¶</a>serv00开放端口</h2>
+<p>登录到serv00管理后台，找到Port reservation，然后添加一个开放端口，由于常用一些端口都被占用了，所以我们直接点击Random随机生成一个端口。<br>
+<img src="https://img.ycyc.win/img/202410101045490.png" alt="image.png"></p>
+<p>生成之后在Port list就能看到该端口了，记录下改端口号。<br>
+<img src="https://img.ycyc.win/img/202410101048542.png" alt="image.png"></p>
+<h2 id="serv00创建站点"><a class="header-anchor" href="#serv00创建站点">¶</a>serv00创建站点</h2>
+<p>如下图所示，输入站点域名，这里以pan.ycyc.win为例，类型选择proxy，端口选择刚才开放的端口号。这样，我们就可以直接使用域名而无需加端口号来访问站点了。<br>
+<img src="https://img.ycyc.win/img/202410101147128.png" alt="image.png"></p>
+<h2 id="serv00开放应用运行"><a class="header-anchor" href="#serv00开放应用运行">¶</a>serv00开放应用运行</h2>
+<p>如下图所示进入Additional services，打开运用运行。<br>
+<img src="https://img.ycyc.win/img/202410101101928.png" alt="image.png"></p>
+<h2 id="解析域名并设置证书"><a class="header-anchor" href="#解析域名并设置证书">¶</a>解析域名并设置证书</h2>
+<p>此步骤请参阅我的上一篇文章相关章节，这里不再赘述。<br>
+<a href="https://ycyc.win/posts/52893#%E5%9F%9F%E5%90%8D%E8%A7%A3%E6%9E%90">0成本serv00搭建wordpress | 渊澄</a></p>
+<h2 id="serv00创建MySQL数据库"><a class="header-anchor" href="#serv00创建MySQL数据库">¶</a>serv00创建MySQL数据库</h2>
+<p>此步骤同样请参阅上篇文章相关章节。<br>
+<a href="https://ycyc.win/posts/52893#%E5%88%9B%E5%BB%BAMySQL%E6%95%B0%E6%8D%AE%E5%BA%93">0成本serv00搭建wordpress | 渊澄</a></p>
+<h2 id="安装应用"><a class="header-anchor" href="#安装应用">¶</a>安装应用</h2>
+<p>进入File manager模块，进入到站点文件夹，新建一个名为alist的文件夹，并将alist文件上传到新建的alist文件夹内。</p>
+<p>文件下载地址：<a href="https://pan.ycyc.win/serv00%E6%90%AD%E5%BB%BAalist">渊澄网盘</a><br>
+然后登录SSH执行以下命令进行安装：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">cd /usr/home/ycycwin/domains/pan.ycyc.win/alist</span><br><span class="line">chmod +x alist</span><br><span class="line">alist./alist server</span><br></pre></td></tr></table></figure>
+<p>命令运行完成后出现下图所示的提示说明安装完成。<br>
+<img src="https://img.ycyc.win/img/202410101107730.png" alt="image.png"></p>
+<h2 id="修改配置文件"><a class="header-anchor" href="#修改配置文件">¶</a>修改配置文件</h2>
+<p>进入到站点目录，找到data/config.json 将数据库字段替换为创建的MySQL数据库相关信息，并将端口替换为之前放开的端口号。<br>
+<img src="https://img.ycyc.win/img/202410101128407.png" alt="image.png"></p>
+<h2 id="运行程序"><a class="header-anchor" href="#运行程序">¶</a>运行程序</h2>
+<p>运行下面的命令启动alist程序，首次运行会生成默认密码，需要及时记录下来。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">./alist server</span><br></pre></td></tr></table></figure>
+<p><img src="https://img.ycyc.win/img/202410101150430.png" alt="image.png"></p>
+<h2 id="登录管理"><a class="header-anchor" href="#登录管理">¶</a>登录管理</h2>
+<p>如果一切顺利的话，现在就可以在浏览器中访问 <a href="https://ycyc.win">https://ycyc.win</a> 了。使用默认的用户名admin以及上一步生成的默认密码就可以登录Alist后台进行操作了。<br>
+<img src="https://img.ycyc.win/img/202410101153302.png" alt="image.png"></p>
+<h2 id="导入Alist备份"><a class="header-anchor" href="#导入Alist备份">¶</a>导入Alist备份</h2>
+<p>进入Alist后台之后将第一步导出的备份文件导入系统，等待全部还原完成即可。</p>
+<h2 id="程序后台运行"><a class="header-anchor" href="#程序后台运行">¶</a>程序后台运行</h2>
+<p>现在的Alist只能在当前SSH界面中运行，如果关闭SSH或退出当前命令，Alist就会结束运行。<br>
+现在需要使用screen命令保存当前进程并增加开机自动运行。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">screen -S alist /home/ycycwin/domains/pan.ycyc.win/alist/alist server</span><br></pre></td></tr></table></figure>
+<p>执行后会新建一个<code>screen</code>会话运行<code>alist</code></p>
+<p>可以在当前会话按下 <code>Ctrl + A</code>，然后按<code>D</code>，这会让你从当前 <code>screen</code> 会话中脱离，但 <code>alist</code> 程序仍会在后台运行。</p>
+<p>如果你需要重新连接到这个 <code>screen</code> 会话，可以使用以下命令：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">screen -r alist</span><br></pre></td></tr></table></figure>
+<h2 id="添加计划任务"><a class="header-anchor" href="#添加计划任务">¶</a>添加计划任务</h2>
+<p>在网页管理面板进入<code>Cron jobs</code>菜单，点击<code>Add cron job</code>，新建一个脚本，然后在<code>Command</code>框中输入 screen -S alist /home/ycycwin/domains/pan.ycyc.win/alist/alist server ，然后点击<code>Add</code>，这样，当服务器重启的时候就会执行操作自动启动<code>alist</code>应用了<br>
+<img src="https://img.ycyc.win/img/202410101159201.png" alt="image.png"></p>
+<h2 id="总结"><a class="header-anchor" href="#总结">¶</a>总结</h2>
+<p>搭建的过程虽然步骤比较多，但操作起来还是比较顺利的。有几个重点需要再次说明一下，第一个就是一定要开启站点应用程序执行权限，第二个是screen命令的运行，最后就是cron job的添加，以防服务器重启导致alist服务未启动。<br>
+还有就是文内命令中的相关用户名及域名路径要换成你自己的。<br>
+搭建过程中遇到问题可以在下方评论区与我讨论。</p>
+<h2 id="引用"><a class="header-anchor" href="#引用">¶</a>引用</h2>
+<p><a href="https://www.zzzwb.com/2024/07-06-serv00-alist.html">serv00部署alist详细记录 - Wenbin’s blog</a><br>
+<a href="https://post.smzdm.com/p/a0x9rl3z/">玩转serv00虚拟主机（三）：零成本搭建alist个人网盘_网络存储_什么值得买</a></p>
+]]></content>
+      <categories>
+        <category>应用</category>
+      </categories>
+      <tags>
+        <tag>alist</tag>
+        <tag>Cloudflare</tag>
+        <tag>serv00</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>win11系统恢复右键菜单</title>
+    <url>/posts/56765.html</url>
+    <content><![CDATA[<p>win+r运行cmd命令提示窗，键入以下命令在注册表中添加相应字段即可还原鼠标右键菜单。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">reg add &quot;HKCU\Software\Classes\CLSID\&#123;86ca1aa0-34aa-4e8b-a509-50c905bae2a2&#125;\InprocServer32&quot; /f /ve</span><br></pre></td></tr></table></figure>
+<p>如果想回复win11默认右键菜单，只需要运行下面命令，将添加的字段删除即可。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">reg delete &quot;HKCU\Software\Classes\CLSID\&#123;86ca1aa0-34aa-4e8b-a509-50c905bae2a2&#125;&quot; /f</span><br></pre></td></tr></table></figure>
+<p>重启资源管理器生效</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">taskkill /f /im explorer.exe &amp; start explorer.exe</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>应用</category>
+      </categories>
+      <tags>
+        <tag>win11</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>利用cloudflare+outlook创建自定义域名邮箱收发邮件</title>
+    <url>/posts/18268.html</url>
+    <content><![CDATA[<h2 id="前言"><a class="header-anchor" href="#前言">¶</a>前言</h2>
+<p>前几天写了一篇介绍在iOS端收发企业邮箱的方法。<a href="https://ycyc.win/posts/37524">iOS端收发163域名邮箱邮件IMAP | 渊澄|YCYC.WIN</a>，当时使用的是网易的免费企业邮。因为我之前就有域名加到网易企业邮了，管理员账号是用的原来的域名设置的，所以我想要变更为新的域名账号。界面上找了一圈没找到修改入口，于是我就给客服发了一封站内信，咨询如何更换管理员账号。于是今天上午不出意料的接到了网易打来的推销电话，没有告我如何更换管理员账号，反而是推销了一番他们的收费企业邮箱。还有让人不可思议的是，当时我提交的站内信仅仅留了联系邮箱，并未留下我的联系电话。。。<br>
+于是乎想起了之前在cloudflare看过一眼的电子邮件转发功能。这个功能是新建一个你的域名邮箱地址，然后可以将这个地址收到的邮件转发到你现有的其他邮箱里面去。</p>
+<h2 id="操作"><a class="header-anchor" href="#操作">¶</a>操作</h2>
+<p>进入cloudflare相应的域名主页，左侧导航找到电子邮件路由。<br>
+<img src="https://img.ycyc.win//img/202409231624866.png" alt="image.png|300"><br>
+设置方法很简单，根据界面提示操作就可以了。创建一个自定义地址，然后操作选择“转发电子邮件”，接着输入你现有的outlook电子邮箱地址。</p>
+<span id="more"></span>
+<p><img src="https://img.ycyc.win//img/202409231625621.png" alt="image.png|300"><br>
+添加完成之后cloudflare会自动为域名做相关解析，并且会向你的outlook邮箱发送验证链接。<br>
+<img src="https://img.ycyc.win//img/202409231718249.png" alt="image.png"><br>
+等待验证完成后状态变为活动即可。</p>
+<p><img src="https://img.ycyc.win//img/202409231721653.png" alt="image.png"></p>
+<p>这里需要说一下catch-all功能，开启这个功能后，所有来自你域名的邮件都会被转发到你指定的邮箱。也就是说理论上你可以创建无数个虚拟邮箱地址，邮件都会被转到你设置好的邮箱里面去。</p>
+<h2 id="outlook添加别名实现邮件发送"><a class="header-anchor" href="#outlook添加别名实现邮件发送">¶</a>outlook添加别名实现邮件发送</h2>
+<p>参考【小白向】文章中关于在outlook添加别名的路径好像已经失效了。经过查阅微软相关文档，<a href="https://support.microsoft.com/zh-cn/office/%E5%9C%A8-outlook-com-%E4%B8%AD%E6%B7%BB%E5%8A%A0%E6%88%96%E5%88%A0%E9%99%A4%E7%94%B5%E5%AD%90%E9%82%AE%E4%BB%B6%E5%88%AB%E5%90%8D-459b1989-356d-40fa-a689-8f285b13f1f2?ui=zh-cn&amp;rs=zh-cn&amp;ad=cn">在 Outlook.com 中添加或删除电子邮件别名 - Microsoft 支持</a>，可以在该帮助文档内点击链接前往别名管理页面（ <a href="https://go.microsoft.com/fwlink/p/?linkid=864833">https://go.microsoft.com/fwlink/p/?linkid=864833</a> ）。<br>
+在下图所示页面中选择“将现有电子邮件地址添加为 Microsoft 帐户别名”并输入你的自定义邮箱地址，点击添加别名。</p>
+<p><img src="https://img.ycyc.win//img/202409231725795.png" alt="image.png"></p>
+<p>随后你的邮箱会收到一封验证邮件。点击验证邮件链接完成验证即可。</p>
+<h2 id="验证"><a class="header-anchor" href="#验证">¶</a>验证</h2>
+<p>设置完成之后就可以试着往你创建的自定义邮箱里面发一封邮件了，看看你设置好的转发邮箱里面有没有收到。发送的时候在你的outlook发件人那里填入你设置的自定义邮箱地址就可以了。<br>
+<img src="https://img.ycyc.win//img/202409231732961.png" alt="image.png"></p>
+<h2 id="后记"><a class="header-anchor" href="#后记">¶</a>后记</h2>
+<p>当然这也并非真正意义上的企业邮箱，只是套壳了自定义域名，利用了cloudflare的邮件转发，核心服务还是调用的微软的outlook。</p>
+<h2 id="引用"><a class="header-anchor" href="#引用">¶</a>引用</h2>
+<p><a href="https://blog.fishze.com/archives/287">【小白向】使用Cloudflare搭建无服务器无成本域名邮箱 - 鱼のBlog (fishze.com)</a></p>
+]]></content>
+      <categories>
+        <category>应用</category>
+      </categories>
+      <tags>
+        <tag>Cloudflare</tag>
+        <tag>邮箱</tag>
+        <tag>企业邮箱</tag>
+        <tag>邮件</tag>
+        <tag>outlook</tag>
+        <tag>微软</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>如何在macos上设置github</title>
+    <url>/posts/46564.html</url>
+    <content><![CDATA[<h2 id="安装homebrew和git"><a class="header-anchor" href="#安装homebrew和git">¶</a>安装homebrew和git</h2>
+<p>安装homebrew</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">/bin/bash -c <span class="string">&quot;<span class="subst">$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)</span>&quot;</span></span><br></pre></td></tr></table></figure>
+<p>等待homebrew安装完成之后开始安装git</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">brew install git</span><br></pre></td></tr></table></figure>
+<h2 id="配置github账户信息并生成ssh"><a class="header-anchor" href="#配置github账户信息并生成ssh">¶</a>配置github账户信息并生成ssh</h2>
+<p>安装完成git之后开始配置github账户信息</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config --global user.name <span class="string">&quot;miaoyanginfo&quot;</span></span><br><span class="line">git config --global user.email <span class="string">&quot;paulmiao@me.com&quot;</span></span><br></pre></td></tr></table></figure>
+<span id="more"></span>
+<p>在本地生成ssh</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ssh-keygen -t ed25519 -C <span class="string">&quot;paulmiao@me.com&quot;</span></span><br></pre></td></tr></table></figure>
+<h2 id="将ssh密钥添加到ssh-agent"><a class="header-anchor" href="#将ssh密钥添加到ssh-agent">¶</a>将ssh密钥添加到ssh-agent</h2>
+<p>后台启动ssh代理</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">eval</span> <span class="string">&quot;<span class="subst">$(ssh-agent -s)</span>&quot;</span></span><br></pre></td></tr></table></figure>
+<p>然后修改~/.ssh/config</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">vi ~/.ssh/config</span><br></pre></td></tr></table></figure>
+<p>插入下面的字段</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Host *</span><br><span class="line">  AddKeysToAgent yes</span><br><span class="line">  UseKeychain yes</span><br><span class="line">  IdentityFile ~/.ssh/id_ed25519</span><br></pre></td></tr></table></figure>
+<p>将ssh私钥添加到ssh-agent并将密码存储在密钥链中。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ssh-add --apple-use-keychain ~/.ssh/id_ed25519</span><br></pre></td></tr></table></figure>
+<h2 id="将ssh密钥添加到github账户"><a class="header-anchor" href="#将ssh密钥添加到github账户">¶</a>将ssh密钥添加到github账户</h2>
+<p>将ssh公钥复制到剪贴板。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">pbcopy &lt; ~/.ssh/id_ed25519.pub</span><br></pre></td></tr></table></figure>
+<p>然后粘贴到github账户设置里面的ssh key 中。</p>
+<p><img src="https://img.ycyc.win/img/202409222129621.png" alt="image.png|300"></p>
+<h2 id="引用"><a class="header-anchor" href="#引用">¶</a>引用</h2>
+<p><a href="https://blog.51cto.com/u_14201949/6145688">https://blog.51cto.com/u_14201949/6145688</a><br>
+<a href="https://www.php.cn/faq/541966.html">https://www.php.cn/faq/541966.html</a></p>
+<p>Windows平台的部署可以参阅我的另一篇文章<a href="https://ycyc.win/posts/31120?highlight=git#2-%E6%9C%AC%E5%9C%B0%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE%E7%8E%AF%E5%A2%83">在GitHub上部署HEXO | 渊澄|YCYC.WIN</a></p>
+]]></content>
+      <categories>
+        <category>应用</category>
+      </categories>
+      <tags>
+        <tag>苹果</tag>
+        <tag>GitHub</tag>
+        <tag>macos</tag>
+        <tag>git</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>群晖VPN server套件安装配置</title>
+    <url>/posts/48504.html</url>
+    <content><![CDATA[<h3 id="下载安装套件"><a class="header-anchor" href="#下载安装套件">¶</a>下载安装套件</h3>
+<p>根据你当前DSM系统的版本安装对应版本的套件，如不确定，可以下载最新版本的套件尝试，如安装失败，会提示可安装版本号。<br>
+<a href="https://archive.synology.com/download/Package/VPNCenter">https://archive.synology.com/download/Package/VPNCenter</a></p>
+<span id="more"></span>
+<h3 id="DDNS配置"><a class="header-anchor" href="#DDNS配置">¶</a>DDNS配置</h3>
+<p><img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20240204110234.png" alt="20240204110234"></p>
+<h3 id="安装证书"><a class="header-anchor" href="#安装证书">¶</a>安装证书</h3>
+<h3 id="套件配置"><a class="header-anchor" href="#套件配置">¶</a>套件配置</h3>
+<p><img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20240204105551.png" alt="20240204105551"></p>
+<h4 id="pptp"><a class="header-anchor" href="#pptp">¶</a>pptp</h4>
+<p><img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20240204105629.png" alt="20240204105629"></p>
+<h4 id="openvpn"><a class="header-anchor" href="#openvpn">¶</a>openvpn</h4>
+<p><img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20240204105710.png" alt="20240204105710"></p>
+<h4 id="l2tp-ipsec"><a class="header-anchor" href="#l2tp-ipsec">¶</a>l2tp/ipsec</h4>
+<p><img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20240204105806.png" alt="20240204105806"></p>
+<h3 id="客户端配置"><a class="header-anchor" href="#客户端配置">¶</a>客户端配置</h3>
+<p><img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20240204105953.png" alt="20240204105953"></p>
+]]></content>
+      <categories>
+        <category>应用</category>
+      </categories>
+      <tags>
+        <tag>群晖</tag>
+        <tag>DDNS</tag>
+        <tag>DSM</tag>
+        <tag>VPN</tag>
+        <tag>OPENVPN</tag>
+        <tag>L2TP</tag>
+        <tag>PPTP</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>魔改版picgo体验-piclist</title>
+    <url>/posts/6420.html</url>
+    <content><![CDATA[<h2 id="引言"><a class="header-anchor" href="#引言">¶</a>引言</h2>
+<p>今天想着在图片上加水印，然后去看了picgo的插件。找到两个水印插件，设置完成之后一上传图片picgo程序就会闪退，不知道是不是个例。看了下插件已经3年没更新了，可能和新版的picgo不太兼容。然后在picgo的github讨论区看到有人推荐piclist。<br>
+piclist是在picgo的基础上进行二次开发的图片上传工具。完整保留了picgo的全部功能，而且增加了更多细致化的设置选项，并且原生支持文字或图片水印，无需安装三方插件。<br>
+按下图所示，安装完piclist后设置页面会有一键从picgo迁移配置的选项，可以导入在picgo的基本上所有设置项目，无需重复进行配置。<br>
+<img src="https://img.ycyc.win/img/202409241118118.png" alt="piclist1.png"></p>
+<p>另外设置页面可供自定义的选项也比picgo要多，可以满足更多人的需求。在图片上传设置里面可以设置水印信息。如果要添加图片水印，路径要填入计算机本地的路径，填入互联网地址不生效。</p>
+<span id="more"></span>
+<p><img src="https://img.ycyc.win/img/202409241120525.png" alt="piclist2.png"></p>
+<p>另外obsidian的 image upload plugin插件还支持piclist的删除接口，可以在obsidian里面直接删除piclist里面的图片。<br>
+<img src="https://img.ycyc.win/img/202409241122681.png" alt="piclist3.png"></p>
+<p>当然piclist也支持mac平台安装，并且还有与vscode配套使用的插件- <a href="https://github.com/Kuingsmile/vs-PicList/">VS-PicList</a>。至于稳定性如何，需要交给时间来检验了。<br>
+<img src="https://img.ycyc.win/img/202409241126468.png" alt="image.png"></p>
+<h2 id="后记"><a class="header-anchor" href="#后记">¶</a>后记</h2>
+<p>本文的配图使用的就是piclist上传的，并且添加了水印。</p>
+<h2 id="引用"><a class="header-anchor" href="#引用">¶</a>引用</h2>
+<p><a href="https://github.com/Kuingsmile/PicList/blob/dev/README_cn.md">PicList/README_cn.md at dev · Kuingsmile/PicList (github.com)</a></p>
+]]></content>
+      <categories>
+        <category>应用</category>
+      </categories>
+      <tags>
+        <tag>图床</tag>
+        <tag>PicGO</tag>
+        <tag>piclist</tag>
+        <tag>图片</tag>
+        <tag>上传</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Alist套娃小雅操作指南</title>
+    <url>/posts/6776.html</url>
+    <content><![CDATA[<p>虽然小雅也是基于Alist的docker容器，但它是相对独立的，并且阉割也许多Alist的功能，无法像Alist那样和其他网盘进行文件复制。那有没有一种可能将小雅容器接入Alist呢，让小雅里面的资源也能轻松复制到其他网盘中？<br>
+今天咱们来搞小雅套娃操作，也就是将小雅接入到完整的Alist平台，将小雅中的资源转存到接入Alist的其他网盘中去。</p>
+<h2 id="前提"><a class="header-anchor" href="#前提">¶</a>前提</h2>
+<p>正常运行的小雅容器和Alist容器。</p>
+<h2 id="获取小雅链接令牌"><a class="header-anchor" href="#获取小雅链接令牌">¶</a>获取小雅链接令牌</h2>
+<p>使用ssh工具登录到小雅的宿主机。<br>
+运行以下命令：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker <span class="built_in">exec</span> -i xiaoya sqlite3 data/data.db &lt;&lt; <span class="string">EOF</span></span><br><span class="line"><span class="string">select value from x_setting_items where key = &quot;token&quot;;</span></span><br><span class="line"><span class="string">EOF</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>将命令中的xiaoya替换为你实际小雅容器的名称。</p>
+</blockquote>
+<span id="more"></span>
+<p>执行完成之后会命令框会显示alist-开头的一串令牌，将其复制保存，随后会用到。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/202409121405096.png" alt="image.png"></p>
+<h2 id="在Alist中添加存储"><a class="header-anchor" href="#在Alist中添加存储">¶</a>在Alist中添加存储</h2>
+<p>登录到Alist管理页面，添加一个存储，驱动选择Alist V3，挂载路径自己输入，例如/xiaoya。链接填入小雅的地址加端口。</p>
+<p><img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/202409121407273.png" alt="image.png"><br>
+在令牌处填入复制的小雅令牌，然后保存。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/202409121410570.png" alt="image.png"><br>
+回到存储列表查看刚才添加的小雅存储状态是否为work。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/202409121411214.png" alt="image.png"></p>
+<p>回到Alist主页就可以看到小雅里面的文件了，现在就可以把里面的文件复制到你已经挂载到Alist的其他网盘了。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/202409121412383.png" alt="image.png"></p>
+<h2 id="后记"><a class="header-anchor" href="#后记">¶</a>后记</h2>
+<p>需要注意的是，在Alist中添加了小雅之后可以从小雅复制文件到其他网盘，但是无法将文件复制到小雅里面，也无法删除小雅里面的文件，也就是只具有只读权限。<br>
+如果后期升级或重新部署了小雅容器，需要重新获取令牌。</p>
+]]></content>
+      <categories>
+        <category>影音</category>
+      </categories>
+      <tags>
+        <tag>docker</tag>
+        <tag>alist</tag>
+        <tag>小雅</tag>
+        <tag>套娃</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>N1可用的第三方油管APP-smarttube</title>
+    <url>/posts/248.html</url>
+    <content><![CDATA[<p>N1刷了W大的电视盒子固件有两三年的时间了，期间配了T1遥控器，又扩容到了32G的存储，可以装下更多的APP了。运行KODI和日常的爱优腾都还算比较流畅，但唯独有一点，运行官方Youtube应用的时候会经常出现卡顿和死机的情况，体验不是很好，加之KODI下里面的Yotube插件也不能正常使用了，所以在N1上看油管视频一直没有一个很好的解决方案。<br>
+最近闲逛的时候发现有好多网友和我一样的情况，下面有热心网友推荐第三方的油管APP-smarttube。不仅可以流畅观看油管视频，而且可以免安装谷歌框架登录油管谷歌账号，同步观看记录和订阅频道。<br>
+<img src="https://img.ycyc.win//img/202409211401041.png" alt="image.png"></p>
+<p>这是软件的官网地址，可以下载稳定版和测试版：<br>
+<a href="https://smarttubenext.com/">https://smarttubenext.com/</a><br>
+安装方法也很简单，下载APK拷贝到优盘，插到N1上直接安装就可以了。<br>
+项目Github主页：<a href="https://github.com/yuliskov/smarttube">yuliskov/SmartTube: SmartTube - an advanced player for set-top boxes and tvs running Android OS (github.com)</a></p>
+]]></content>
+      <categories>
+        <category>影音</category>
+      </categories>
+      <tags>
+        <tag>N1</tag>
+        <tag>YOUTUBE</tag>
+        <tag>油管</tag>
+        <tag>APP</tag>
+        <tag>smarttube</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>docker运行阿里云盘webdav服务</title>
+    <url>/posts/9027.html</url>
+    <content><![CDATA[<p><img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20220719161804.png" alt="20220719161804"><br>
+之前一直在使用L大openwrt中自带的阿里云盘webdav插件来，但最近发下插件老是运行报错，所以决定直接在openwrt的docker中跑阿里云盘webdav服务。<br>
+方法也很简单，直接在docker中运行下面命令就可以了</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker run -d --name=aliyundrive-webdav --restart=unless-stopped -p 2345:8080 \</span><br><span class="line">  -v /etc/aliyundrive-webdav/:/etc/aliyundrive-webdav/ \</span><br><span class="line">  -e REFRESH_TOKEN=<span class="string">&#x27;token&#x27;</span> \</span><br><span class="line">  -e WEBDAV_AUTH_USER=username \</span><br><span class="line">  -e WEBDAV_AUTH_PASSWORD=password\</span><br><span class="line">  messense/aliyundrive-webdav</span><br></pre></td></tr></table></figure>
+<p>备注：<br>
+1.2345为docker主机映射的端口，可以任意修改。<br>
+2.username为你的阿里云盘登录用户名。<br>
+3.password为你的阿里云盘登录密码。<br>
+4.如何获取阿里云盘的token请参考另一篇文章(<a href="https://miaoyanginfo.github.io/2022/05/22/15%E8%8E%B7%E5%8F%96%E9%98%BF%E9%87%8C%E4%BA%91%E7%9B%98refreshtoken/">https://miaoyanginfo.github.io/2022/05/22/15获取阿里云盘refreshtoken/</a>)</p>
+]]></content>
+      <categories>
+        <category>影音</category>
+      </categories>
+      <tags>
+        <tag>docker</tag>
+        <tag>webdav</tag>
+        <tag>阿里云盘</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>win11开启WEBDAV协议挂载阿里云盘</title>
+    <url>/posts/57995.html</url>
+    <content><![CDATA[<p>之前提到了使用第三方软件RaiDrive来挂载WEBDAV协议的网盘，其实Windows自身是支持WEBDAV协议的，只需要简单的设置一下即可，可以完全抛弃三方软件。<br>
+##1.开启WEBCLIENT服务。<br>
+右键计算机-管理-服务，找到WEBCLIENT服务并开启运行。<br>
+<a href="https://nas.miaoyang.win:8015/image/cjZC"><img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/webdav01.png" alt="webdav01.png"></a></p>
+<p>##2.编辑注册表，修改键值，以同时支持http和https协议。<br>
+运行输入regedit回车。<br>
+找到如下路径，将BasicAuthLevel值改为2。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">\HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\WebClient\Parameters</span><br></pre></td></tr></table></figure>
+<p><a href="https://nas.miaoyang.win:8015/image/cZ5d"><img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/webdav02.png" alt="webdav02.png"></a><br>
+##3.添加网络位置即可。<br>
+<a href="https://nas.miaoyang.win:8015/image/cxtI"><img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/webdav03.md.png" alt="webdav03.md.png"></a></p>
+]]></content>
+      <categories>
+        <category>影音</category>
+      </categories>
+      <tags>
+        <tag>webdav</tag>
+        <tag>win11</tag>
+        <tag>阿里云盘</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>入手了两台二代小米AI音箱</title>
+    <url>/posts/40056.html</url>
+    <content><![CDATA[<p>家里有两台小爱音箱，一台是在2017年首发时候淘宝加价买的小米小爱音箱第一代，用到现在已经7年了。音质放到现在还是很能打。另一台是今年在闲鱼买的小米小爱音箱Play增强版，翻了一下记录花了85块钱，而现在全新的官网售价也才129块。当初买这个是看中了其可以充当蓝牙Mesh网关，支持红外控制家电，还有机身LED时间显示。</p>
+<p><img src="https://raw.githubusercontent.com/miaoyanginfo/hexo-img/main/img/202409131248235.png" alt="image.png"></p>
+<p>但到手使用了一段时间之后才发现这个音箱很垃圾，相当不推荐购买。首先是唤醒延迟，一般需要喊两三次小爱同学才会唤醒，而且反应迟钝，在接收到唤醒指令之后还要反应1-2s才会做出回应。在一个就是音质和第一代AI音箱相比差了一条街的距离，可以说根本没有音质可言，也就是当个喇叭听个响。还有这音箱偶尔还会死机，具体表现为唤醒无反应，顶部按键无反应，LED时钟卡住不动。</p>
+<span id="more"></span>
+<p>目前这两个音箱我都通过xiaomi miot auto插件接入到了HomeAssistant，使用TTS来播放闹钟以及配合device_tracker跟踪手机执行到家欢迎语。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/202409131123479.png" alt="image.png"></p>
+<p>最近想着把这个智障的Play增强版换掉，起初还在考虑是再入手一个AI音箱呢还是入手个小爱音箱pro来试试，或者干脆一步到位买两个homepod mini组立体声。在逛小黄鱼的时候发现了个AI音箱二代,型号为L15A，这个音箱发布了也有几年了，但是目前官网还在售，179块。外观和一代大差不差，可见的是电源口换成了主流的圆口，功能上主要是增加了蓝牙mesh网关功能，而且可以支持两个同型号音箱组成立体声增加音质。那买来组个立体声玩玩吧，如果体验可以的话就把之前的一代和play增强版都出掉。逛了一圈160块买了两个😆，不带电源适配器。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/202409131133069.png" alt="image.png"><br>
+其实现在的智能音箱已经被各种音频VIP服务绑架了，连最起码的听歌和听故事，都需要办各种三方VIP会员才行，否则只能听几秒试听版。不过之前看到一个开源项目，可以劫持小爱同学语音调用本地存储的曲库，只要本地曲库里面有的歌曲，可以免VIP直接播放。昨天已经发货了，趁着中秋三天假期研究一下。<br>
+现在我这边的主要作用也就是接入HomeAssistant做一些自动化功能，再者就是用蓝牙播放手机里面的音乐，还有就是孩子听一些免费的睡前故事。</p>
+]]></content>
+      <categories>
+        <category>影音</category>
+      </categories>
+      <tags>
+        <tag>小米</tag>
+        <tag>音箱</tag>
+        <tag>小爱同学</tag>
+        <tag>AI音箱</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>分享一些关于小雅Alist的使用心得</title>
+    <url>/posts/2878.html</url>
+    <content><![CDATA[<h3 id="前言"><a class="header-anchor" href="#前言">¶</a>前言</h3>
+<p>好久没有更新了，最近除了工作，其他时间都在研究小雅Alist的使用。什么是小雅Alist？它是一个基于Alist搭建的影音分享的docker容器，部署完成之后支持webdav协议，可以连接infuse、kodi、potplayer、nplayer、vidhub等等众多支持webdav协议的影音软件，资源主要来自于作者分享的各个网络云盘的资源，比如阿里云、115等等。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20240904095057.png" alt="20240904095057"><br>
+之前小雅Alist里面的资源都是来自于阿里云盘的，因为之前阿里云盘声称是永不限速，很长一段时间都可以通过小雅来流畅观看阿里云盘里面的视频资源。但是很快就被打脸了。大概在7月底的阿里云盘推出了三方权益包，每月需要额外花十几块钱办理这个包，里面有1TB的流量，可以将阿里云盘挂载到包括小雅Alist在内的其他第三方应用，享受高速传输服务，。如果你不办理这个权益包，速度会被限制在500kb/s左右，别说4k了，连1080的影片都无法流畅观看。让网友无法接受的是之前办理了阿里云盘VIP甚至是SVIP的网友，也需要单独购买这个三方权益包才可以不被限速，而且这个权益包只有1TB流量，用完之后，还是会被限速。。。<br>
+于是乎小雅开始转战115网盘，因为115有个转存阿里云盘的功能，简单来说就是，如果这个阿里的资源在115网盘上也有，会立即转存到你自己的网盘中。这样就跳过了阿里云盘的限制。当然115这边也有限制，需要开通会员才可以实现这个功能。但是115推出了优惠活动，包年会员115元，吸引了很多网友。而且最新的很多资源小雅都放到了115网盘中，所以想要玩小雅Alist，必须要办个115会员了。</p>
+<span id="more"></span>
+<h3 id="小雅alist的安装"><a class="header-anchor" href="#小雅alist的安装">¶</a>小雅alist的安装</h3>
+<p>想要安装小雅ALSIT首先你需要先安装好docker环境，arm或x86平台都可以。<br>
+安装脚本可以使用小雅原生的脚本，也可以使用DD-derek的一键脚本（包括emby和自动清理脚本等功能）。期间需要获取阿里云盘的相关token，具体方法可以参阅小雅说明文档（<a href="https://xiaoyaliu.notion.site/xiaoya-docker-69404af849504fa5bcf9f2dd5ecaa75f%EF%BC%89">https://xiaoyaliu.notion.site/xiaoya-docker-69404af849504fa5bcf9f2dd5ecaa75f）</a></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">bash -c &quot;$(curl http://docker.xiaoya.pro/update_new.sh)&quot;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">bash -c &quot;$(curl --insecure -fsSL https://ddsrem.com/xiaoya_install.sh)&quot;</span><br></pre></td></tr></table></figure>
+<p>安装完成之后进入主机IP:5678即可进入小雅ALIST页面。</p>
+<h3 id="一些115的配置"><a class="header-anchor" href="#一些115的配置">¶</a>一些115的配置</h3>
+<p>小雅alist的默认配置文件夹位于/etc/xiaoya路径下，里面有多个txt文档用来配置相关功能。<br>
+如果你办理了115的会员，需要至少配置三个文件。</p>
+<h4 id="ali2115-txt"><a class="header-anchor" href="#ali2115-txt">¶</a>ali2115.txt</h4>
+<p>这个文件是用来加速阿里云盘资源的，如果你没有办理阿里云盘的会员，但是有115的会员，可以配置这个文件来转存阿里的资源到115网盘，实现流畅观看视频。<br>
+格式如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">purge_ali_temp=true</span><br><span class="line">cookie=&quot;UID=800012347_F1_1712345;CID=0f99357f000xxxxx67af8e167fcd68;SEID=0f439555555559d9b227595c0cd37b63c065e5d934d70045e8bfb3089b09b8d843662ad6ac00a90c6ecc3faf0e5abff45d73797470&quot;</span><br><span class="line">purge_pan115_temp=true</span><br><span class="line">dir_id=0</span><br></pre></td></tr></table></figure>
+<p>里面的cookie换成你的115cookie即可。</p>
+<h4 id="115-cookie-txt"><a class="header-anchor" href="#115-cookie-txt">¶</a>115_cookie.txt</h4>
+<p>配置115的cookie来观看存储在115云盘上面的资源<br>
+格式如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">UID=800012347_F1_1712345;CID=0f99357f000xxxxx67af8e167fcd68;SEID=0f439555555559d9b227595c0cd37b63c065e5d934d70045e8bfb3089b09b8d843662ad6ac00a90c6ecc3faf0e5abff45d73797470</span><br></pre></td></tr></table></figure>
+<p>里面的cookie换成你的115cookie即可。</p>
+<h4 id="115share-list-txt"><a class="header-anchor" href="#115share-list-txt">¶</a>115share_list.txt</h4>
+<p>这个文件用来挂载115的分享，可以用小雅现成的，也可以分享你自己115网盘里面的文件。配置生效之后会在小雅根目录生成一个名为“我的115分享”的文件夹。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20240904095438.png" alt="20240904095438"><br>
+格式如下：<br>
+挂载名  分享ID 分享目录id 提取码 （用空格分开，一行一个）</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">115音乐 swz1zuk36by 549787817770 kac4</span><br><span class="line">纪录片 sw62frg3wp6 2288331541153662564 n9f5</span><br><span class="line">4KRemux sw6pw793wfp 2628478209787264315 w816</span><br><span class="line">电影1080P sw68fuu3nnw 1926968105722823031 pb57</span><br><span class="line">电视剧 sw68e813nnw 2659063178117250374 n9e0</span><br><span class="line">合集1 swzyiww3wn9 2524811557500852274 w1e0</span><br><span class="line">合集2 swzyiwq3wn9 2637890258378922777 x716</span><br><span class="line">合集3 swzyiwb3wn9 2637896360227215749 qfe8</span><br><span class="line">动画电影 swz6gml3fwo 2783753598167678176 8888</span><br><span class="line">欧美电影 sw68wz93ncb 2656232060400365768 6666</span><br><span class="line">美剧 sw6plt23ncb 2629830185329553796 6666</span><br><span class="line">千部抖音短剧合集 swzqh673h4y 2844388545487961211 5296</span><br><span class="line">无损音乐 sw6u40x3wp6 2748248365866155734 t543</span><br><span class="line">欧美剧 swznm373w1p 2775567116696245412 pe35</span><br><span class="line">音乐22万首 swzmqcr3fs6  2783304403585596566 xd67</span><br><span class="line">音乐22万首/DDS+HiRes sw658uq36x2 2565672403766001435 md98</span><br><span class="line">音乐22万首/母带系列 sw658uq36x2 2565416479709117843 md98</span><br><span class="line">音乐22万首/索尼精选 sw658uq36x2 2565917379515039176 md98</span><br><span class="line">音乐22万首/各类风格 sw658uq36x2 2565466586953464857 md98</span><br><span class="line">音乐22万首/华语27000首无损 sw658ub36x2 2565274055783398734 q7e0</span><br><span class="line">日韩电影 swzg8dd3wye 2932272857134137107 m5b3</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>注意上面分享的这些文件夹可能会由于政策原因或是资源主取消分享而失效，请注意！</p>
+</blockquote>
+<h3 id="登录限制"><a class="header-anchor" href="#登录限制">¶</a>登录限制</h3>
+<p>小雅alist默认是可以匿名登录的，也就是任何人都无需用户名密码即可打开小雅观看影片，如果你想要配置个登录密码，可以在小雅配置文件夹内新建一个名为guestlogin.txt，内容为空就行。然后再新建一个名为guestpass.txt的文本，里面填入你想设置的密码。然后重启docker容器。就可以用户名dav和你设置的密码来登录小雅了。当然如果你在其他地方使用webdav挂载了小雅alist，也需要该用户名密码进行连接。</p>
+<h3 id="关于webdav连接"><a class="header-anchor" href="#关于webdav连接">¶</a>关于webdav连接</h3>
+<p>使用支持webdav协议的播放器来连接小雅资源库，一般需要主机名、端口、用户名、密码、挂载路径等信息。主机名为docker宿主机的IP，端口为5678，用户名为dav，密码为上一步设置的密码，挂载路径为/dav，准确填入这些信息之后一般就可以正常连接小雅Alist了。</p>
+<h3 id="如何判断这个影片是115的还是阿里云盘的"><a class="header-anchor" href="#如何判断这个影片是115的还是阿里云盘的">¶</a>如何判断这个影片是115的还是阿里云盘的</h3>
+<p>小雅里面很多文件夹后面会标注115字样，说明这个资源是存在115网盘的，没有标注的话这个资源是存在阿里云盘的。如果你没有115的付费会员，只有普通会员，目前每天有5次机会可以不限速观看115的资源。还有一种方法，在小雅页面打开一个视频，如果播放器默认调用的是“Aliyun video perviewer&quot;,那说明这个资源是来自阿里云的，如果默认只有“video”选项，那这个资源大概率是115网盘的。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20240904095956.png" alt="20240904095956"></p>
+<blockquote>
+<p>这个资源就是存在阿里云盘</p>
+</blockquote>
+<p><img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20240904100104.png" alt="20240904100104"></p>
+<blockquote>
+<p>这个资源就是大概率存在115网盘</p>
+</blockquote>
+<h3 id="如何查看小雅当前版本和升级版本"><a class="header-anchor" href="#如何查看小雅当前版本和升级版本">¶</a>如何查看小雅当前版本和升级版本</h3>
+<p>在小雅根目录下有个©开头的文件夹，这个就是当前小雅的版本号。在网络环境正常的情况下，每次重启小雅docker容器都会自动更新到最新的版本。如果你当前使用的小雅有一些莫名奇妙的问题，试着重启下docker容器，升级到最新版本，或许或解决你的问题。截止到9月4日，最新的小雅版本为v.0821.0535(B)。</p>
+<h3 id="如何自动清理存在阿里云盘的文件"><a class="header-anchor" href="#如何自动清理存在阿里云盘的文件">¶</a>如何自动清理存在阿里云盘的文件</h3>
+<p>每次观看影片之后，都会留一份文件在阿里云盘里面，时间长了之后会导致阿里云盘空间被占满，无法正常观看小雅视频。如果你使用的是DDS的一键安装脚本，里面会有个一键安装自动清理阿里云盘的脚本。其实是在docker中新建了一个名为xiaoyakeeper的容器，其作用是定时清空缓存在阿里云盘的视频文件。不必担心，这个脚本只会清理你在安装小雅docker时设置的缓存文件夹里面的文件，不会清理你存在阿里云盘的其他文件。当然你也可以指定脚本的运行时间。在小雅配置文件夹新建一个myruntime.txt文件，里面写入你希望脚本运行的时间即可，例如我希望在每天的早晚6点各执行一次清理脚本，只需要写入6:00,18:00即可。</p>
+]]></content>
+      <categories>
+        <category>影音</category>
+      </categories>
+      <tags>
+        <tag>docker</tag>
+        <tag>alist</tag>
+        <tag>小雅</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>如何获取阿里云盘的refresh_token</title>
+    <url>/posts/62343.html</url>
+    <content><![CDATA[<p>访问阿里云盘网页版，成功登录之后，按下F12，打开开发者模式，按照下图获取refresh_token。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/202205221457932.png" alt=""><br>
+获取到这个token之后我们就可以在各种阿里云盘的WEBDAV服务中使用这个token来开启阿里云盘的WEBDAV服务了。<br>
+自动获取：<br>
+登录阿里云盘后，控制台粘贴 JSON.parse(localStorage.token).refresh_token</p>
+]]></content>
+      <categories>
+        <category>影音</category>
+      </categories>
+      <tags>
+        <tag>阿里云盘</tag>
+        <tag>token</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>山西太原联通IPTV局域网组播openwrt设置教程（附M3U文件）</title>
+    <url>/posts/21117.html</url>
+    <content><![CDATA[<h2 id="网络环境"><a class="header-anchor" href="#网络环境">¶</a>网络环境</h2>
+<p>山西太原联通宽带。光猫INTERNET口与IPTV口为不同的网络。IPTV口接联通送的IPTV盒子可以观看IPTV电视节目。<br>
+INTERNET口桥接模式连接华为AX3路由器（IP地址为192.168.1.2），AX3负责PPPOE拨号。<br>
+AX3下连一台刷了Openwrt的斐讯N1盒子（IP地址为192.168.1.2）用于科学工作。连了一台刷了Openwrt的网件AX206路由器（IP地址为192.168.1.4）用于扩展WIFI覆盖范围。<br>
+网件WAX206的LAN口与华为AX3的LAN口相连，并且与主路由AX3设置成了统一的SSID和密码，关闭了DHCP。</p>
+<span id="more"></span>
+<h2 id="接口设置"><a class="header-anchor" href="#接口设置">¶</a>接口设置</h2>
+<p>将光猫IPTV口出来的网线连接到WAX206的WAN口，并将WAN口改为DHCP模式。<br>
+（这里有个坑，一开始我将IPTV的网线插到LAN口，到最后也是可以正常观看IPTV的，但是会倒是局域网内的设备无法访问互联网，所以需要将IPTV网线接到WAN口）<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20240405171612.png" alt="20240405171612"><br>
+网关跃点数改为200或更大。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20240405171636.png" alt="20240405171636"></p>
+<p>防火墙设置为lan。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20240405171658.png" alt="20240405171658"></p>
+<p>关闭DHCP服务。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20240405171718.png" alt="20240405171718"></p>
+<h2 id="UDPXY设置"><a class="header-anchor" href="#UDPXY设置">¶</a>UDPXY设置</h2>
+<p>登录WAX206的后台安装udpxy插件。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20240405171538.png" alt="20240405171538"><br>
+Udpxy插件设置如图：要注意绑定IP接口和源IP接口不要填错，端口可随意设置成未被占用的其他端口。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20240405171741.png" alt="20240405171741"></p>
+<p>接着我们在电脑上telnet一下192.168.1.4 7000 这个端口看是否正常运行。</p>
+<h2 id="组播地址转换"><a class="header-anchor" href="#组播地址转换">¶</a>组播地址转换</h2>
+<p>接着就是找本地运营商的IPTV组播地址了。可以前往kodi中文网，或是github上找别人分享的m3u地址。<br>
+一般我们在网上找到的M3U地址类似于下面这种：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#EXTINF:-1,CCTV1-综合</span><br><span class="line">rtp://226.0.1.157:3086</span><br><span class="line">#EXTINF:-1,CCTV2</span><br><span class="line">rtp://226.0.1.158:3087</span><br><span class="line">#EXTINF:-1,CCTV3</span><br><span class="line">rtp://226.0.1.141:2018</span><br><span class="line">#EXTINF:-1,CCTV4</span><br><span class="line">rtp://226.0.1.21:3036</span><br><span class="line">#EXTINF:-1,CCTV5</span><br><span class="line">rtp://226.0.1.135:2020</span><br></pre></td></tr></table></figure>
+<p>我们需要批量将里面的rtp://替换为<a href="http://192.168.1.4:7000/upd/">http://192.168.1.4:7000/upd/</a><br>
+替换后类似于这样：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#EXTINF:-1,CCTV1</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.18:8056</span><br><span class="line">#EXTINF:-1,CCTV2</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.19:8064</span><br><span class="line">#EXTINF:-1,CCTV3</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.20:8072</span><br><span class="line">#EXTINF:-1,CCTV4</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.21:8080</span><br><span class="line">#EXTINF:-1,CCTV5</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.22:8088</span><br></pre></td></tr></table></figure>
+<h2 id="测试播放"><a class="header-anchor" href="#测试播放">¶</a>测试播放</h2>
+<p>一切正常的话，我们在电脑端用VLC或potplayer打开我们修改好的M3U文件就可以正常观看IPTV了。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20240405171803.png" alt="20240405171803"></p>
+<p>如果你家的网络环境和我这边的类似，可以按照我的教程来操作。</p>
+<h2 id="M3U分享"><a class="header-anchor" href="#M3U分享">¶</a>M3U分享</h2>
+<p>另分享一份我整理出来的山西联通可用的M3U文件，将文件中的192.168.1.4:7000换成你局域网的地址和端口就可以了。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#EXTM3U</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;1&quot; tvg-name=&quot;CCTV1&quot; tvg-logo=&quot;http://epg.51zmt.top:8000/tb1/CCTV/CCTV1.png&quot; group-title=&quot;央视&quot;,CCTV1-HD</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.153:9136</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;2&quot; tvg-name=&quot;CCTV2&quot; tvg-logo=&quot;http://epg.51zmt.top:8000/tb1/CCTV/CCTV2.png&quot; group-title=&quot;央视&quot;,CCTV2-HD</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.154:9144</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;3&quot; tvg-name=&quot;CCTV3&quot; tvg-logo=&quot;http://epg.51zmt.top:8000/tb1/CCTV/CCTV3.png&quot; group-title=&quot;央视&quot;,CCTV3-HD</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.208:9576</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;4&quot; tvg-name=&quot;CCTV4&quot; tvg-logo=&quot;http://epg.51zmt.top:8000/tb1/CCTV/CCTV4.png&quot; group-title=&quot;央视&quot;,CCTV4-HD</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.156:9160</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;5&quot; tvg-name=&quot;CCTV5&quot; tvg-logo=&quot;http://epg.51zmt.top:8000/tb1/CCTV/CCTV5.png&quot; group-title=&quot;央视&quot;,CCTV5-HD</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.209:9584</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;6&quot; tvg-name=&quot;CCTV6&quot; tvg-logo=&quot;http://epg.51zmt.top:8000/tb1/CCTV/CCTV6.png&quot; group-title=&quot;央视&quot;,CCTV6-HD</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.210:9592</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;7&quot; tvg-name=&quot;CCTV7&quot; tvg-logo=&quot;http://epg.51zmt.top:8000/tb1/CCTV/CCTV7.png&quot; group-title=&quot;央视&quot;,CCTV7-HD</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.159:9184</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;8&quot; tvg-name=&quot;CCTV8&quot; tvg-logo=&quot;http://epg.51zmt.top:8000/tb1/CCTV/CCTV8.png&quot; group-title=&quot;央视&quot;,CCTV8-HD</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.211:9600</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;9&quot; tvg-name=&quot;CCTV9&quot; tvg-logo=&quot;http://epg.51zmt.top:8000/tb1/CCTV/CCTV9.png&quot; group-title=&quot;央视&quot;,CCTV9-HD</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.161:9200</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;10&quot; tvg-name=&quot;CCTV10&quot; tvg-logo=&quot;http://epg.51zmt.top:8000/tb1/CCTV/CCTV10.png&quot; group-title=&quot;央视&quot;,CCTV10-HD</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.162:9208</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;11&quot; tvg-name=&quot;CCTV11&quot; tvg-logo=&quot;http://epg.51zmt.top:8000/tb1/CCTV/CCTV11.png&quot; group-title=&quot;央视&quot;,CCTV11-HD</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.1.28:3021</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;12&quot; tvg-name=&quot;CCTV12&quot; tvg-logo=&quot;http://epg.51zmt.top:8000/tb1/CCTV/CCTV12.png&quot; group-title=&quot;央视&quot;,CCTV12-HD</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.164:9224</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;13&quot; tvg-name=&quot;CCTV13&quot; tvg-logo=&quot;http://epg.51zmt.top:8000/tb1/CCTV/CCTV13.png&quot; group-title=&quot;央视&quot;,CCTV13-HD</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.165:9232</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;14&quot; tvg-name=&quot;CCTV14&quot; tvg-logo=&quot;http://epg.51zmt.top:8000/tb1/CCTV/CCTV14.png&quot; group-title=&quot;央视&quot;,CCTV14-HD</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.166:9240</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;15&quot; tvg-name=&quot;CCTV5+&quot; tvg-logo=&quot;http://epg.51zmt.top:8000/tb1/CCTV/CCTV5+.png&quot; group-title=&quot;央视&quot;,CCTV5+-HD</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.168:9256</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;7249&quot; tvg-name=&quot;CCTV16&quot; tvg-logo=&quot;http://epg.51zmt.top:8000/tb1/CCTV/CCTV16.png&quot; group-title=&quot;央视&quot;,CCTV16-HD</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.169:9264</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;17&quot; tvg-name=&quot;CCTV17&quot; tvg-logo=&quot;http://epg.51zmt.top:8000/tb1/CCTV/CCTV17.png&quot; group-title=&quot;央视&quot;,CCTV17-HD</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.170:9272</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;6584&quot; tvg-name=&quot;央视台球&quot; tvg-logo=&quot;http://epg.51zmt.top:8000/tb1/CCTV/CCTVtaiqiu.png&quot; group-title=&quot;央视&quot;,CCTV央视台球HD</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.216:9640</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;6568&quot; tvg-name=&quot;高尔夫网球&quot; tvg-logo=&quot;http://epg.51zmt.top:8000/tb1/qt/CCTVPAYFEE13.jpg&quot; group-title=&quot;央视&quot;,CCTV高尔夫网球HD</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.217:9648</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;9&quot; tvg-name=&quot;CCTV8&quot; tvg-logo=&quot;http://epg.51zmt.top:8000/tb1/CCTV/CCTV8.png&quot; group-title=&quot;央视&quot;,CCTV电视指南HD</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.218:9656</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;6569&quot; tvg-name=&quot;央视精品&quot; tvg-logo=&quot;http://epg.51zmt.top:8000/tb1/CCTV/CCTVwenhuajingpin.png&quot; group-title=&quot;央视&quot;,CCTV央视精品HD</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.219:9664</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;6557&quot; tvg-name=&quot;风云音乐&quot; tvg-logo=&quot;http://epg.51zmt.top:8000/tb1/CCTV/CCTVfengyunyinyue.png&quot; group-title=&quot;央视&quot;,CCTV风云音乐HD</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.220:9672</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;6558&quot; tvg-name=&quot;第一剧场&quot; tvg-logo=&quot;http://epg.51zmt.top:8000/tb1/CCTV/CCTVdiyijuchang.png&quot; group-title=&quot;央视&quot;,CCTV第一剧场HD</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.221:9680</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;6560&quot; tvg-name=&quot;世界地理&quot; tvg-logo=&quot;http://epg.51zmt.top:8000/tb1/CCTV/CCTVshijiedili.png&quot; group-title=&quot;央视&quot;,CCTV世界地理HD</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.222:9688</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;6563&quot; tvg-name=&quot;兵器科技&quot; tvg-logo=&quot;http://epg.51zmt.top:8000/tb1/qt/CCTVPAYFEE8.jpg&quot; group-title=&quot;央视&quot;,CCTV兵器科技HD</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.223:9696</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;6562&quot; tvg-name=&quot;怀旧剧场&quot; tvg-logo=&quot;http://epg.51zmt.top:8000/tb1/qt/CCTVPAYFEE7.jpg&quot; group-title=&quot;央视&quot;,CCTV怀旧剧场HD</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.224:9704</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;6000&quot; tvg-name=&quot;风云足球&quot; tvg-logo=&quot;http://epg.51zmt.top:8000/tb1/CCTV/CCTVfengyunzuqiu.png&quot; group-title=&quot;央视&quot;,CCTV风云足球HD</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.225:9712</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;6564&quot; tvg-name=&quot;女性时尚&quot; tvg-logo=&quot;http://epg.51zmt.top:8000/tb1/CCTV/CCTVnvxing.png&quot; group-title=&quot;央视&quot;,CCTV女性时尚HD</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.226:9720</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;6559&quot; tvg-name=&quot;风云剧场&quot; tvg-logo=&quot;http://epg.51zmt.top:8000/tb1/CCTV/CCTBfengyun.png&quot; group-title=&quot;央视&quot;,CCTV风云剧场HD</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.227:9728</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;6246&quot; tvg-name=&quot;CHC家庭电影&quot; tvg-logo=&quot;http://epg.51zmt.top:8000/tb1/qt/CHC2.jpg&quot; group-title=&quot;地方&quot;,CHC家庭影院</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.240:9820</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;54&quot; tvg-name=&quot;山西卫视&quot; tvg-logo=&quot;http://epg.51zmt.top:8000/tb1/ws/shanxi_.png&quot; group-title=&quot;本地&quot;,山西卫视HD</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.152:9128</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;&quot; tvg-name=&quot;黄河电视台&quot; tvg-logo=&quot;http://192.168.1.2:8123/local/tv_logo/huanghetv.jpg&quot; group-title=&quot;本地&quot;,山西黄河HD</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.235:9792</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;&quot; tvg-name=&quot;山西经济与科技&quot; tvg-logo=&quot;http://epg.51zmt.top:8000/tb1/ws/shanxi_.png&quot; group-title=&quot;本地&quot;,山西经济与科技HD</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.236:9800</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;&quot; tvg-name=&quot;山西影视&quot; tvg-logo=&quot;http://epg.51zmt.top:8000/tb1/ws/shanxi_.png&quot; group-title=&quot;本地&quot;,山西影视HD</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.237:9808</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;&quot; tvg-name=&quot;山西社会与法治&quot; tvg-logo=&quot;http://epg.51zmt.top:8000/tb1/ws/shanxi_.png&quot; group-title=&quot;本地&quot;,山西社会与法治HD</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.238:9816</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;&quot; tvg-name=&quot;山西文体生活&quot; tvg-logo=&quot;http://epg.51zmt.top:8000/tb1/ws/shanxi_.png&quot; group-title=&quot;本地&quot;,山西文体生活HD</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.16:8040</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;&quot; tvg-name=&quot;太原一台&quot; tvg-logo=&quot;http://192.168.1.2:8123/local/tv_logo/tytv_1.png&quot; group-title=&quot;本地&quot;,太原1</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.201:9520</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;&quot; tvg-name=&quot;太原二台&quot; tvg-logo=&quot;http://192.168.1.2:8123/local/tv_logo/tytv_2.png&quot; group-title=&quot;本地&quot;,太原2</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.202:9528</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;&quot; tvg-name=&quot;太原三台&quot; tvg-logo=&quot;http://192.168.1.2:8123/local/tv_logo/tytv_3.png&quot; group-title=&quot;本地&quot;,太原3</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.203:9536</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;&quot; tvg-name=&quot;太原四台&quot; tvg-logo=&quot;http://192.168.1.2:8123/local/tv_logo/tytv_4.png&quot; group-title=&quot;本地&quot;,太原4</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.204:9544</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;&quot; tvg-name=&quot;太原五台&quot; tvg-logo=&quot;http://192.168.1.2:8123/local/tv_logo/tytv_5.png&quot; group-title=&quot;本地&quot;,太原5</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.205:9552</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;&quot; tvg-name=&quot;太原教育&quot; tvg-logo=&quot;&quot; group-title=&quot;本地&quot;,太原教育</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.206:9560</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;&quot; tvg-name=&quot;阳曲&quot; tvg-logo=&quot;&quot; group-title=&quot;本地&quot;,阳曲</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.196:9480</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;&quot; tvg-name=&quot;清徐&quot; tvg-logo=&quot;&quot; group-title=&quot;本地&quot;,清徐HD</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.191:9440</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;&quot; tvg-name=&quot;大同教育&quot; tvg-logo=&quot;&quot; group-title=&quot;本地&quot;,大同教育HD</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.232:9772</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;&quot; tvg-name=&quot;孝义电视台&quot; tvg-logo=&quot;&quot; group-title=&quot;本地&quot;,孝义电视台</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.189:9424</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;&quot; tvg-name=&quot;阳泉-1新闻综合&quot; tvg-logo=&quot;&quot; group-title=&quot;本地&quot;,阳泉-1新闻综合</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.233:9776</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;&quot; tvg-name=&quot;阳泉-2科教&quot; tvg-logo=&quot;&quot; group-title=&quot;本地&quot;,阳泉-2科教</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.234:9784</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;&quot; tvg-name=&quot;朔州-1&quot; tvg-logo=&quot;&quot; group-title=&quot;本地&quot;,朔州-1</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.185:9392</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;&quot; tvg-name=&quot;朔州-2&quot; tvg-logo=&quot;&quot; group-title=&quot;本地&quot;,朔州-2</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.186:9400</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;&quot; tvg-name=&quot;太原佰乐购&quot; tvg-logo=&quot;&quot; group-title=&quot;本地&quot;,太原佰乐购</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.215:9632</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;&quot; tvg-name=&quot;晋能控股&quot; tvg-logo=&quot;&quot; group-title=&quot;本地&quot;,晋能控股</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.229:9744</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;&quot; tvg-name=&quot;盐湖频道&quot; tvg-logo=&quot;&quot; group-title=&quot;本地&quot;,运城盐湖频道</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.106:9006</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;27&quot; tvg-name=&quot;湖南卫视&quot; tvg-logo=&quot;http://epg.51zmt.top:8000/tb1/ws/hunan.png&quot; group-title=&quot;卫视&quot;,湖南卫视HD</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.143:9056</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;69&quot; tvg-name=&quot;金鹰卡通&quot; tvg-logo=&quot;http://epg.51zmt.top:8000/tb1/qt/jinyingkatong.png&quot; group-title=&quot;卫视&quot;,金鹰卡通HD</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.172:9288</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;2025&quot; tvg-name=&quot;金鹰纪实&quot; tvg-logo=&quot;http://epg.51zmt.top:8000/tb1/ws/jinyingjishi.png&quot; group-title=&quot;卫视&quot;,金鹰纪实HD</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.194:9464</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;36&quot; tvg-name=&quot;辽宁卫视&quot; tvg-logo=&quot;http://epg.51zmt.top:8000/tb1/ws/liaoning.png&quot; group-title=&quot;卫视&quot;,辽宁卫视HD</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.173:9296</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;40&quot; tvg-name=&quot;重庆卫视&quot; tvg-logo=&quot;http://epg.51zmt.top:8000/tb1/ws/chongqing.png&quot; group-title=&quot;卫视&quot;,重庆卫视HD</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.174:9304</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;31&quot; tvg-name=&quot;东方卫视&quot; tvg-logo=&quot;http://epg.51zmt.top:8000/tb1/ws/dongfang.png&quot; group-title=&quot;卫视&quot;,东方卫视HD</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.175:9312</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;&quot; tvg-name=&quot;东方财经&quot; tvg-logo=&quot;http://192.168.1.2:8123/local/tv_logo/dongfangcaijing.jpg&quot; group-title=&quot;卫视&quot;,东方财经HD</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.76:8520</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;1988&quot; tvg-name=&quot;上海纪实&quot; tvg-logo=&quot;http://epg.51zmt.top:8000/tb1/ws/shanghaijishi.png&quot; group-title=&quot;卫视&quot;,上海纪实HD</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.193:9456</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;29&quot; tvg-name=&quot;江苏卫视&quot; tvg-logo=&quot;http://epg.51zmt.top:8000/tb1/ws/jiangsu.png&quot; group-title=&quot;卫视&quot;,江苏卫视HD</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.176:9320</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;30&quot; tvg-name=&quot;北京卫视&quot; tvg-logo=&quot;http://epg.51zmt.top:8000/tb1/ws/beijing.png&quot; group-title=&quot;卫视&quot;,北京卫视HD</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.177:9328</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;45&quot; tvg-name=&quot;河北卫视&quot; tvg-logo=&quot;http://epg.51zmt.top:8000/tb1/ws/hebei.png&quot; group-title=&quot;卫视&quot;,河北卫视HD</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.178:9336</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;47&quot; tvg-name=&quot;河南卫视&quot; tvg-logo=&quot;http://epg.51zmt.top:8000/tb1/ws/henan.png&quot; group-title=&quot;卫视&quot;,河南卫视HD</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.52:8328</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;50&quot; tvg-name=&quot;江西卫视&quot; tvg-logo=&quot;http://epg.51zmt.top:8000/tb1/ws/jiangxi.png&quot; group-title=&quot;卫视&quot;,江西卫视HD</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.54:8344</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;56&quot; tvg-name=&quot;四川卫视&quot; tvg-logo=&quot;http://epg.51zmt.top:8000/tb1/ws/sichuan.png&quot; group-title=&quot;卫视&quot;,四川卫视HD</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.179:9344</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;44&quot; tvg-name=&quot;贵州卫视&quot; tvg-logo=&quot;http://epg.51zmt.top:8000/tb1/ws/guizhou.png&quot; group-title=&quot;卫视&quot;,贵州卫视HD</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.180:9352</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;28&quot; tvg-name=&quot;浙江卫视&quot; tvg-logo=&quot;http://epg.51zmt.top:8000/tb1/ws/zhejiang.png&quot; group-title=&quot;卫视&quot;,浙江卫视HD</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.144:9064</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;32&quot; tvg-name=&quot;安徽卫视&quot; tvg-logo=&quot;http://epg.51zmt.top:8000/tb1/ws/anhui.png&quot; group-title=&quot;卫视&quot;,安徽卫视HD</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.145:9072</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;33&quot; tvg-name=&quot;广东卫视&quot; tvg-logo=&quot;http://epg.51zmt.top:8000/tb1/ws/guangdong.png&quot; group-title=&quot;卫视&quot;,广东卫视HD</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.146:9080</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;34&quot; tvg-name=&quot;深圳卫视&quot; tvg-logo=&quot;http://epg.51zmt.top:8000/tb1/ws/shenzhen.png&quot; group-title=&quot;卫视&quot;,深圳卫视HD</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.147:9088</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;39&quot; tvg-name=&quot;天津卫视&quot; tvg-logo=&quot;http://epg.51zmt.top:8000/tb1/ws/tianjin.png&quot; group-title=&quot;卫视&quot;,天津卫视HD</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.148:9096</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;38&quot; tvg-name=&quot;山东卫视&quot; tvg-logo=&quot;http://epg.51zmt.top:8000/tb1/ws/shandong.png&quot; group-title=&quot;卫视&quot;,山东卫视HD</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.149:9104</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;48&quot; tvg-name=&quot;湖北卫视&quot; tvg-logo=&quot;http://epg.51zmt.top:8000/tb1/ws/hubei.png&quot; group-title=&quot;卫视&quot;,湖北卫视HD</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.150:9112</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;41&quot; tvg-name=&quot;东南卫视&quot; tvg-logo=&quot;http://epg.51zmt.top:8000/tb1/ws/dongnan.png&quot; group-title=&quot;卫视&quot;,东南卫视HD</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.188:9416</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;46&quot; tvg-name=&quot;黑龙江卫视&quot; tvg-logo=&quot;http://epg.51zmt.top:8000/tb1/ws/heilongjiang.png&quot; group-title=&quot;卫视&quot;,黑龙江卫视HD</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.151:9120</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;43&quot; tvg-name=&quot;广西卫视&quot; tvg-logo=&quot;http://epg.51zmt.top:8000/tb1/ws/guangxi.png&quot; group-title=&quot;卫视&quot;,广西卫视HD</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.231:9760</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;37&quot; tvg-name=&quot;旅游卫视&quot; tvg-logo=&quot;http://epg.51zmt.top:8000/tb1/ws/lvyou.png&quot; group-title=&quot;卫视&quot;,海南卫视HD</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.212:9608</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;51&quot; tvg-name=&quot;吉林卫视&quot; tvg-logo=&quot;http://epg.51zmt.top:8000/tb1/ws/jilin.png&quot; group-title=&quot;卫视&quot;,吉林卫视HD</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.58:8376</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;73&quot; tvg-name=&quot;中国教育1台&quot; tvg-logo=&quot;http://epg.51zmt.top:8000/tb1/qt/中国教育1台.png&quot; group-title=&quot;地方&quot;,CETV1-HD</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.181:9360</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;&quot; tvg-name=&quot;&quot; tvg-logo=&quot;&quot; group-title=&quot;本地&quot;,金色学堂HD</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.182:9368</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;&quot; tvg-name=&quot;&quot; tvg-logo=&quot;&quot; group-title=&quot;本地&quot;,动漫秀场HD</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.183:9376</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;6585&quot; tvg-name=&quot;茶频道&quot; tvg-logo=&quot;http://epg.51zmt.top:8000/tb1/qt/DOCUMENTARY-CHANNEL.jpg&quot; group-title=&quot;地方&quot;,茶频道HD</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.213:9616</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;6595&quot; tvg-name=&quot;快乐垂钓&quot; tvg-logo=&quot;http://epg.51zmt.top:8000/tb1/qt/KUAILECHUIDIAO.jpg&quot; group-title=&quot;地方&quot;,快乐垂钓HD</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.214:9624</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;6555&quot; tvg-name=&quot;梨园&quot; tvg-logo=&quot;http://epg.51zmt.top:8000/tb1/qt/CCTVPAYFEE20.jpg&quot; group-title=&quot;地方&quot;,梨园频道HD</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.115:8832</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;6591&quot; tvg-name=&quot;文物宝库&quot; tvg-logo=&quot;http://epg.51zmt.top:8000/tb1/qt/WENWUBAOKU.jpg&quot; group-title=&quot;地方&quot;,文物宝库HD</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.110:8792</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;6581&quot; tvg-name=&quot;早期教育&quot; tvg-logo=&quot;http://epg.51zmt.top:8000/tb1/qt/CCTVPAYFEE33.jpg&quot; group-title=&quot;地方&quot;,CETV早期教育HD</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.99:8704</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;6586&quot; tvg-name=&quot;武术世界&quot; tvg-logo=&quot;http://epg.51zmt.top:8000/tb1/qt/WUSHUSHIJIE.jpg&quot; group-title=&quot;地方&quot;,武术世界HD</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.97:8688</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;&quot; tvg-name=&quot;&quot; tvg-logo=&quot;&quot; group-title=&quot;本地&quot;,乐游HD</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.77:8528</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;1983&quot; tvg-name=&quot;游戏风云&quot; tvg-logo=&quot;http://epg.51zmt.top:8000/tb1/qt/youxifengyun.png&quot; group-title=&quot;地方&quot;,游戏风云HD</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.78:8536</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;&quot; tvg-name=&quot;&quot; tvg-logo=&quot;&quot; group-title=&quot;本地&quot;,都市剧场HD</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.81:8560</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;&quot; tvg-name=&quot;&quot; tvg-logo=&quot;&quot; group-title=&quot;本地&quot;,法治天地HD</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.83:8576</span><br><span class="line">#EXTINF:-1 tvg-id=&quot;1981&quot; tvg-name=&quot;生活时尚&quot; tvg-logo=&quot;http://epg.51zmt.top:8000/tb1/qt/shenghuoshishang.png&quot; group-title=&quot;地方&quot;,生活时尚HD</span><br><span class="line">http://192.168.1.4:7000/udp/226.0.2.84:8584</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>影音</category>
+      </categories>
+      <tags>
+        <tag>openwrt</tag>
+        <tag>iptv</tag>
+        <tag>联通</tag>
+        <tag>组播</tag>
+        <tag>山西</tag>
+        <tag>太原</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>庆余年第二季全36集1080pBT下载种子</title>
+    <url>/posts/6425.html</url>
+    <content><![CDATA[<p><img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20240605104448.png" alt="20240605104448"><br>
+该剧改编自猫腻同名畅销小说，承接上季，范闲（张若昀 饰）率领使团回归途中，二皇子以费介、范思辙以及滕家遗孤的安危来威胁范闲，逼他向自己俯首称臣，二人的矛盾就此激发。范闲所面对的抱月楼迷局，以及接踵而至的春闱危机，都是二皇子精心给范闲布下的陷阱。</p>
+<p>范闲与林婉儿如愿大婚，紧接着，范闲接手内库，却发现内库负债累累。 范闲拒绝了庆余堂大掌柜的相助，决定靠自己的力量解决内库危机，范闲相约城中众商贾相聚苍山，以售卖“库债”为机筹集了两千多万银两，解决了内库空虚问题。</p>
+<p>悬空寺上，庆帝遭遇三连刺杀，范闲出手相救却导致武功全废。危机四伏，压力陡增，范闲别无选择，他必须以这样的身体下江南，挑战庞大的势力与既定的游戏规则，以求彻底夺回内库。</p>
+<h2 id="种子链接"><a class="header-anchor" href="#种子链接">¶</a>种子链接</h2>
+<p><a href="https://1827552651-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FzyeXCfWDMCUsuUrT3Z6v%2Fuploads%2FNPmNxNXaUFnXoGjSbn9q%2F%E5%BA%86%E4%BD%99%E5%B9%B4.%E7%AC%AC%E4%BA%8C%E5%AD%A3.Joy.of.Life.S02.2024.Chinese.EP01-36.Complete.1080P.Disney.WEB-DL.H265.DDP2.0-Vampire.torrent?alt=media&amp;token=ed8dcd91-4a8e-47bd-aad5-1502043e6dfe">https://1827552651-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FzyeXCfWDMCUsuUrT3Z6v%2Fuploads%2FNPmNxNXaUFnXoGjSbn9q%2F庆余年.第二季.Joy.of.Life.S02.2024.Chinese.EP01-36.Complete.1080P.Disney.WEB-DL.H265.DDP2.0-Vampire.torrent?alt=media&amp;token=ed8dcd91-4a8e-47bd-aad5-1502043e6dfe</a></p>
+]]></content>
+      <categories>
+        <category>影音</category>
+      </categories>
+      <tags>
+        <tag>庆余年</tag>
+        <tag>电视剧</tag>
+        <tag>下载</tag>
+        <tag>BT</tag>
+        <tag>种子</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>我的“港乐”歌单</title>
+    <url>/posts/24372.html</url>
+    <content><![CDATA[<p>最近芒果台联合香港TVB推出的音乐节目《声生不息》，将“沉睡”很多年的港乐再次呈现在了观众的面前，尤其是在第一期结尾大合唱《海阔天空》的时候，突然出现黄家驹的原声，不知让多少人又热血沸腾、潸然泪目。<br>
+其实我也自诩算个伪港乐迷，日常听的曲库里面差不多有60%左右都是港乐，尤其是上世纪80-90年代的香港乐坛，是我心目中港乐最为辉煌的时期，期间涌现了一批可以被记载到历史的歌手及音乐人，谭咏麟、张国荣、四大天王、陈百强、李克勤，当然还有我的偶像Beyond黄家驹。<br>
+开始关注Beyond乐队是从2003年他们开20周年演唱会开始，之前我甚至不知道Beyond乐队这个名字，只知道在香港有个歌手叫黄家驹。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20220427133927.png" alt="20220427133927"><br>
+和大部分人一样，开始也是喜欢听他们的那几首传唱度较高的《光辉岁月》和《真的爱你》等等，再过后来渐渐了解了乐队的起源以及发展历程之后，再听诸如《灰色轨迹》《未曾后悔》等歌曲之后，我已经被他们的音乐完全吸引，虽然他们的作品基本上都是粤语，但丝毫没有影响到其作品在内地的传唱度，和同一时代的其他香港歌曲相比，他们的音乐坚持原创，有思想，有深度，表达大众的心声，所以才能真正唱到普通人的内心深处，激励一代又一代的年轻人，这才是港乐真正的魅力所在。<br>
+当然，八九十年代的香港乐坛，还是有很大一部分歌曲是直接将日本歌填词翻唱的，但就算这样也丝毫没有影响这些作品成为流传至今的经典。<br>
+而到了2000年之后，港乐逐渐进入衰退期，很久都没有能再次打动人心的作品出现了，能被人记得的名字，好像也只剩下陈奕迅了吧。</p>
+<p>下面分享我的Apple Music曲库中始终占有一席地位的TOP20港乐，仅代表个人喜好，排名不分先后。</p>
+<h3 id="海阔天空-Beyond"><a class="header-anchor" href="#海阔天空-Beyond">¶</a>海阔天空-Beyond</h3>
+<h3 id="灰色轨迹-Beyond"><a class="header-anchor" href="#灰色轨迹-Beyond">¶</a>灰色轨迹-Beyond</h3>
+<h3 id="偏偏喜欢你-陈百强"><a class="header-anchor" href="#偏偏喜欢你-陈百强">¶</a>偏偏喜欢你-陈百强</h3>
+<h3 id="漫步人生路-邓丽君"><a class="header-anchor" href="#漫步人生路-邓丽君">¶</a>漫步人生路-邓丽君</h3>
+<h3 id="月半小夜曲-李克勤"><a class="header-anchor" href="#月半小夜曲-李克勤">¶</a>月半小夜曲-李克勤</h3>
+<h3 id="敢爱敢做-林子祥"><a class="header-anchor" href="#敢爱敢做-林子祥">¶</a>敢爱敢做-林子祥</h3>
+<h3 id="讲不出再见-谭咏麟"><a class="header-anchor" href="#讲不出再见-谭咏麟">¶</a>讲不出再见-谭咏麟</h3>
+<h3 id="风继续吹-张国荣"><a class="header-anchor" href="#风继续吹-张国荣">¶</a>风继续吹-张国荣</h3>
+<h3 id="当年情-张国荣"><a class="header-anchor" href="#当年情-张国荣">¶</a>当年情-张国荣</h3>
+<h3 id="一生中最爱-谭咏麟"><a class="header-anchor" href="#一生中最爱-谭咏麟">¶</a>一生中最爱-谭咏麟</h3>
+<h3 id="沉默是金-许冠杰-张国荣"><a class="header-anchor" href="#沉默是金-许冠杰-张国荣">¶</a>沉默是金-许冠杰/张国荣</h3>
+<h3 id="浪子心声-许冠杰"><a class="header-anchor" href="#浪子心声-许冠杰">¶</a>浪子心声-许冠杰</h3>
+<h3 id="遥远的她-张学友"><a class="header-anchor" href="#遥远的她-张学友">¶</a>遥远的她-张学友</h3>
+<h3 id="只想一生跟你走-张学友"><a class="header-anchor" href="#只想一生跟你走-张学友">¶</a>只想一生跟你走-张学友</h3>
+<h3 id="红日-李克勤"><a class="header-anchor" href="#红日-李克勤">¶</a>红日-李克勤</h3>
+<h3 id="一生何求-陈百强"><a class="header-anchor" href="#一生何求-陈百强">¶</a>一生何求-陈百强</h3>
+<h3 id="光辉岁月-Beyond"><a class="header-anchor" href="#光辉岁月-Beyond">¶</a>光辉岁月-Beyond</h3>
+<h3 id="谁可改变-谭咏麟"><a class="header-anchor" href="#谁可改变-谭咏麟">¶</a>谁可改变-谭咏麟</h3>
+<h3 id="千千阙歌-陈慧娴"><a class="header-anchor" href="#千千阙歌-陈慧娴">¶</a>千千阙歌-陈慧娴</h3>
+<h3 id="富士山下-陈奕迅"><a class="header-anchor" href="#富士山下-陈奕迅">¶</a>富士山下-陈奕迅</h3>
+]]></content>
+      <categories>
+        <category>影音</category>
+      </categories>
+      <tags>
+        <tag>音乐</tag>
+        <tag>香港</tag>
+        <tag>港乐</tag>
+        <tag>分享</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>拒绝QQ绿钻，让小爱音箱随意播放音乐</title>
+    <url>/posts/30452.html</url>
+    <content><![CDATA[<h2 id="引言"><a class="header-anchor" href="#引言">¶</a>引言</h2>
+<p>现在的各种智能音箱，想要好好听音乐，都需要开通各种音乐VIP服务才行，而且有些歌曲因为版权原因，在特定的平台才会有，所以办一个平台的会员有时候还不够。要是不办会员，只能试听十几秒，或者是听一些不知名的翻唱版本。那有没有一种方法，让音箱调用本地NAS里面储存的音乐来播放呢？这样就不用办各种音乐会员了。</p>
+<p>xiaomusic是用来让小米音箱播放音乐的docker项目 <a href="https://github.com/hanxi/xiaomusic">https://github.com/hanxi/xiaomusic</a> 其原理应该是用特定唤醒语劫持小爱音箱网络请求，使用yt-dlp这个项目前往油管下载同名的视频音源到本地，咨询了作者之后得知如果网络不支持访问油管，会转到B站下载，然后进行播放（目前默认是从B站下载资源，除非在设置界面指定从油管下载）。</p>
+<h2 id="安装命令"><a class="header-anchor" href="#安装命令">¶</a>安装命令</h2>
+<p>运行以下命令安装docker容器：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker run -p 8090:8090 \</span><br><span class="line">    -v /mnt/usb/xiaomusic/music:/app/music \</span><br><span class="line">    -v /mnt/usb/xiaomusic/conf:/app/conf \</span><br><span class="line">    hanxi/xiaomusic</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>将命令中的/mnt/usb/xiaomusic字段替换为你本地容器配置的文件夹。<br>
+另外本地曲库需放到music文件夹内才会被识别。</p>
+</blockquote>
+<p>容器创建完成之后访问宿主机ip:8090端口进入容器设置页面。<br>
+<img src="https://img.ycyc.win/img/202410021835074.png" alt="image.png"></p>
+<span id="more"></span>
+<p>进入设置页面，登录小米账号后会读取到账号内所有支持的小米音箱设备，可以选择不同的设备进行控制，也可以为不同设备创建同一个分组进行控制。设置页面可以设置指定的唤醒词来调用本地播放功能。另外一些本地曲库的相关设置也在该页面。<br>
+这里有个模糊匹配阈值和目录深度设置需要注意一下，如果你本地音乐命名不规范，可以适当把这个值调小一些。<br>
+<img src="https://cdn.ycyc.win/gh/miaoyanginfo/hexo-img/img/202409151245684.png" alt="image.png"><br>
+设置完成之后可以在主页看到本地曲库的目录。识别到的歌曲不仅可以推送到小爱音箱播放，也可以在网页端用浏览器播放。<br>
+<img src="https://img.ycyc.win/img/202410021839226.png" alt="image.png"></p>
+<p>目前作者已经更新到了0.3.37。修复了之前的一些bug。另外本地曲库播放功能也比之前体验好了不少。<br>
+另外作者也有微信交流群，有问题可以去群里反馈，如果觉得这个项目不错，也可以给作者打赏。更多使用指引可参阅官方文档。</p>
+<h2 id="引用"><a class="header-anchor" href="#引用">¶</a>引用</h2>
+<p><a href="https://github.com/hanxi/xiaomusic">hanxi/xiaomusic: 使用小爱音箱播放音乐，音乐使用 yt-dlp 下载。 (github.com)</a></p>
+]]></content>
+      <categories>
+        <category>影音</category>
+      </categories>
+      <tags>
+        <tag>docker</tag>
+        <tag>小米</tag>
+        <tag>小爱同学</tag>
+        <tag>小爱音箱</tag>
+        <tag>Xiaomusic</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>推荐几款安卓和IOS平台用于观看IPTV的客户端软件</title>
+    <url>/posts/2353.html</url>
+    <content><![CDATA[<h2 id="前言"><a class="header-anchor" href="#前言">¶</a>前言</h2>
+<p><img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20240904101409.png" alt="20240904101409"><br>
+上周趁着清明假期，鼓捣了一下局域网iptv组播，然后自己也在一些平台和终端测试了一些主流的IPTV播放软件，结合自己手头现有设备的情况，推荐下面几款播放软件，如果你有更好的软件，欢迎推荐分享。<br>
+软件本身并不提供IPTV直播服务，需要我们将自己创建或是下载到的m3u文件导入到软件内进行播放。另外有部分软件支持epg节目预告，可以根据m3u里面的频道匹配该频道的节目播放单，实现节目预告。这里感谢51zmt提供的epg服务（<a href="http://epg.51zmt.top:8000/%EF%BC%89">http://epg.51zmt.top:8000/）</a> 。另外该站点还支持台标匹配，你可以上传自己的m3u文件，然后匹配对应的频道台标LOGO。</p>
+<h2 id="kodi（全平台）"><a class="header-anchor" href="#kodi（全平台）">¶</a>kodi（全平台）</h2>
+<p>只要你的设备能安装和运行kodi，推荐使用kodi来播放IPTV的m3u。<br>
+首先需要在插件里面下载 iptv simply client 这个插件，安装好之后在插件设置里面设置好m3u源文件地址，设置好epg节目预告地址（<a href="http://epg.51zmt.top:8000/e.xml%EF%BC%89">http://epg.51zmt.top:8000/e.xml）</a>, 然后在主页面进去电视菜单，就可以观看IPTV了。<br>
+官网 <a href="https://kodi.tv">https://kodi.tv</a></p>
+<span id="more"></span>
+<h2 id="aptv（iOS、tVOS、Mac-OS）"><a class="header-anchor" href="#aptv（iOS、tVOS、Mac-OS）">¶</a>aptv（iOS、tVOS、Mac OS）</h2>
+<p>ios平台体验不错的IPTV客户端，免费版只能添加一个m3u配置，但是也够了。软件会根据m3u地址在线匹配epg节目预告，不需要手动设置。界面和切换也很流畅。除了ios，该软件还 支持tvOS和MacOS。<br>
+itunes链接 <a href="https://apps.apple.com/cn/app/aptv/id1630403500">https://apps.apple.com/cn/app/aptv/id1630403500</a></p>
+<h2 id="tivimate-安卓电视盒子"><a class="header-anchor" href="#tivimate-安卓电视盒子">¶</a>tivimate(安卓电视盒子)</h2>
+<p>如果你觉得kodi操作起来比较繁琐，可以试试这款软件。</p>
+<h2 id="cloud-stream-iptv-player-旧版iOS设备"><a class="header-anchor" href="#cloud-stream-iptv-player-旧版iOS设备">¶</a>cloud stream iptv player (旧版iOS设备)</h2>
+<p>如果你的iOS设备版本太老，不支持安装APTV，可以试试cloud stream iptv player 这个APP（黄色图标）。界面是英文的，但不影响使用，用法类似，直接添加m3u地址源就可以了，比较遗憾的是不支持epg。<br>
+itunes链接 <a href="https://apps.apple.com/cn/app/cloud-stream-iptv-player/id1138002135">https://apps.apple.com/cn/app/cloud-stream-iptv-player/id1138002135</a></p>
+<h2 id="vlc和potplayer（windows）"><a class="header-anchor" href="#vlc和potplayer（windows）">¶</a>vlc和potplayer（windows）</h2>
+<p>windows下可以用vlc或是potplayer直接打开m3u文件播放，当然你也可以在windows上安装kodi。<br>
+vlc官网 <a href="https://www.videolan.org/">https://www.videolan.org/</a><br>
+potplayer官网 <a href="https://potplayer.daum.net/">https://potplayer.daum.net/</a></p>
+]]></content>
+      <categories>
+        <category>影音</category>
+      </categories>
+      <tags>
+        <tag>iOS</tag>
+        <tag>IPTV</tag>
+        <tag>android</tag>
+        <tag>windows</tag>
+        <tag>epg</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Openwrt旁路由Adguard设置参考</title>
+    <url>/posts/40723.html</url>
+    <content><![CDATA[<p>登录Adguard home界面，需要修改的有两个地方，一个是DNS上游服务器，一个是Bootstrap DNS 服务器。</p>
+<p>下面是我填的DNS上游服务器地址，仅供参考。</p>
+<span id="more"></span>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">223.5.5.5</span><br><span class="line">114.114.114.114</span><br><span class="line">8.8.8.8</span><br><span class="line">8.8.4.4</span><br><span class="line">101.226.4.6</span><br><span class="line">120.196.165.24</span><br><span class="line">tls://dot.360.cn</span><br><span class="line">https://dns10.quad9.net/dns-query</span><br><span class="line">https://dns.google/dns-query</span><br><span class="line">https://doh.360.cn/dns-query</span><br><span class="line">https://doh-jp.blahdns.com/dns-query</span><br><span class="line">https://dns.alidns.com/dns-query</span><br><span class="line">tls://dns.alidns.com</span><br><span class="line">tls://dns.google</span><br><span class="line">tls://1dot1dot1dot1.cloudflare-dns.com</span><br></pre></td></tr></table></figure>
+<p>然后在并行请求之前打勾。<br>
+Bootstrap DNS 服务器需要填入你本地运营商提供的DNS地址，下面是我填入的地址，也是仅供参考。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">202.99.216.113</span><br><span class="line">202.97.131.178</span><br><span class="line">114.114.114.114</span><br><span class="line">8.8.8.8</span><br><span class="line">8.8.4.4</span><br></pre></td></tr></table></figure>
+<p>另外黑名单DNS列表里面推荐几个订阅。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">https://github.com/xinggsf/Adblock-Plus-Rule/blob/master/rule.txt</span><br><span class="line">https://github.com/xinggsf/Adblock-Plus-Rule/blob/master/mv.txt</span><br><span class="line">https://adguardteam.github.io/HostlistsRegistry/assets/filter_29.txt</span><br><span class="line">https://adguardteam.github.io/HostlistsRegistry/assets/filter_21.txt</span><br><span class="line">https://raw.githubusercontent.com/privacy-protection-tools/anti-AD/master/anti-ad-easylist.txt</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>下图是我使用了差不多半天时间的统计信息。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20230314105521.png" alt="20230314105521"></p>
+]]></content>
+      <categories>
+        <category>网络</category>
+      </categories>
+      <tags>
+        <tag>openwrt</tag>
+        <tag>adguard</tag>
+        <tag>广告</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>crontab 定时任务规则收藏</title>
+    <url>/posts/18367.html</url>
+    <content><![CDATA[<p>定时规则由六位组成，分辨是分、时、天、月、星期。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">*    *    *    *    *</span><br><span class="line">-    -    -    -    -</span><br><span class="line">|    |    |    |    |</span><br><span class="line">|    |    |    |    +----- 星期中星期几 (0 - 6) (星期天 为0)</span><br><span class="line">|    |    |    +---------- 月份 (1 - 12) </span><br><span class="line">|    |    +--------------- 一个月中的第几天 (1 - 31)</span><br><span class="line">|    +-------------------- 小时 (0 - 23)</span><br><span class="line">+------------------------- 分钟 (0 - 59)</span><br></pre></td></tr></table></figure>
+<p>引用来源：<a href="https://www.runoob.com/linux/linux-comm-crontab.html">Runoob</a></p>
+]]></content>
+      <categories>
+        <category>网络</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>openwrt旁路由连主路由WIFI无法上网问题处理</title>
+    <url>/posts/39032.html</url>
+    <content><![CDATA[<h2 id="引言"><a class="header-anchor" href="#引言">¶</a>引言</h2>
+<p>前两天在家里上网发现一个问题，手机设置了静态IP地址，网关和DNS都设置成旁路由的地址之后，连接AP发出的SSID可以正常出国和回国，但是连接到主路由发出的SSID之后出国不受影响，浏览国内的站点会出现无法访问的情况。因为我之前一直默认连接的是AP的信号，所以一直没发现问题，直到前天AP断电之后，手机连接到主路由发出的SSID才发现问题，而且不只是手机，笔记本也一样，只要是连接了无线之后都会有问题，但是使用有线连接的设备手动指定网关和DNS之后上网却一切正常。</p>
+<span id="more"></span>
+<p><img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/%E5%AF%BC%E5%9B%BE1.jpeg" alt="导图1"></p>
+<h2 id="解决"><a class="header-anchor" href="#解决">¶</a>解决</h2>
+<p>我在恩山和chh发帖求助之后，有很多大神支招，有可能是主路由设置的问题，也有可能是旁路由设置的问题，而恩山上有个网友遇到的问题也和我的类似，巧的是他使用的主路由也是华为的。而华为路由器的管理后台没有太多设置的地方，连LAN的DNS和网关也无法指定。所以要解决问题的话是无法从主路由上下手了，只能在旁路由上做文章。<br>
+感谢chh@iamyangyi 大神的提醒，我之前在N1防火墙规则中只添加了iptables -t nat -I POSTROUTING -o eth0 -j MASQUERADE语句，没有注意到网络接口，把eth0改成br-lan然后再重启防火墙就可以了。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/2023032201.png" alt="2023032201"><br>
+遇到类似问题的朋友可以参考。<br>
+另外chh大神@hadis99 也提供了一种设置方法，不用添加防火墙规则，开启IP动态伪装也能解决遇到的问题。设置方法如下图<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/2023032202.png" alt="2023032202"></p>
+<h2 id="其他"><a class="header-anchor" href="#其他">¶</a>其他</h2>
+<p>CSDN相关的文章<a href="https://blog.csdn.net/qq1337715208/article/details/122271608">https://blog.csdn.net/qq1337715208/article/details/122271608</a><br>
+恩山网友和我类似问题的帖子<a href="https://www.right.com.cn/FORUM/thread-5957512-1-1.html">https://www.right.com.cn/FORUM/thread-5957512-1-1.html</a><br>
+我在恩山的帖子<a href="https://www.right.com.cn/forum/thread-8281362-1-1.html">https://www.right.com.cn/forum/thread-8281362-1-1.html</a><br>
+我在chh的帖子<a href="https://www.chiphell.com/thread-2502752-1-1.html">https://www.chiphell.com/thread-2502752-1-1.html</a></p>
+]]></content>
+      <categories>
+        <category>网络</category>
+      </categories>
+      <tags>
+        <tag>openwrt</tag>
+        <tag>旁路由</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>京东AX1800 pro拆机刷uboot及华硕固件</title>
+    <url>/posts/12783.html</url>
+    <content><![CDATA[<p>最近入手了一台京东AX1800pro 亚瑟路由器，64GB版本的，算上各种优惠后不到80块钱拿下。<br>
+到手后看到版本是R2242，按理说应该是是符合网上大神教程里面的免拆刷机版本的，但是按照教程一步一步折腾了好几次之后都没成功，后来回想可能是第一次开机之后在wan口插了网线，连接了互联网，导致被打了补丁所致。于是乎只剩下拆机通过TTL来刷机了。<br>
+过程倒是挺顺利的。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20240904101100.png" alt="20240904101100"><br>
+首先是将顶部的盖板撬开，拆除里面的两颗螺丝，接着底部的橡胶垫边缘撬起，在六边形的六个角有六颗螺丝，拆掉后就可以将底板拆掉。拆掉之后还有五颗螺丝固定主板的固定支架，拆掉后就可以将主板抽出了。<br>
+接着在主板TTL接口处焊接三个接线柱，分别是G、T、R三个口，对应CH340G模块的G、R、T，用杜邦线连接好，电脑上装好驱动，用网线连接路由器LAN口和电脑，就可以开始操作了。</p>
+<span id="more"></span>
+<p>将uboot.mbn放到tftpd的根目录。刷机过程中保持tftpd软件为开启状态。<br>
+用putty连接对应的COM口，波特率为115200。<br>
+通电开启，putty界面按回车键出现IPQ6018命令行，输入</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">tftpboot u-boot.mbn</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>等待命令执行完再输入</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">tftpboot u-boot.mbn &amp;&amp; flash 0:APPSBL &amp;&amp; flash 0:APPSBL_1</span><br></pre></td></tr></table></figure>
+<p>执行完毕后断开TTL连接然后，重启路由器即可。电脑配置192.168.1网段的IP，浏览器进入192.168.1.1即可上传固件刷机。注意先上传华硕底包，然后进入路由器后台选择固件升级，再上传正式固件即可。<br>
+uboot及固件下载链接：<br>
+链接：<a href="https://pan.baidu.com/s/1Nt1q3qWMUTlxAurM6av95A?pwd=76ao">https://pan.baidu.com/s/1Nt1q3qWMUTlxAurM6av95A?pwd=76ao</a><br>
+提取码：76ao</p>
+]]></content>
+      <categories>
+        <category>网络</category>
+      </categories>
+      <tags>
+        <tag>京东</tag>
+        <tag>路由器</tag>
+        <tag>AX1800PRO</tag>
+        <tag>刷机</tag>
+        <tag>华硕</tag>
+        <tag>固件</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>使用cloudflare重定向规则无缝切换域名</title>
+    <url>/posts/16703.html</url>
+    <content><![CDATA[<h2 id="引言"><a class="header-anchor" href="#引言">¶</a>引言</h2>
+<p>昨天注册了一个ycyc.win的域名，想着把之前的miaoyang.win换掉。虽然主域名已经解析到了站点，也可以正常访问了，但旧域名还在正常工作，并且搜索引擎收录的也是旧域名。那如何能使旧域名跳转到新域名，而且要保证搜索引擎收录的页面也能正常跳转呢？需要用到之前给图床加速的cloudflare的重定向规则功能。</p>
+<h2 id="操作"><a class="header-anchor" href="#操作">¶</a>操作</h2>
+<p>我们进入到旧域名的cloudflare页面，找到规则-重定向规则，然后新建一条。<br>
+<img src="https://cdn.ycyc.win/gh/miaoyanginfo/hexo-img/img/202409150807412.png" alt="image.png"><br>
+按照图中所示填入新旧域名，然后保存生效。这次状态代码那里要选择301。</p>
+<h2 id="测试"><a class="header-anchor" href="#测试">¶</a>测试</h2>
+<p>进入搜索引擎找一个被收录的旧域名页面打开，看其是否跳转到了新域名，而且页面是否正确。<br>
+<a href="https://miaoyang.win/posts/2353">https://miaoyang.win/posts/2353</a></p>
+<h2 id="后记"><a class="header-anchor" href="#后记">¶</a>后记</h2>
+<p>之前想要实现以上功能，大部分情况下都需要另外搭建一台nginx服务器，然后设置301跳转。现在只要在cloudflare简单设置一下，就可以省去搭建单独服务器的成本，并且可以利用其内置的多种类型条件，实现不同的功能。</p>
+]]></content>
+      <categories>
+        <category>网络</category>
+      </categories>
+      <tags>
+        <tag>Cloudflare</tag>
+        <tag>域名</tag>
+        <tag>重定向</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>嘿嘿，ycyc.win</title>
+    <url>/posts/13691.html</url>
+    <content><![CDATA[<p>昨天不是在处理阿里云域名往porkbun转移的事嘛，然后一直联系阿里售后工单也没有进展。今天闲来无事看了看porkbun上的域名价格，看看有啥优惠合适的域名再注册一个。搜了一会发现ycyc.win还没有注册，ycyc寓意渊澄YC，是我儿女的名字，子渊和子澄。而且现在.win域名注册也有优惠，第一年3.56美刀，续费4.98美刀，折合每年35块钱左右，于是一口气注册了10年。最终一共花了35.6美刀，支付宝直接付款，折合人民币254.68元。每年也就20几块钱。😜<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/202409141409625.png" alt="image.png"></p>
+<p>现在已经将域名的NS服务器更改到了cloudflare，也解析到了目前这个站点，现在就可以通过<a href="https://ycyc.win">https://ycyc.win</a> 来访问渊澄YC站点了。随后我会将之前miaoyang.win的主要业务陆续切到ycyc.win这个域名来。<br>
+现在发现拼音状态下输入ycyc出来的词语是阴差阳错😳</p>
+]]></content>
+      <categories>
+        <category>网络</category>
+      </categories>
+      <tags>
+        <tag>域名</tag>
+        <tag>网站</tag>
+        <tag>ycyc</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>域名从阿里云转移到porkbun记录</title>
+    <url>/posts/21876.html</url>
+    <content><![CDATA[<h2 id="前言"><a class="header-anchor" href="#前言">¶</a>前言</h2>
+<p>我现在用的这个域名miaoyang.win是2016年的时候在阿里云注册的，当时.win域名有优惠活动，好像是5元还是10元每年，最多可以一次性注册10年。所以我注册了10年两个.win的域名。<br>
+好巧不巧，注册了没几年，具体什么时候我忘记了，<a href="http://xn--ykqva161b154anm2aupl1rh.org">阿里云被取消了.org</a>、.win、.name等域名的注册管理机构许可，域名被强制转移到了阿里巴巴国际站。 当时想着距离到期时间还长，而且我的域名NS服务器也转移到了cloudflare，所以就没怎么关心续费和转移的事情。<br>
+现在眼看着马上还有两年就到期了，所以试着去阿里云国际站看看续费的事情，不看不知道，一看吓一跳，不仅续费费用比其他域名注册商要高，一年要6.19美刀，而且在支付的时候还需要添加一张外币信用卡才能付款，中国大陆还不支持paypal。最让人受不了的是居然连自家的支付宝也不支持。。。想想现在许多国外域名主机商都开始支持支付宝直接付款了，阿里云国际站居然不支持自己的支付宝付款。。😠</p>
+<span id="more"></span>
+<p><img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/202409131652855.png" alt="image.png"></p>
+<p>好吧，只能使大招了，乾坤大挪移，把域名转移到其他注册商去。</p>
+<p>对比了一下.win域名转移到godaddy需要285块大洋。而转移到porkbun只需要4.29美刀/年，并且也支持支付宝直接付款。<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/202409131753618.png" alt="image.png"></p>
+<h2 id="域名转移流程"><a class="header-anchor" href="#域名转移流程">¶</a>域名转移流程</h2>
+<p>转移第一步是前往原注册商那里获取转移授权码。大部分域名注册商限制新域名必须注册满60天以后才能进行转出操作，当然我这个域名已经注册8年了，不存在这个限制。另外注册商都不想要域名被转出去，所以转移码获取入口相对来说比较隐蔽，有的需要联系客服才能获取。好在阿里云这个转出功能标示还是比较明显的。</p>
+<p><img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/202409131704864.png" alt="image.png"></p>
+<p>在获取到这个授权码之后就可以到你要转入的注册商那里填入域名和授权码进行付费了，一般域名在注册商之间转移操作，新的域名注册商会收取一年的续费费用。</p>
+<p><img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/202409131706628.png" alt="image.png"></p>
+<p>但是我就是卡在第一步了，按照提示输入邮箱验证码之后直接报错返回到第一步了，并且报错信息一闪而过，看不清楚，目前正在提交工单等待售后处理。。。</p>
+<h3 id="2024-9-15更新"><a class="header-anchor" href="#2024-9-15更新">¶</a>2024/9/15更新</h3>
+<p>经过三天的等待终于获取到了转移授权码。在porkbun的域名转移页面填入域名和对应的转移授权码之后，完成付款即可等待转移生效。<br>
+我的这个域名转移收费4.29美元，折合人民币30.69元。支持支付宝付款。<br>
+<img src="https://cdn.ycyc.win/gh/miaoyanginfo/hexo-img/img/202409151450233.png" alt="image.png"></p>
+<p>再次前往阿里云查看域名转出进度。点击立即转出，验证邮箱链接之后，可加快转出速度。一般转移需要等待的时间比新注册要长一点，最慢需要5-7天才能完成转移。<br>
+<img src="https://cdn.ycyc.win/gh/miaoyanginfo/hexo-img/img/202409151458719.png" alt="image.png"></p>
+<p>我这边等了5分钟左右，porkbun处显示域名状态已经正常了。如果超时没有完成，需要联系转入的域名注册商进行处理。<br>
+等待转移成功之后就可以在新的域名注册商处进行域名管理和续费了。<br>
+<img src="https://cdn.ycyc.win/gh/miaoyanginfo/hexo-img/img/202409151503200.png" alt="image.png"></p>
+<h2 id="后记"><a class="header-anchor" href="#后记">¶</a>后记</h2>
+<p>域名转移其实很简单，在原注册商那里获取到转移码就成功了一大半了。关键在于如何选择新转入的域名注册商，除了续费价格因素外，还要尽量找一些业界口碑好的注册商。当然目前国内审查机制越来越严格，政策三天两头做调整，而且还强制实名和备案。所以建议有条件的朋友都尽量把域名转移到国外域名注册商去。</p>
+]]></content>
+      <categories>
+        <category>网络</category>
+      </categories>
+      <tags>
+        <tag>域名</tag>
+        <tag>阿里云</tag>
+        <tag>转移</tag>
+        <tag>porkbun</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>渊澄短链接服务上线了！</title>
+    <url>/posts/37049.html</url>
+    <content><![CDATA[<p>利用国庆假期搭建了一个短链接生成服务，使用任意长链接可以生成类似于<a href="https://to.ycyc.win/yourlink">https://to.ycyc.win/yourlink</a> 的短链接，虽然也不是很短😜，但有胜于无。<br>
+站点地址 <a href="https://to.ycyc.win">https://to.ycyc.win</a><br>
+使用方法很简单，在输入框输入你需要生成短链接的长链接，点击生成按钮即可。<br>
+然后你也可以使用备用站点 <a href="https://2.ycyc.win">https://2.ycyc.win</a> 来生成（2和to同音，而且又少了一个字符👏）。两个站点地址数据共享，后缀可通用。</p>
+<p><img src="https://img.ycyc.win/img/202410021236082.png" alt="image.png"></p>
+<blockquote>
+<p>重要声明：免费服务，使用前需遵守中华人民共和国相关法律法规，切勿用于非法用途，以免服务被封，影响其他人的使用！</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>网络</category>
+      </categories>
+      <tags>
+        <tag>短链接</tag>
+        <tag>渊澄</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>自己网络及设备服务分享</title>
+    <url>/posts/2895.html</url>
+    <content><![CDATA[<p><img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/962005074.png" alt="微信截图_20220329163639.png"></p>
+<h2 id="概述"><a class="header-anchor" href="#概述">¶</a>概述</h2>
+<h4 id="上图是我家目前的网络拓扑示意图，及部分设备正在运行的服务，下面我将尽量对每个设备及所提供的服务来做详细的介绍，某些服务由于涉及到的知识点较多，以后可以能单独写文章来介绍。"><a class="header-anchor" href="#上图是我家目前的网络拓扑示意图，及部分设备正在运行的服务，下面我将尽量对每个设备及所提供的服务来做详细的介绍，某些服务由于涉及到的知识点较多，以后可以能单独写文章来介绍。">¶</a>上图是我家目前的网络拓扑示意图，及部分设备正在运行的服务，下面我将尽量对每个设备及所提供的服务来做详细的介绍，某些服务由于涉及到的知识点较多，以后可以能单独写文章来介绍。</h4>
+<h2 id="联通光猫"><a class="header-anchor" href="#联通光猫">¶</a>联通光猫</h2>
+<p>负责运营商光纤到户后的光电转换，并给固定电话和IPTV提供接入服务。<br>
+网络方面，光猫使用桥接模式，不负责拨号，不负责提供WIFI服务，WIFI服务由华为AX3路由器及水星D191G路由器负责。</p>
+<h2 id="华为AX3路由器"><a class="header-anchor" href="#华为AX3路由器">¶</a>华为AX3路由器</h2>
+<p>负责宽带拨号，负责提供DHCP服务，负责提供WIFI覆盖服务，负责局域网内设备的端口转发服务及DMZ服务，为了方便远程管理内网设备，还在路由器上部署了花生壳的DDNS服务。WAN口与上级的联通光猫连接，LAN与需要提供网络服务的下级设备连接。<br>
+##水星D191G路由器<br>
+提供WIFI覆盖服务及普通交换机服务。LAN口与上级主路由的LAN口连接，LAN口IP设置为和上级路由器一个网段，方便管理，关闭DHCP,DHCP服务由上级路由统一管理。剩余的LAN口可作为交换机使用，连接设备后将自动从华为AX3路由器获取IP地址。</p>
+<h2 id="N1盒子-OPENWRT"><a class="header-anchor" href="#N1盒子-OPENWRT">¶</a>N1盒子-OPENWRT</h2>
+<p>N1盒子已刷F大的OPENWRT系统，目前作为旁路由使用，提供科学上网服务，里面内置Docker服务，由于N1是24小时全天候运行，所以使用Docker服务部署了HomeAssistant服务来管理家里智能设备的自动化运行，后来又部署了青龙面板JD签到服务。为了方便远程管理N1路由器和里面的Docker容器，所以在华为AX3主路由上将N1的80端口和Docker容器中用到的端口做了转发处理，这样在外网环境下使用DDNS域名+对应端口就可以了访问到内网的服务了。</p>
+<h5 id="N1盒子及OPENWRT的其他使用分享我会再后续分功能来介绍"><a class="header-anchor" href="#N1盒子及OPENWRT的其他使用分享我会再后续分功能来介绍">¶</a>N1盒子及OPENWRT的其他使用分享我会再后续分功能来介绍</h5>
+<p>##群晖NAS<br>
+为局域网设备提供网络存储服务，目前我使用到的服务套件有Synology MailPlus Server，使用自己的域名搭建邮件服务器；Synology Photos，用于备份和管理移动端的相片等，DownloadStaion用来下载文件和电影，配合浏览器插件，用起来很方便。WebStaion用来搭建网站。还有Docker服务，目前我在群晖的Docker上部署了KMS激活服务、阿里云盘WEBDAV服务、和FRPC服务三个容器。KMS激活服务用于直接激活内网环境下VOL版本的Windows系统和Office办公软件，如果将端口映射出去，也可以用于外网的激活。阿里云盘WEBDAV服务是将阿里云盘转换为标准的WEBDAV协议，可以在各种客户端中使用WEBDAV协议来读写云盘里面的文件。最后一个FRPC服务是一个用于内网穿透的服务，可以在外网环境下直接使用域名访问到内网中的各种服务。另外我在群晖NAS里面部署了DNSPOD的DDNS服务，将自己的域名解析到了NAS，而且在华为AX3主路由上将群晖NAS的主机加到了DMZ服务，这样直接使用DDNS服务的域名加端口就可以直接访问到群晖里面的各种服务，不需要单独做转口转发服务，当然除了运营商已经封锁掉的80/443等端口。这也是我为什么要在Docker上再跑一个DRPC服务的原因了。</p>
+<h5 id="群晖NAS的相关使用及经验分享可能后续会单独开个分类。"><a class="header-anchor" href="#群晖NAS的相关使用及经验分享可能后续会单独开个分类。">¶</a>群晖NAS的相关使用及经验分享可能后续会单独开个分类。</h5>
+]]></content>
+      <categories>
+        <category>网络</category>
+      </categories>
+      <tags>
+        <tag>openwrt</tag>
+        <tag>路由器</tag>
+        <tag>网络</tag>
+        <tag>NAS</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>转载-openwrt最新版本passwall（帕斯沃）设置节点掉线时自动切换的方法</title>
+    <url>/posts/39533.html</url>
+    <content><![CDATA[<p>之前OpenWrt系统passwall（帕斯沃）插件里面有个“自动切换”的功能，就是系统检测当前选择的节点如果有故障，会自动切换到备选的节点，以保持网络畅通。然而在Openwrt最新的版本中，passwall的作者不知何故把这个功能给砍掉了，其实这个功能挺好用的，有不少小伙伴私下问我新版本没有了这个功能？于是博主趁着周末研究了一下，发现“自动切换”的功能在原来的菜单上没有了，但是在别处是可以设置的，一起来设置一下吧。</p>
+<span id="more"></span>
+<p>1、进入passwall菜单，找到“Socks设置”，把“Socks主开关”打勾，根据自己实际情况选择“Socks节点”，并设置“Socks监听端口”（这个端口号要记住，等下要用到）和“HTTP监听端口”，设置完成后点“保存&amp;应用”；</p>
+<p><img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20240105095030.png" alt="20240105095030"></p>
+<p>2、在下图的位置中点“修改”；</p>
+<p><img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20240105095046.png" alt="20240105095046"></p>
+<p>3、进入“Socks设置”，找到“自动切换”，打勾；</p>
+<p><img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20240105095100.png" alt="20240105095100"></p>
+<p>4、在备用节点的列表中，根据自己实际情况，选择备用节点，在“恢复切换”处打勾，设置完成点“保存&amp;应用”；</p>
+<p><img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20240105095111.png" alt="20240105095111"></p>
+<p>5、回到passwall主菜单上，点“节点列表”，添加；</p>
+<p><img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20240105095125.png" alt="20240105095125"></p>
+<p>6、节点名称自己写一下（我写的是：自动切换），类型为“Socks”，地址写“127.0.0.1”，端口写第1个步骤设置的“Socks监听端口”，点“保存&amp;应用”；</p>
+<p><img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20240105095136.png" alt="20240105095136"></p>
+<p>7、在passwall主界面，在“TCP节点”处改成上一个步骤我们自己添加的节点名称，点“保存&amp;应用”；</p>
+<p><img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20240105095146.png" alt="20240105095146"></p>
+<p>8、来测试一下网络，全部畅通，证明设置有效。</p>
+<p><img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20240105095157.png" alt="20240105095157"></p>
+<p>9、如果将来需要改变主用节点的话，只需要在“Socks配置”那里把“Socks节点”选择好，点“保存&amp;应用”就可以了。</p>
+<p>原文链接： <a href="https://wp.gxnas.com/13924.html">https://wp.gxnas.com/13924.html</a></p>
+]]></content>
+      <categories>
+        <category>网络</category>
+      </categories>
+      <tags>
+        <tag>openwrt</tag>
+        <tag>passwall</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>配置iStoreOS虚拟机</title>
+    <url>/posts/26090.html</url>
+    <content><![CDATA[<p>第一步，配置网络：<br>
+<img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20240106094645.png" alt="20240106094645"><br>
+出现上述图像后，单机 Enter 进入命令行</p>
+<span id="more"></span>
+<p>请您在 Shell 中输入如下命令，以便编辑文件</p>
+<p>vi /etc/config/network<br>
+Text<br>
+image-20231011135937094</p>
+<p>现在您进入了 vi 编辑器：</p>
+<p>键盘按 i 进入输入模式（代表insert输入的意思）</p>
+<p>找到 config interface ‘lan’下的 option ipaddr</p>
+<p>默认配置为：</p>
+<p>config interface ‘lan’<br>
+…<br>
+option ipaddr ‘192.168.1.1’<br>
+Text<br>
+此处需要您自行修改ipaddr，我用我的修改方法作为例子：</p>
+<p>我们看到下面我的gateway（网关）为192.168.31.1，这是我的小米路由器的网关ip</p>
+<p>所以我如果想在小米路由器的局域网内访问，我需要将ipaddr更改为192.168.31.x。</p>
+<p>这里我将openwrt的局域网ip改为：192.168.31.91，这样就处于小米路由器所构建的局域网内，这样使用其他局域网内的设备就能通过这个ip来访问iStoreOS的Web界面。</p>
+<p><img src="https://cdn.miaoyang.win/gh/miaoyanginfo/hexo-img/img/20240106094729.png" alt="20240106094729"></p>
+<p>修改完毕后，按下 Esc，输入 “:wq”(保存并退出)，退出 vi 编辑器。</p>
+<p>输入以下命令，重启虚拟机。</p>
+]]></content>
+      <categories>
+        <category>网络</category>
+      </categories>
+      <tags>
+        <tag>openwrt</tag>
+        <tag>网络</tag>
+        <tag>istoreOS</tag>
+      </tags>
+  </entry>
+</search>
