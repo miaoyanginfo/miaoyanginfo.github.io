@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 8.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha256-5eIC48iZUHmSlSUz9XtjRyK2mzQkHScZY1WdMaoz74E=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"ycyc.win","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.21.0","exturl":false,"sidebar":{"position":"right","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":true,"style":"default"},"fold":{"enable":true,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false,"trigger":"auto"}}</script><script src="/js/config.js"></script>
+<meta name="baidu-site-verification" content="codeva-bE38FCRhng" />
+
+    <meta name="description" content="¶前言 对于习惯了使用WordPress等传统CMS程序的用户来说，使用纯静态的hexo更新网站或多或少还是有些不太适应。缺少了管理后台，无法直观的管理站点的日志和页面，只能通过一个个静态文件来更新。并且想要发布还需要去向github提交更改。 ¶介绍  Github上有个开源项目名为Qexo，这是一个为静态站点而生的项目，官方介绍为“Qexo 是一个快速、强大、美观的在线 静态博客编辑器。使用">
+<meta property="og:type" content="article">
+<meta property="og:title" content="让HEXO“动起来”-体验Qexo静态博客管理面板">
+<meta property="og:url" content="https://ycyc.win/posts/23533.html">
+<meta property="og:site_name" content="渊澄">
+<meta property="og:description" content="¶前言 对于习惯了使用WordPress等传统CMS程序的用户来说，使用纯静态的hexo更新网站或多或少还是有些不太适应。缺少了管理后台，无法直观的管理站点的日志和页面，只能通过一个个静态文件来更新。并且想要发布还需要去向github提交更改。 ¶介绍  Github上有个开源项目名为Qexo，这是一个为静态站点而生的项目，官方介绍为“Qexo 是一个快速、强大、美观的在线 静态博客编辑器。使用">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img.ycyc.win/img/202409251349501.png">
+<meta property="og:image" content="https://img.ycyc.win/img/202409251036113.png">
+<meta property="og:image" content="https://img.ycyc.win/Qexo/24/9/image_547c7788639701b124967757991368f9.png">
+<meta property="og:image" content="https://img.ycyc.win/img/202409251041205.png">
+<meta property="og:image" content="https://img.ycyc.win/img/202409251143690.png">
+<meta property="og:image" content="https://img.ycyc.win/Qexo/24/9/image_636f76ab9a82fe2264b49d3f2e4a0d66.png">
+<meta property="og:image" content="https://img.ycyc.win/img/202409251049070.png">
+<meta property="article:published_time" content="2024-09-25T02:24:00.000Z">
+<meta property="article:modified_time" content="2024-09-29T18:45:18.634Z">
+<meta property="article:author" content="渊澄YC">
+<meta property="article:tag" content="HEXO">
+<meta property="article:tag" content="QEXO">
+<meta property="article:tag" content="vercel">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img.ycyc.win/img/202409251349501.png">
+
+
+<link rel="canonical" href="https://ycyc.win/posts/23533.html">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://ycyc.win/posts/23533.html","path":"posts/23533.html","title":"让HEXO“动起来”-体验Qexo静态博客管理面板"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>让HEXO“动起来”-体验Qexo静态博客管理面板 | 渊澄</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="渊澄" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">渊澄</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">川流不息，渊澄取映<iYCYC.com></p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-哔哔"><a href="/talks/" rel="section"><i class="fa fa-commenting fa-fw"></i>哔哔</a></li><li class="menu-item menu-item-友链"><a href="/links/" rel="section"><i class="fa fa-users fa-fw"></i>友链</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%8B%E7%BB%8D"><span class="nav-number">2.</span> <span class="nav-text">介绍</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%8E%E8%AE%B0"><span class="nav-number">3.</span> <span class="nav-text">后记</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%95%E7%94%A8"><span class="nav-number">4.</span> <span class="nav-text">引用</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="渊澄YC"
+      src="/images/logo_yc_07.png">
+  <p class="site-author-name" itemprop="name">渊澄YC</p>
+  <div class="site-description" itemprop="description">iYCYC.com</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">180</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">283</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/miaoyanginfo" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;miaoyanginfo" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/miaoyanginfo" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;miaoyanginfo" rel="noopener me" target="_blank"><i class="fab fa-x-twitter fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://t.me/yuanchengYC" title="telegram → https:&#x2F;&#x2F;t.me&#x2F;yuanchengYC" rel="noopener me" target="_blank"><i class="fab fa-telegram fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="RSS → &#x2F;atom.xml" rel="noopener me"><i class="fa fa-rss fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://instagram.com/miaoyang1989" title="Instagram → https:&#x2F;&#x2F;instagram.com&#x2F;miaoyang1989" rel="noopener me" target="_blank"><i class="fab fa-instagram fa-fw"></i></a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+<div class="cc-license animated" itemprop="sponsor">
+  <a href="/images/zanshangma.png" class="cc-opacity" title="扫码请我喝杯咖啡吧 → " target="_blank"><img width="150" src="/images/zanshangma.png" alt="Netlify"></a>
+</div>
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="返回顶部">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://ycyc.win/" title="https:&#x2F;&#x2F;ycyc.win">netlify镜像</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://miaoyang.win/" title="https:&#x2F;&#x2F;miaoyang.win" rel="noopener" target="_blank">vercel镜像</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://sshome.win/" title="https:&#x2F;&#x2F;sshome.win" rel="noopener" target="_blank">github镜像</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://iycyc.com/" title="https:&#x2F;&#x2F;iycyc.com" rel="noopener" target="_blank">cloudflare镜像</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://iycyc.com/" title="https:&#x2F;&#x2F;iycyc.com&#x2F;" rel="noopener" target="_blank">首页</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://valine.ycyc.win/" title="https:&#x2F;&#x2F;valine.ycyc.win&#x2F;" rel="noopener" target="_blank">评论管理</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://www.travellings.cn/go.html" title="https:&#x2F;&#x2F;www.travellings.cn&#x2F;go.html" rel="noopener" target="_blank">开往</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="/sitemap.xml" title="&#x2F;sitemap.xml">站点地图</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ycyc.win/posts/23533.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/logo_yc_07.png">
+      <meta itemprop="name" content="渊澄YC">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="渊澄">
+      <meta itemprop="description" content="iYCYC.com">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="让HEXO“动起来”-体验Qexo静态博客管理面板 | 渊澄">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          让HEXO“动起来”-体验Qexo静态博客管理面板
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-09-25 10:24:00" itemprop="dateCreated datePublished" datetime="2024-09-25T10:24:00+08:00">2024-09-25</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2024-09-30 02:45:18" itemprop="dateModified" datetime="2024-09-30T02:45:18+08:00">2024-09-30</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/HEXO/" itemprop="url" rel="index"><span itemprop="name">HEXO</span></a>
+        </span>
+    </span>
+
+  
+    <span id="/posts/23533.html" class="post-meta-item leancloud_visitors" data-flag-title="让HEXO“动起来”-体验Qexo静态博客管理面板" title="阅读次数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span class="leancloud-visitors-count"></span>
+    </span>
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span id="/posts/23533.html" class="post-meta-item twikoo_visitors" data-flag-title="让HEXO“动起来”-体验Qexo静态博客管理面板" title="阅读次数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="twikoo_visitors"></span>
+    </span>
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>988</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>4 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h2 id="前言"><a class="header-anchor" href="#前言">¶</a>前言</h2>
+<p>对于习惯了使用WordPress等传统CMS程序的用户来说，使用纯静态的hexo更新网站或多或少还是有些不太适应。缺少了管理后台，无法直观的管理站点的日志和页面，只能通过一个个静态文件来更新。并且想要发布还需要去向github提交更改。</p>
+<h2 id="介绍"><a class="header-anchor" href="#介绍">¶</a>介绍</h2>
+<p><img src="https://img.ycyc.win/img/202409251349501.png" alt="qexo01.png"></p>
+<p>Github上有个开源项目名为Qexo，这是一个为静态站点而生的项目，官方介绍为“Qexo 是一个快速、强大、美观的在线 静态博客编辑器。使用 GPL3.0 开源协议。支持包括且不限于在 Vercel 等平台部署, 为您的静态博客添加动态的元素”。程序方面目前支持Hexo、Hugo和Valaxy。如果你正在使用这些程序，可以尝试一下。这个项目支持在Vercel平台一键部署，免去了额外的花销。而且官方也有较为详细的配置文档，新手也很容易上手。<a target="_blank" rel="noopener" href="https://www.oplog.cn/qexo/start.html">Qexo 文档 (oplog.cn)</a><br>
+部署前需要确认你的hexo已经通过github action设置了自动化部署，如何设置github action可以参阅我之前的文章<a href="https://ycyc.win/posts/42824">使用GitHub Action实现HEXO的自动编译和发布 | 渊澄|YCYC.WIN</a><br>
+还需要注意的是如果你是在vercel部署的，需要在项目设置那里将node.js版本降级为18.x。这一点文档里面也着重强调了。</p>
+<span id="more"></span>
+<p>部署完成之后就可以进入站点页面进行配置了。（当然你也可以在vercel设置自定义域名，只需将域名cname解析到vercel即可）。根据页面提示和文档获取相关的github和vercel密钥，然后创建管理员账户之后就可以登录了。<br>
+<img src="https://img.ycyc.win/img/202409251036113.png" alt="qexo00.png"></p>
+<p><s>Qexo同样支持图床的配置，但是我配置完Github图床之后有系统报错，看报错代码像是仓库中有同名文件，<a href="https://ycyc.win/posts/2192?highlight=picgo">picgo422错误代码 | 渊澄|YCYC.WIN</a>，但已排除。不知何故，已经在项目issues提问了。</s>—</p>
+<p>经过排查，问题为设置界面的“保存路径”输入有误，需要按照Qexo的格式来填写，和其他图床插件不一样。<a target="_blank" rel="noopener" href="https://www.oplog.cn/qexo/configs/upload.html#%E8%87%AA%E5%AE%9A%E4%B9%89%E5%9F%9F%E5%90%8D-2">Qexo 文档 (oplog.cn)</a></p>
+<p><img src="https://img.ycyc.win/Qexo/24/9/image_547c7788639701b124967757991368f9.png" alt="https://img.ycyc.win/Qexo/24/9/image_547c7788639701b124967757991368f9.png"></p>
+<p>界面上的日志新增、编辑、删除都会push到Github仓库。<br>
+虽然面板上还无法像wordpress那样对种主题和插件进行可视化设置，但是可以从配置选项卡直接编辑对应的配置文件，也算是弥补了一些遗憾。<br>
+<img src="https://img.ycyc.win/img/202409251041205.png" alt="image.png"></p>
+<p>另外Qexo还提供了一个说说和友情链接的模块可供选用，部署也简单，只需新建相关页面，然后插入代码对应即可。另外说说的编辑是不会产生仓库push的。实际测试该模块在国内的网络环境下好像加载不出来，可能与Qexo部署在vercel有关。<br>
+<img src="https://img.ycyc.win/img/202409251143690.png" alt="image.png"></p>
+<h2 id="后记"><a class="header-anchor" href="#后记">¶</a>后记</h2>
+<p>整体体验下来还算可以，界面设计和布局都比较容易上手。只是响应速度有点慢，可能与vercel访问速度慢有关。<s>还有一个问题我发现站点实际的文章总数与Qexo界面显示的文章总数不一致，可能是我新发的两篇文章是在安装了Qexo之后用Obsidian发布的，没有统计进去。</s>（这个问题在界面刷新界面清除缓存或者设置webhook可解决）。<a target="_blank" rel="noopener" href="https://www.oplog.cn/qexo/start/questions.html#%E4%B8%BA%E4%BB%80%E4%B9%88%E6%88%91%E6%96%B0%E5%BB%BA%E7%9A%84%E6%96%87%E7%AB%A0%E6%B2%A1%E6%9C%89%E6%98%BE%E7%A4%BA-qexo-%E5%A6%82%E4%BD%95%E4%BF%9D%E8%AF%81%E6%96%87%E4%BB%B6%E6%9C%80%E6%96%B0">常见问题 | Qexo 文档 (oplog.cn)</a></p>
+<p><img src="https://img.ycyc.win/Qexo/24/9/image_636f76ab9a82fe2264b49d3f2e4a0d66.png" alt="https://img.ycyc.win/Qexo/24/9/image_636f76ab9a82fe2264b49d3f2e4a0d66.png"></p>
+<p>另外我目前已经习惯了在Obsidian编写hexo，大部分情况可能不会去用Qexo编写，但是如果在移动端等其他不方便部署环境的地方，会选择用Qexo来进行站点的更新。可以作为一个备选方案。</p>
+<p><img src="https://img.ycyc.win/img/202409251049070.png" alt="f5c3d9a5b0a822be70c754af795b6c7.jpg"></p>
+<h2 id="引用"><a class="header-anchor" href="#引用">¶</a>引用</h2>
+<p><a target="_blank" rel="noopener" href="https://www.oplog.cn/qexo/start.html">Qexo 文档 (oplog.cn)</a><br>
+<a target="_blank" rel="noopener" href="https://github.com/Qexo/Qexo">Qexo/Qexo: A fast, powerful and beautiful online manager for all static blog frameworks. (github.com)</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/zanshangma.png" alt="渊澄YC 微信赞赏">
+        <span>微信赞赏</span>
+      </div>
+
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/HEXO/" rel="tag"># HEXO</a>
+              <a href="/tags/QEXO/" rel="tag"># QEXO</a>
+              <a href="/tags/vercel/" rel="tag"># vercel</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/13016.html" rel="prev" title="Obsidian格式化插件-Linter">
+                  <i class="fa fa-angle-left"></i> Obsidian格式化插件-Linter
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/posts/6420.html" rel="next" title="魔改版picgo体验-piclist">
+                  魔改版picgo体验-piclist <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments"><div id="twikoo-comments"></div></div>
+
+
+<!-- Insert google ad blocks -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2779370055018487"
+     crossorigin="anonymous"></script>
+<!-- iycyc -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2779370055018487"
+     data-ad-slot="5260578883"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="beian"><a href="https://icp.gov.moe/?keyword=20241068" rel="noopener" target="_blank">萌ICP备20241068号 </a>
+  </div>
+  <div class="copyright">
+    &copy; 2022 – 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">渊澄|iYCYC.com</span>
+     
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">79k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">4:47</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2779370055018487"
+     crossorigin="anonymous"></script><div class="cc-license animated" itemprop="sponsor">
+  <a href="https://www.foreverblog.cn/blog/6194.html" target="_blank" > <img src="https://foreverblog.cn/assets/logo/logo_en_default.png" alt="" style="width:auto;height:16px;"> </a>
+  <a href="https://www.foreverblog.cn/go.html" class="cc-opacity" title="穿梭虫洞-随机访问十年之约友链博客" target="_blank"><img width="100" src="https://img.foreverblog.cn/wormhole_2.gif" alt="ForeverBlog"></a>
+  <a href="https://www.travellings.cn/go.html" class="cc-opacity" title="开往-友链接力" target="_blank"><img width="100" src="https://www.travellings.cn/assets/logo.gif" alt="travellings"></a>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+  <script class="next-config" data-name="leancloud_visitors" type="application/json">{"enable":true,"app_id":"fBkLaeZXGpwDElmlfn34D9sa-MdYXbMMI","app_key":"Ggv7YHQFQGCnmpQGXsXCxJXX","server_url":"https://leancloud.ycyc.win","security":false}</script>
+  <script src="/js/third-party/statistics/lean-analytics.js"></script>
+
+
+<script class="next-config" data-name="twikoo" type="application/json">{"enable":true,"visitor":true,"envId":"https://twikoo.miaoyang.win:16666","jsUrl":"https://cdn.jsdmirror.com/npm/twikoo/dist/twikoo.all.min.js","el":"#twikoo-comments"}</script>
+<script>
+document.addEventListener('page:loaded', () => {
+  NexT.utils.loadComments(CONFIG.twikoo.el)
+    .then(() => NexT.utils.getScript(
+      CONFIG.twikoo.jsUrl || 'https://cdn.jsdelivr.net/npm/twikoo/dist/twikoo.all.min.js',
+      { condition: window.twikoo }
+    ))
+    .then(() => {
+      twikoo.init(CONFIG.twikoo);
+    });
+});
+</script>
+<style>
+.post-block, .comments {
+  overflow: visible;
+}
+.tk-owo-emotion {
+  display: inline-block;
+}
+</style>
+
+</body>
+</html>

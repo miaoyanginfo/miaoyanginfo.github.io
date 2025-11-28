@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 8.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha256-5eIC48iZUHmSlSUz9XtjRyK2mzQkHScZY1WdMaoz74E=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"ycyc.win","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.21.0","exturl":false,"sidebar":{"position":"right","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":true,"style":"default"},"fold":{"enable":true,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false,"trigger":"auto"}}</script><script src="/js/config.js"></script>
+<meta name="baidu-site-verification" content="codeva-bE38FCRhng" />
+
+    <meta name="description" content="今天将站点的评论系统切换到了twikoo，原先使用的Valine。简单记录一下twikoo的部署和配置过程。 ¶twikoo容器部署 twikoo支持多种方式部署，常用的有vercel，netlify以及cloudflare worker等等，详细对比了各种部署方式的优缺点后，我选择了使用docker来部署。因为我现在家里的旁路由有现成的Docker环境，而且基本上是24小时开机，更重要的是数据存">
+<meta property="og:type" content="article">
+<meta property="og:title" content="站点评论系统由valine切换到twikoo记录">
+<meta property="og:url" content="https://ycyc.win/posts/19025.html">
+<meta property="og:site_name" content="渊澄">
+<meta property="og:description" content="今天将站点的评论系统切换到了twikoo，原先使用的Valine。简单记录一下twikoo的部署和配置过程。 ¶twikoo容器部署 twikoo支持多种方式部署，常用的有vercel，netlify以及cloudflare worker等等，详细对比了各种部署方式的优缺点后，我选择了使用docker来部署。因为我现在家里的旁路由有现成的Docker环境，而且基本上是24小时开机，更重要的是数据存">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img.ycyc.win/img/20250403110133015.png">
+<meta property="og:image" content="https://r2.ycyc.win/2025/04/ae879b360fbc9550f0b28a79c1b3c36f.png">
+<meta property="og:image" content="https://img.ycyc.win/img/20250403111407926.png">
+<meta property="og:image" content="https://img.ycyc.win/img/20250403111227038.png">
+<meta property="article:published_time" content="2025-04-03T02:51:00.000Z">
+<meta property="article:modified_time" content="2025-04-03T03:18:00.000Z">
+<meta property="article:author" content="渊澄YC">
+<meta property="article:tag" content="twikoo">
+<meta property="article:tag" content="valine">
+<meta property="article:tag" content="评论">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img.ycyc.win/img/20250403110133015.png">
+
+
+<link rel="canonical" href="https://ycyc.win/posts/19025.html">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://ycyc.win/posts/19025.html","path":"posts/19025.html","title":"站点评论系统由valine切换到twikoo记录"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>站点评论系统由valine切换到twikoo记录 | 渊澄</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="渊澄" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">渊澄</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">川流不息，渊澄取映<iYCYC.com></p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-哔哔"><a href="/talks/" rel="section"><i class="fa fa-commenting fa-fw"></i>哔哔</a></li><li class="menu-item menu-item-友链"><a href="/links/" rel="section"><i class="fa fa-users fa-fw"></i>友链</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#twikoo%E5%AE%B9%E5%99%A8%E9%83%A8%E7%BD%B2"><span class="nav-number">1.</span> <span class="nav-text">twikoo容器部署</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%81%E4%B9%A6%E7%94%B3%E8%AF%B7%E5%8F%8A%E6%96%B9%E5%90%91%E4%BB%A3%E7%90%86%E8%AE%BE%E7%BD%AE"><span class="nav-number">2.</span> <span class="nav-text">证书申请及方向代理设置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Next%E4%B8%BB%E9%A2%98%E9%85%8D%E7%BD%AEtwikoo"><span class="nav-number">3.</span> <span class="nav-text">Next主题配置twikoo</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#twikoo%E7%9B%B8%E5%85%B3%E9%85%8D%E7%BD%AE"><span class="nav-number">4.</span> <span class="nav-text">twikoo相关配置</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="渊澄YC"
+      src="/images/logo_yc_07.png">
+  <p class="site-author-name" itemprop="name">渊澄YC</p>
+  <div class="site-description" itemprop="description">iYCYC.com</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">180</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">283</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/miaoyanginfo" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;miaoyanginfo" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/miaoyanginfo" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;miaoyanginfo" rel="noopener me" target="_blank"><i class="fab fa-x-twitter fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://t.me/yuanchengYC" title="telegram → https:&#x2F;&#x2F;t.me&#x2F;yuanchengYC" rel="noopener me" target="_blank"><i class="fab fa-telegram fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="RSS → &#x2F;atom.xml" rel="noopener me"><i class="fa fa-rss fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://instagram.com/miaoyang1989" title="Instagram → https:&#x2F;&#x2F;instagram.com&#x2F;miaoyang1989" rel="noopener me" target="_blank"><i class="fab fa-instagram fa-fw"></i></a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+<div class="cc-license animated" itemprop="sponsor">
+  <a href="/images/zanshangma.png" class="cc-opacity" title="扫码请我喝杯咖啡吧 → " target="_blank"><img width="150" src="/images/zanshangma.png" alt="Netlify"></a>
+</div>
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="返回顶部">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://ycyc.win/" title="https:&#x2F;&#x2F;ycyc.win">netlify镜像</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://miaoyang.win/" title="https:&#x2F;&#x2F;miaoyang.win" rel="noopener" target="_blank">vercel镜像</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://sshome.win/" title="https:&#x2F;&#x2F;sshome.win" rel="noopener" target="_blank">github镜像</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://iycyc.com/" title="https:&#x2F;&#x2F;iycyc.com" rel="noopener" target="_blank">cloudflare镜像</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://iycyc.com/" title="https:&#x2F;&#x2F;iycyc.com&#x2F;" rel="noopener" target="_blank">首页</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://valine.ycyc.win/" title="https:&#x2F;&#x2F;valine.ycyc.win&#x2F;" rel="noopener" target="_blank">评论管理</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://www.travellings.cn/go.html" title="https:&#x2F;&#x2F;www.travellings.cn&#x2F;go.html" rel="noopener" target="_blank">开往</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="/sitemap.xml" title="&#x2F;sitemap.xml">站点地图</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ycyc.win/posts/19025.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/logo_yc_07.png">
+      <meta itemprop="name" content="渊澄YC">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="渊澄">
+      <meta itemprop="description" content="iYCYC.com">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="站点评论系统由valine切换到twikoo记录 | 渊澄">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          站点评论系统由valine切换到twikoo记录
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2025-04-03 10:51:00 / 修改时间：11:18:00" itemprop="dateCreated datePublished" datetime="2025-04-03T10:51:00+08:00">2025-04-03</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%BA%94%E7%94%A8/" itemprop="url" rel="index"><span itemprop="name">应用</span></a>
+        </span>
+    </span>
+
+  
+    <span id="/posts/19025.html" class="post-meta-item leancloud_visitors" data-flag-title="站点评论系统由valine切换到twikoo记录" title="阅读次数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span class="leancloud-visitors-count"></span>
+    </span>
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span id="/posts/19025.html" class="post-meta-item twikoo_visitors" data-flag-title="站点评论系统由valine切换到twikoo记录" title="阅读次数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="twikoo_visitors"></span>
+    </span>
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>629</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>2 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>今天将站点的评论系统切换到了twikoo，原先使用的Valine。简单记录一下twikoo的部署和配置过程。</p>
+<h2 id="twikoo容器部署"><a class="header-anchor" href="#twikoo容器部署">¶</a>twikoo容器部署</h2>
+<p>twikoo支持多种方式部署，常用的有vercel，netlify以及cloudflare worker等等，详细对比了各种部署方式的优缺点后，我选择了使用docker来部署。因为我现在家里的旁路由有现成的Docker环境，而且基本上是24小时开机，更重要的是数据存在本地，比较放心。😅<br>
+官方支持的部署方式及描述对比可参阅（<a target="_blank" rel="noopener" href="https://twikoo.js.org/backend.html#%E4%BA%91%E5%87%BD%E6%95%B0%E9%83%A8%E7%BD%B2">云函数部署 | Twikoo 文档</a>）<br>
+Docker 部署命令如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run --name twikoo -e TWIKOO_THROTTLE=1000 -p 8080:8080 -v /mnt/sata1-1/opt/docker/config/twikoo/data:/app/data -d imaegoo/twikoo</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>如果你的8080端口已被占用，请替换为其他可用端口。<br>
+/mnt/sata1-1/opt/docker/config/twikoo/替换为你本地存放twikoo数据的路径。</p>
+</blockquote>
+<p>容器运行后访问IP:8080端口，出现下面提示则说明部署成功。<br>
+<img src="https://img.ycyc.win/img/20250403110133015.png" alt="image.png"></p>
+<span id="more"></span>
+<h2 id="证书申请及方向代理设置"><a class="header-anchor" href="#证书申请及方向代理设置">¶</a>证书申请及方向代理设置</h2>
+<p>因为我的旁路由安装了lucky插件，之前也配置过证书和反向代理，现在新增一条记录即可。<br>
+<img src="https://r2.ycyc.win/2025/04/ae879b360fbc9550f0b28a79c1b3c36f.png" alt="image.png"></p>
+<p>如果你还未配置过Lucky，可参阅<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/660282355">Site Unreachable</a></p>
+<p>配置成功后可以在公网通过https加配置好的域名和端口访问到twikoo服务。</p>
+<h2 id="Next主题配置twikoo"><a class="header-anchor" href="#Next主题配置twikoo">¶</a>Next主题配置twikoo</h2>
+<p>根据twikoo给出的文档，如果和我一样HEXO使用的是Next主题，需要先安装twikoo插件</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># For NexT version &gt;= 8.0.0 &amp;&amp; &lt; 8.4.0</span><br><span class="line">npm install hexo-next-twikoo@1.0.0</span><br><span class="line"># For NexT version &gt;= 8.4.0</span><br><span class="line">npm install hexo-next-twikoo@1.0.3</span><br></pre></td></tr></table></figure>
+<p>然后在Hexo的配置文件中加入下面字段</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">twikoo:</span><br><span class="line">  enable: true</span><br><span class="line">  visitor: true</span><br><span class="line">  envId: xxxxxxxxxxxxxxx #填入配置好的twikoo公网地址</span><br></pre></td></tr></table></figure>
+<p>配置完成之后重新生成HEXO即可。</p>
+<h2 id="twikoo相关配置"><a class="header-anchor" href="#twikoo相关配置">¶</a>twikoo相关配置</h2>
+<p>重新生成HEXO就可以在文章页面下方看到twikoo的评论框，点击齿轮进入twikoo的配置页面，第一次访问需要设置密码。<br>
+下面主要说一下如何从之前的valine中将历史评论导入到twikoo中。<br>
+首先我们登录leancloud，找到创建的应用，如下图所示，点击导出。随后邮箱会收到导出的备份文件<br>
+<img src="https://img.ycyc.win/img/20250403111407926.png" alt=""><br>
+将邮箱收到的备份文件解压后得到名为comment的json文件，然后在twikoo设置中将该文件导入，即可完成valine历史评论的导入工作。<br>
+<img src="https://img.ycyc.win/img/20250403111227038.png" alt=""></p>
+<p>到此，就基本上完成了valine到twikoo的切换工作。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/zanshangma.png" alt="渊澄YC 微信赞赏">
+        <span>微信赞赏</span>
+      </div>
+
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/valine/" rel="tag"># valine</a>
+              <a href="/tags/twikoo/" rel="tag"># twikoo</a>
+              <a href="/tags/%E8%AF%84%E8%AE%BA/" rel="tag"># 评论</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/60784.html" rel="prev" title="HomeAssistant配置备份到OneDrive操作指引">
+                  <i class="fa fa-angle-left"></i> HomeAssistant配置备份到OneDrive操作指引
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/posts/49158.html" rel="next" title="京东亚瑟AX1800pro刷写GPT大分区记录">
+                  京东亚瑟AX1800pro刷写GPT大分区记录 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments"><div id="twikoo-comments"></div></div>
+
+
+<!-- Insert google ad blocks -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2779370055018487"
+     crossorigin="anonymous"></script>
+<!-- iycyc -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2779370055018487"
+     data-ad-slot="5260578883"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="beian"><a href="https://icp.gov.moe/?keyword=20241068" rel="noopener" target="_blank">萌ICP备20241068号 </a>
+  </div>
+  <div class="copyright">
+    &copy; 2022 – 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">渊澄|iYCYC.com</span>
+     
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">79k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">4:47</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2779370055018487"
+     crossorigin="anonymous"></script><div class="cc-license animated" itemprop="sponsor">
+  <a href="https://www.foreverblog.cn/blog/6194.html" target="_blank" > <img src="https://foreverblog.cn/assets/logo/logo_en_default.png" alt="" style="width:auto;height:16px;"> </a>
+  <a href="https://www.foreverblog.cn/go.html" class="cc-opacity" title="穿梭虫洞-随机访问十年之约友链博客" target="_blank"><img width="100" src="https://img.foreverblog.cn/wormhole_2.gif" alt="ForeverBlog"></a>
+  <a href="https://www.travellings.cn/go.html" class="cc-opacity" title="开往-友链接力" target="_blank"><img width="100" src="https://www.travellings.cn/assets/logo.gif" alt="travellings"></a>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+  <script class="next-config" data-name="leancloud_visitors" type="application/json">{"enable":true,"app_id":"fBkLaeZXGpwDElmlfn34D9sa-MdYXbMMI","app_key":"Ggv7YHQFQGCnmpQGXsXCxJXX","server_url":"https://leancloud.ycyc.win","security":false}</script>
+  <script src="/js/third-party/statistics/lean-analytics.js"></script>
+
+
+<script class="next-config" data-name="twikoo" type="application/json">{"enable":true,"visitor":true,"envId":"https://twikoo.miaoyang.win:16666","jsUrl":"https://cdn.jsdmirror.com/npm/twikoo/dist/twikoo.all.min.js","el":"#twikoo-comments"}</script>
+<script>
+document.addEventListener('page:loaded', () => {
+  NexT.utils.loadComments(CONFIG.twikoo.el)
+    .then(() => NexT.utils.getScript(
+      CONFIG.twikoo.jsUrl || 'https://cdn.jsdelivr.net/npm/twikoo/dist/twikoo.all.min.js',
+      { condition: window.twikoo }
+    ))
+    .then(() => {
+      twikoo.init(CONFIG.twikoo);
+    });
+});
+</script>
+<style>
+.post-block, .comments {
+  overflow: visible;
+}
+.tk-owo-emotion {
+  display: inline-block;
+}
+</style>
+
+</body>
+</html>

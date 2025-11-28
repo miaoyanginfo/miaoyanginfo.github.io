@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 8.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha256-5eIC48iZUHmSlSUz9XtjRyK2mzQkHScZY1WdMaoz74E=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"ycyc.win","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.21.0","exturl":false,"sidebar":{"position":"right","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":true,"style":"default"},"fold":{"enable":true,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false,"trigger":"auto"}}</script><script src="/js/config.js"></script>
+<meta name="baidu-site-verification" content="codeva-bE38FCRhng" />
+
+    <meta name="description" content="进入六月份以后国内众多的docker加速镜像突然停止了服务，外加docker官方源在国内被屏蔽，导致拉取docker镜像成了难题，就算是挂上梯子，速度也不理想。有网友发布了通过cloudflare的worker服务来加速docker镜像拉取的教程，我也实际操作了一遍，操作不复杂，而且加速效果明显，感兴趣的同学可以根据我下面的步骤操作。 ¶将域名停靠到cloudflare 先去注册cloudfla">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用cloudflare的worker加速docker镜像下载">
+<meta property="og:url" content="https://ycyc.win/posts/11994.html">
+<meta property="og:site_name" content="渊澄">
+<meta property="og:description" content="进入六月份以后国内众多的docker加速镜像突然停止了服务，外加docker官方源在国内被屏蔽，导致拉取docker镜像成了难题，就算是挂上梯子，速度也不理想。有网友发布了通过cloudflare的worker服务来加速docker镜像拉取的教程，我也实际操作了一遍，操作不复杂，而且加速效果明显，感兴趣的同学可以根据我下面的步骤操作。 ¶将域名停靠到cloudflare 先去注册cloudfla">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img.ycyc.win/img/20240904100521.png">
+<meta property="og:image" content="https://img.ycyc.win/img/20240708094217.png">
+<meta property="og:image" content="https://img.ycyc.win/img/20240708094525.png">
+<meta property="og:image" content="https://img.ycyc.win/img/20240708094650.png">
+<meta property="og:image" content="https://img.ycyc.win/img/20240708094926.png">
+<meta property="og:image" content="https://img.ycyc.win/img/20240708104819.png">
+<meta property="article:published_time" content="2024-07-08T01:37:00.000Z">
+<meta property="article:modified_time" content="2025-01-11T01:13:00.000Z">
+<meta property="article:author" content="渊澄YC">
+<meta property="article:tag" content="Cloudflare">
+<meta property="article:tag" content="docker">
+<meta property="article:tag" content="worker">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img.ycyc.win/img/20240904100521.png">
+
+
+<link rel="canonical" href="https://ycyc.win/posts/11994.html">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://ycyc.win/posts/11994.html","path":"posts/11994.html","title":"使用cloudflare的worker加速docker镜像下载"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>使用cloudflare的worker加速docker镜像下载 | 渊澄</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="渊澄" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">渊澄</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">川流不息，渊澄取映<iYCYC.com></p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-哔哔"><a href="/talks/" rel="section"><i class="fa fa-commenting fa-fw"></i>哔哔</a></li><li class="menu-item menu-item-友链"><a href="/links/" rel="section"><i class="fa fa-users fa-fw"></i>友链</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B0%86%E5%9F%9F%E5%90%8D%E5%81%9C%E9%9D%A0%E5%88%B0cloudflare"><span class="nav-number">1.</span> <span class="nav-text">将域名停靠到cloudflare</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B0%E5%BB%BAworker%E9%A1%B9%E7%9B%AE"><span class="nav-number">2.</span> <span class="nav-text">新建worker项目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%8D%E5%88%B6%E4%BB%A3%E7%A0%81"><span class="nav-number">3.</span> <span class="nav-text">复制代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E8%87%AA%E5%AE%9A%E4%B9%89%E5%9F%9F%E5%90%8D"><span class="nav-number">4.</span> <span class="nav-text">添加自定义域名</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E5%8A%A0%E9%80%9F%E6%95%88%E6%9E%9C"><span class="nav-number">5.</span> <span class="nav-text">测试加速效果</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="渊澄YC"
+      src="/images/logo_yc_07.png">
+  <p class="site-author-name" itemprop="name">渊澄YC</p>
+  <div class="site-description" itemprop="description">iYCYC.com</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">180</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">283</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/miaoyanginfo" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;miaoyanginfo" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/miaoyanginfo" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;miaoyanginfo" rel="noopener me" target="_blank"><i class="fab fa-x-twitter fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://t.me/yuanchengYC" title="telegram → https:&#x2F;&#x2F;t.me&#x2F;yuanchengYC" rel="noopener me" target="_blank"><i class="fab fa-telegram fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="RSS → &#x2F;atom.xml" rel="noopener me"><i class="fa fa-rss fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://instagram.com/miaoyang1989" title="Instagram → https:&#x2F;&#x2F;instagram.com&#x2F;miaoyang1989" rel="noopener me" target="_blank"><i class="fab fa-instagram fa-fw"></i></a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+<div class="cc-license animated" itemprop="sponsor">
+  <a href="/images/zanshangma.png" class="cc-opacity" title="扫码请我喝杯咖啡吧 → " target="_blank"><img width="150" src="/images/zanshangma.png" alt="Netlify"></a>
+</div>
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="返回顶部">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://ycyc.win/" title="https:&#x2F;&#x2F;ycyc.win">netlify镜像</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://miaoyang.win/" title="https:&#x2F;&#x2F;miaoyang.win" rel="noopener" target="_blank">vercel镜像</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://sshome.win/" title="https:&#x2F;&#x2F;sshome.win" rel="noopener" target="_blank">github镜像</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://iycyc.com/" title="https:&#x2F;&#x2F;iycyc.com" rel="noopener" target="_blank">cloudflare镜像</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://iycyc.com/" title="https:&#x2F;&#x2F;iycyc.com&#x2F;" rel="noopener" target="_blank">首页</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://valine.ycyc.win/" title="https:&#x2F;&#x2F;valine.ycyc.win&#x2F;" rel="noopener" target="_blank">评论管理</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://www.travellings.cn/go.html" title="https:&#x2F;&#x2F;www.travellings.cn&#x2F;go.html" rel="noopener" target="_blank">开往</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="/sitemap.xml" title="&#x2F;sitemap.xml">站点地图</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ycyc.win/posts/11994.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/logo_yc_07.png">
+      <meta itemprop="name" content="渊澄YC">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="渊澄">
+      <meta itemprop="description" content="iYCYC.com">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="使用cloudflare的worker加速docker镜像下载 | 渊澄">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          使用cloudflare的worker加速docker镜像下载
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-07-08 09:37:00" itemprop="dateCreated datePublished" datetime="2024-07-08T09:37:00+08:00">2024-07-08</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-01-11 09:13:00" itemprop="dateModified" datetime="2025-01-11T09:13:00+08:00">2025-01-11</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E7%BD%91%E7%BB%9C/" itemprop="url" rel="index"><span itemprop="name">网络</span></a>
+        </span>
+    </span>
+
+  
+    <span id="/posts/11994.html" class="post-meta-item leancloud_visitors" data-flag-title="使用cloudflare的worker加速docker镜像下载" title="阅读次数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span class="leancloud-visitors-count"></span>
+    </span>
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span id="/posts/11994.html" class="post-meta-item twikoo_visitors" data-flag-title="使用cloudflare的worker加速docker镜像下载" title="阅读次数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="twikoo_visitors"></span>
+    </span>
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>799</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>3 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p><img src="https://img.ycyc.win/img/20240904100521.png" alt="20240904100521"><br>
+进入六月份以后国内众多的docker加速镜像突然停止了服务，外加docker官方源在国内被屏蔽，导致拉取docker镜像成了难题，就算是挂上梯子，速度也不理想。有网友发布了通过cloudflare的worker服务来加速docker镜像拉取的教程，我也实际操作了一遍，操作不复杂，而且加速效果明显，感兴趣的同学可以根据我下面的步骤操作。</p>
+<h3 id="将域名停靠到cloudflare"><a class="header-anchor" href="#将域名停靠到cloudflare">¶</a>将域名停靠到cloudflare</h3>
+<p>先去注册cloudflare账号，然后添加你的域名，将域名的NS地址改到cloudflare，等待生效。</p>
+<span id="more"></span>
+<h3 id="新建worker项目"><a class="header-anchor" href="#新建worker项目">¶</a>新建worker项目</h3>
+<p>进入左侧的worker和pages菜单<br>
+<img src="https://img.ycyc.win/img/20240708094217.png" alt="20240708094217"><br>
+新建一个worker项目，然后自己随意起个项目名字，最后点击右下角的部署按钮。<br>
+<img src="https://img.ycyc.win/img/20240708094525.png" alt="20240708094525"></p>
+<h3 id="复制代码"><a class="header-anchor" href="#复制代码">¶</a>复制代码</h3>
+<p>创建成功之后点击如图所示的编辑代码按钮。<br>
+<img src="https://img.ycyc.win/img/20240708094650.png" alt="20240708094650"><br>
+将下面的代码全部复制过去,然后点击右上角的部署按钮。<br>
+<img src="https://img.ycyc.win/img/20240708094926.png" alt="20240708094926"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br></pre></td><td class="code"><pre><span class="line">&#x27;use strict&#x27;</span><br><span class="line">const hub_host = &#x27;registry-1.docker.io&#x27;</span><br><span class="line">const auth_url = &#x27;https://auth.docker.io&#x27;</span><br><span class="line">const workers_url = &#x27;https://yourdomain.com&#x27;</span><br><span class="line">const PREFLIGHT_INIT = &#123;</span><br><span class="line">    status: 204,</span><br><span class="line">    headers: new Headers(&#123;</span><br><span class="line">        &#x27;access-control-allow-origin&#x27;: &#x27;*&#x27;,</span><br><span class="line">        &#x27;access-control-allow-methods&#x27;: &#x27;GET,POST,PUT,PATCH,TRACE,DELETE,HEAD,OPTIONS&#x27;,</span><br><span class="line">        &#x27;access-control-max-age&#x27;: &#x27;1728000&#x27;,</span><br><span class="line">    &#125;),</span><br><span class="line">&#125;</span><br><span class="line">function makeRes(body, status = 200, headers = &#123;&#125;) &#123;</span><br><span class="line">    headers[&#x27;access-control-allow-origin&#x27;] = &#x27;*&#x27;</span><br><span class="line">    return new Response(body, &#123;status, headers&#125;)</span><br><span class="line">&#125;</span><br><span class="line">function newUrl(urlStr) &#123;</span><br><span class="line">    try &#123;</span><br><span class="line">        return new URL(urlStr)</span><br><span class="line">    &#125; catch (err) &#123;</span><br><span class="line">        return null</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">addEventListener(&#x27;fetch&#x27;, e =&gt; &#123;</span><br><span class="line">    const ret = fetchHandler(e)</span><br><span class="line">        .catch(err =&gt; makeRes(&#x27;cfworker error:n&#x27; + err.stack, 502))</span><br><span class="line">    e.respondWith(ret)</span><br><span class="line">&#125;)</span><br><span class="line">async function fetchHandler(e) &#123;</span><br><span class="line">  const getReqHeader = (key) =&gt; e.request.headers.get(key);</span><br><span class="line">  let url = new URL(e.request.url);</span><br><span class="line">  if (url.pathname === &#x27;/token&#x27;) &#123;</span><br><span class="line">      let token_parameter = &#123;</span><br><span class="line">        headers: &#123;</span><br><span class="line">        &#x27;Host&#x27;: &#x27;auth.docker.io&#x27;,</span><br><span class="line">        &#x27;User-Agent&#x27;: getReqHeader(&quot;User-Agent&quot;),</span><br><span class="line">        &#x27;Accept&#x27;: getReqHeader(&quot;Accept&quot;),</span><br><span class="line">        &#x27;Accept-Language&#x27;: getReqHeader(&quot;Accept-Language&quot;),</span><br><span class="line">        &#x27;Accept-Encoding&#x27;: getReqHeader(&quot;Accept-Encoding&quot;),</span><br><span class="line">        &#x27;Connection&#x27;: &#x27;keep-alive&#x27;,</span><br><span class="line">        &#x27;Cache-Control&#x27;: &#x27;max-age=0&#x27;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;;</span><br><span class="line">      let token_url = auth_url + url.pathname + url.search</span><br><span class="line">      return fetch(new Request(token_url, e.request), token_parameter)</span><br><span class="line">  &#125;</span><br><span class="line">  url.hostname = hub_host;</span><br><span class="line">  let parameter = &#123;</span><br><span class="line">    headers: &#123;</span><br><span class="line">      &#x27;Host&#x27;: hub_host,</span><br><span class="line">      &#x27;User-Agent&#x27;: getReqHeader(&quot;User-Agent&quot;),</span><br><span class="line">      &#x27;Accept&#x27;: getReqHeader(&quot;Accept&quot;),</span><br><span class="line">      &#x27;Accept-Language&#x27;: getReqHeader(&quot;Accept-Language&quot;),</span><br><span class="line">      &#x27;Accept-Encoding&#x27;: getReqHeader(&quot;Accept-Encoding&quot;),</span><br><span class="line">      &#x27;Connection&#x27;: &#x27;keep-alive&#x27;,</span><br><span class="line">      &#x27;Cache-Control&#x27;: &#x27;max-age=0&#x27;</span><br><span class="line">    &#125;,</span><br><span class="line">    cacheTtl: 3600</span><br><span class="line">  &#125;;</span><br><span class="line">  if (e.request.headers.has(&quot;Authorization&quot;)) &#123;</span><br><span class="line">    parameter.headers.Authorization = getReqHeader(&quot;Authorization&quot;);</span><br><span class="line">  &#125;</span><br><span class="line">  let original_response = await fetch(new Request(url, e.request), parameter)</span><br><span class="line">  let original_response_clone = original_response.clone();</span><br><span class="line">  let original_text = original_response_clone.body;</span><br><span class="line">  let response_headers = original_response.headers;</span><br><span class="line">  let new_response_headers = new Headers(response_headers);</span><br><span class="line">  let status = original_response.status;</span><br><span class="line">  if (new_response_headers.get(&quot;Www-Authenticate&quot;)) &#123;</span><br><span class="line">    let auth = new_response_headers.get(&quot;Www-Authenticate&quot;);</span><br><span class="line">    let re = new RegExp(auth_url, &#x27;g&#x27;);</span><br><span class="line">    new_response_headers.set(&quot;Www-Authenticate&quot;, response_headers.get(&quot;Www-Authenticate&quot;).replace(re, workers_url));</span><br><span class="line">  &#125;</span><br><span class="line">  if (new_response_headers.get(&quot;Location&quot;)) &#123;</span><br><span class="line">    return httpHandler(e.request, new_response_headers.get(&quot;Location&quot;))</span><br><span class="line">  &#125;</span><br><span class="line">  let response = new Response(original_text, &#123;</span><br><span class="line">            status,</span><br><span class="line">            headers: new_response_headers</span><br><span class="line">        &#125;)</span><br><span class="line">  return response;</span><br><span class="line">&#125;</span><br><span class="line">function httpHandler(req, pathname) &#123;</span><br><span class="line">    const reqHdrRaw = req.headers</span><br><span class="line">    // preflight</span><br><span class="line">    if (req.method === &#x27;OPTIONS&#x27; &amp;&amp;</span><br><span class="line">        reqHdrRaw.has(&#x27;access-control-request-headers&#x27;)</span><br><span class="line">    ) &#123;</span><br><span class="line">        return new Response(null, PREFLIGHT_INIT)</span><br><span class="line">    &#125;</span><br><span class="line">    let rawLen = &#x27;&#x27;</span><br><span class="line">    const reqHdrNew = new Headers(reqHdrRaw)</span><br><span class="line">    const refer = reqHdrNew.get(&#x27;referer&#x27;)</span><br><span class="line">    let urlStr = pathname</span><br><span class="line">    const urlObj = newUrl(urlStr)</span><br><span class="line">    /** @type &#123;RequestInit&#125; */</span><br><span class="line">    const reqInit = &#123;</span><br><span class="line">        method: req.method,</span><br><span class="line">        headers: reqHdrNew,</span><br><span class="line">        redirect: &#x27;follow&#x27;,</span><br><span class="line">        body: req.body</span><br><span class="line">    &#125;</span><br><span class="line">    return proxy(urlObj, reqInit, rawLen, 0)</span><br><span class="line">&#125;</span><br><span class="line">async function proxy(urlObj, reqInit, rawLen) &#123;</span><br><span class="line">    const res = await fetch(urlObj.href, reqInit)</span><br><span class="line">    const resHdrOld = res.headers</span><br><span class="line">    const resHdrNew = new Headers(resHdrOld)</span><br><span class="line">    // verify</span><br><span class="line">    if (rawLen) &#123;</span><br><span class="line">        const newLen = resHdrOld.get(&#x27;content-length&#x27;) || &#x27;&#x27;</span><br><span class="line">        const badLen = (rawLen !== newLen)</span><br><span class="line">        if (badLen) &#123;</span><br><span class="line">            return makeRes(res.body, 400, &#123;</span><br><span class="line">                &#x27;--error&#x27;: `bad len: $&#123;newLen&#125;, except: $&#123;rawLen&#125;`,</span><br><span class="line">                &#x27;access-control-expose-headers&#x27;: &#x27;--error&#x27;,</span><br><span class="line">            &#125;)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    const status = res.status</span><br><span class="line">    resHdrNew.set(&#x27;access-control-expose-headers&#x27;, &#x27;*&#x27;)</span><br><span class="line">    resHdrNew.set(&#x27;access-control-allow-origin&#x27;, &#x27;*&#x27;)</span><br><span class="line">    resHdrNew.set(&#x27;Cache-Control&#x27;, &#x27;max-age=1500&#x27;)</span><br><span class="line">    resHdrNew.delete(&#x27;content-security-policy&#x27;)</span><br><span class="line">    resHdrNew.delete(&#x27;content-security-policy-report-only&#x27;)</span><br><span class="line">    resHdrNew.delete(&#x27;clear-site-data&#x27;)</span><br><span class="line">    return new Response(res.body, &#123;</span><br><span class="line">        status,</span><br><span class="line">        headers: resHdrNew</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>将代码中的const workers_url = ‘<a target="_blank" rel="noopener" href="https://yourdomain.com">https://yourdomain.com</a>’ 换成你的自定义域名</p>
+</blockquote>
+<h3 id="添加自定义域名"><a class="header-anchor" href="#添加自定义域名">¶</a>添加自定义域名</h3>
+<p>之后进入到worker项目页面点击设置-触发器，添加一个自定义域，这个自定义域可以是你解析到cloudflare的域名的一个二级域名，<a target="_blank" rel="noopener" href="http://xn--docker-9v9ii49d.example.com">例如docker.example.com</a> 。然后将该域名添加一条路由。<br>
+<img src="https://img.ycyc.win/img/20240708104819.png" alt="20240708104819"></p>
+<h3 id="测试加速效果"><a class="header-anchor" href="#测试加速效果">¶</a>测试加速效果</h3>
+<p>如果你需要拉取的镜像homeassistant/aarch64-homeassistant:latest<br>
+现在需要在docker镜像前面加上你的自定义域，命令如下</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker pull docker.example.com/homeassistant/aarch64-homeassistant:latest</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/zanshangma.png" alt="渊澄YC 微信赞赏">
+        <span>微信赞赏</span>
+      </div>
+
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/docker/" rel="tag"># docker</a>
+              <a href="/tags/Cloudflare/" rel="tag"># Cloudflare</a>
+              <a href="/tags/worker/" rel="tag"># worker</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/2878.html" rel="prev" title="分享一些关于小雅Alist的使用心得">
+                  <i class="fa fa-angle-left"></i> 分享一些关于小雅Alist的使用心得
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/posts/12783.html" rel="next" title="京东AX1800 pro拆机刷uboot及华硕固件">
+                  京东AX1800 pro拆机刷uboot及华硕固件 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments"><div id="twikoo-comments"></div></div>
+
+
+<!-- Insert google ad blocks -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2779370055018487"
+     crossorigin="anonymous"></script>
+<!-- iycyc -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2779370055018487"
+     data-ad-slot="5260578883"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="beian"><a href="https://icp.gov.moe/?keyword=20241068" rel="noopener" target="_blank">萌ICP备20241068号 </a>
+  </div>
+  <div class="copyright">
+    &copy; 2022 – 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">渊澄|iYCYC.com</span>
+     
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">79k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">4:47</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2779370055018487"
+     crossorigin="anonymous"></script><div class="cc-license animated" itemprop="sponsor">
+  <a href="https://www.foreverblog.cn/blog/6194.html" target="_blank" > <img src="https://foreverblog.cn/assets/logo/logo_en_default.png" alt="" style="width:auto;height:16px;"> </a>
+  <a href="https://www.foreverblog.cn/go.html" class="cc-opacity" title="穿梭虫洞-随机访问十年之约友链博客" target="_blank"><img width="100" src="https://img.foreverblog.cn/wormhole_2.gif" alt="ForeverBlog"></a>
+  <a href="https://www.travellings.cn/go.html" class="cc-opacity" title="开往-友链接力" target="_blank"><img width="100" src="https://www.travellings.cn/assets/logo.gif" alt="travellings"></a>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+  <script class="next-config" data-name="leancloud_visitors" type="application/json">{"enable":true,"app_id":"fBkLaeZXGpwDElmlfn34D9sa-MdYXbMMI","app_key":"Ggv7YHQFQGCnmpQGXsXCxJXX","server_url":"https://leancloud.ycyc.win","security":false}</script>
+  <script src="/js/third-party/statistics/lean-analytics.js"></script>
+
+
+<script class="next-config" data-name="twikoo" type="application/json">{"enable":true,"visitor":true,"envId":"https://twikoo.miaoyang.win:16666","jsUrl":"https://cdn.jsdmirror.com/npm/twikoo/dist/twikoo.all.min.js","el":"#twikoo-comments"}</script>
+<script>
+document.addEventListener('page:loaded', () => {
+  NexT.utils.loadComments(CONFIG.twikoo.el)
+    .then(() => NexT.utils.getScript(
+      CONFIG.twikoo.jsUrl || 'https://cdn.jsdelivr.net/npm/twikoo/dist/twikoo.all.min.js',
+      { condition: window.twikoo }
+    ))
+    .then(() => {
+      twikoo.init(CONFIG.twikoo);
+    });
+});
+</script>
+<style>
+.post-block, .comments {
+  overflow: visible;
+}
+.tk-owo-emotion {
+  display: inline-block;
+}
+</style>
+
+</body>
+</html>

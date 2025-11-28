@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 8.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha256-5eIC48iZUHmSlSUz9XtjRyK2mzQkHScZY1WdMaoz74E=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"ycyc.win","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.21.0","exturl":false,"sidebar":{"position":"right","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":true,"style":"default"},"fold":{"enable":true,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false,"trigger":"auto"}}</script><script src="/js/config.js"></script>
+<meta name="baidu-site-verification" content="codeva-bE38FCRhng" />
+
+    <meta name="description" content="¶前言 好久没有更新了，最近除了工作，其他时间都在研究小雅Alist的使用。什么是小雅Alist？它是一个基于Alist搭建的影音分享的docker容器，部署完成之后支持webdav协议，可以连接infuse、kodi、potplayer、nplayer、vidhub等等众多支持webdav协议的影音软件，资源主要来自于作者分享的各个网络云盘的资源，比如阿里云、115等等。  之前小雅Alist里">
+<meta property="og:type" content="article">
+<meta property="og:title" content="分享一些关于小雅Alist的使用心得">
+<meta property="og:url" content="https://ycyc.win/posts/2878.html">
+<meta property="og:site_name" content="渊澄">
+<meta property="og:description" content="¶前言 好久没有更新了，最近除了工作，其他时间都在研究小雅Alist的使用。什么是小雅Alist？它是一个基于Alist搭建的影音分享的docker容器，部署完成之后支持webdav协议，可以连接infuse、kodi、potplayer、nplayer、vidhub等等众多支持webdav协议的影音软件，资源主要来自于作者分享的各个网络云盘的资源，比如阿里云、115等等。  之前小雅Alist里">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img.ycyc.win/img/20240904095057.png">
+<meta property="og:image" content="https://img.ycyc.win/img/20240904095438.png">
+<meta property="og:image" content="https://img.ycyc.win/img/20240904095956.png">
+<meta property="og:image" content="https://img.ycyc.win/img/20240904100104.png">
+<meta property="article:published_time" content="2024-09-04T00:50:50.000Z">
+<meta property="article:modified_time" content="2025-11-28T03:20:43.408Z">
+<meta property="article:author" content="渊澄YC">
+<meta property="article:tag" content="alist">
+<meta property="article:tag" content="docker">
+<meta property="article:tag" content="小雅">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img.ycyc.win/img/20240904095057.png">
+
+
+<link rel="canonical" href="https://ycyc.win/posts/2878.html">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://ycyc.win/posts/2878.html","path":"posts/2878.html","title":"分享一些关于小雅Alist的使用心得"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>分享一些关于小雅Alist的使用心得 | 渊澄</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="渊澄" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">渊澄</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">川流不息，渊澄取映<iYCYC.com></p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-哔哔"><a href="/talks/" rel="section"><i class="fa fa-commenting fa-fw"></i>哔哔</a></li><li class="menu-item menu-item-友链"><a href="/links/" rel="section"><i class="fa fa-users fa-fw"></i>友链</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B0%8F%E9%9B%85alist%E7%9A%84%E5%AE%89%E8%A3%85"><span class="nav-number">2.</span> <span class="nav-text">小雅alist的安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80%E4%BA%9B115%E7%9A%84%E9%85%8D%E7%BD%AE"><span class="nav-number">3.</span> <span class="nav-text">一些115的配置</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#ali2115-txt"><span class="nav-number">3.1.</span> <span class="nav-text">ali2115.txt</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#115-cookie-txt"><span class="nav-number">3.2.</span> <span class="nav-text">115_cookie.txt</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#115share-list-txt"><span class="nav-number">3.3.</span> <span class="nav-text">115share_list.txt</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%99%BB%E5%BD%95%E9%99%90%E5%88%B6"><span class="nav-number">4.</span> <span class="nav-text">登录限制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B3%E4%BA%8Ewebdav%E8%BF%9E%E6%8E%A5"><span class="nav-number">5.</span> <span class="nav-text">关于webdav连接</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E5%88%A4%E6%96%AD%E8%BF%99%E4%B8%AA%E5%BD%B1%E7%89%87%E6%98%AF115%E7%9A%84%E8%BF%98%E6%98%AF%E9%98%BF%E9%87%8C%E4%BA%91%E7%9B%98%E7%9A%84"><span class="nav-number">6.</span> <span class="nav-text">如何判断这个影片是115的还是阿里云盘的</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E6%9F%A5%E7%9C%8B%E5%B0%8F%E9%9B%85%E5%BD%93%E5%89%8D%E7%89%88%E6%9C%AC%E5%92%8C%E5%8D%87%E7%BA%A7%E7%89%88%E6%9C%AC"><span class="nav-number">7.</span> <span class="nav-text">如何查看小雅当前版本和升级版本</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E8%87%AA%E5%8A%A8%E6%B8%85%E7%90%86%E5%AD%98%E5%9C%A8%E9%98%BF%E9%87%8C%E4%BA%91%E7%9B%98%E7%9A%84%E6%96%87%E4%BB%B6"><span class="nav-number">8.</span> <span class="nav-text">如何自动清理存在阿里云盘的文件</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="渊澄YC"
+      src="/images/logo_yc_07.png">
+  <p class="site-author-name" itemprop="name">渊澄YC</p>
+  <div class="site-description" itemprop="description">iYCYC.com</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">180</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">283</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/miaoyanginfo" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;miaoyanginfo" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/miaoyanginfo" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;miaoyanginfo" rel="noopener me" target="_blank"><i class="fab fa-x-twitter fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://t.me/yuanchengYC" title="telegram → https:&#x2F;&#x2F;t.me&#x2F;yuanchengYC" rel="noopener me" target="_blank"><i class="fab fa-telegram fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="RSS → &#x2F;atom.xml" rel="noopener me"><i class="fa fa-rss fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://instagram.com/miaoyang1989" title="Instagram → https:&#x2F;&#x2F;instagram.com&#x2F;miaoyang1989" rel="noopener me" target="_blank"><i class="fab fa-instagram fa-fw"></i></a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+<div class="cc-license animated" itemprop="sponsor">
+  <a href="/images/zanshangma.png" class="cc-opacity" title="扫码请我喝杯咖啡吧 → " target="_blank"><img width="150" src="/images/zanshangma.png" alt="Netlify"></a>
+</div>
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="返回顶部">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://ycyc.win/" title="https:&#x2F;&#x2F;ycyc.win">netlify镜像</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://miaoyang.win/" title="https:&#x2F;&#x2F;miaoyang.win" rel="noopener" target="_blank">vercel镜像</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://sshome.win/" title="https:&#x2F;&#x2F;sshome.win" rel="noopener" target="_blank">github镜像</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://iycyc.com/" title="https:&#x2F;&#x2F;iycyc.com" rel="noopener" target="_blank">cloudflare镜像</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://iycyc.com/" title="https:&#x2F;&#x2F;iycyc.com&#x2F;" rel="noopener" target="_blank">首页</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://valine.ycyc.win/" title="https:&#x2F;&#x2F;valine.ycyc.win&#x2F;" rel="noopener" target="_blank">评论管理</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://www.travellings.cn/go.html" title="https:&#x2F;&#x2F;www.travellings.cn&#x2F;go.html" rel="noopener" target="_blank">开往</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="/sitemap.xml" title="&#x2F;sitemap.xml">站点地图</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ycyc.win/posts/2878.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/logo_yc_07.png">
+      <meta itemprop="name" content="渊澄YC">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="渊澄">
+      <meta itemprop="description" content="iYCYC.com">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="分享一些关于小雅Alist的使用心得 | 渊澄">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          分享一些关于小雅Alist的使用心得
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-09-04 08:50:50" itemprop="dateCreated datePublished" datetime="2024-09-04T08:50:50+08:00">2024-09-04</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-11-28 11:20:43" itemprop="dateModified" datetime="2025-11-28T11:20:43+08:00">2025-11-28</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%BD%B1%E9%9F%B3/" itemprop="url" rel="index"><span itemprop="name">影音</span></a>
+        </span>
+    </span>
+
+  
+    <span id="/posts/2878.html" class="post-meta-item leancloud_visitors" data-flag-title="分享一些关于小雅Alist的使用心得" title="阅读次数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span class="leancloud-visitors-count"></span>
+    </span>
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span id="/posts/2878.html" class="post-meta-item twikoo_visitors" data-flag-title="分享一些关于小雅Alist的使用心得" title="阅读次数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="twikoo_visitors"></span>
+    </span>
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>2k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>7 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h3 id="前言"><a class="header-anchor" href="#前言">¶</a>前言</h3>
+<p>好久没有更新了，最近除了工作，其他时间都在研究小雅Alist的使用。什么是小雅Alist？它是一个基于Alist搭建的影音分享的docker容器，部署完成之后支持webdav协议，可以连接infuse、kodi、potplayer、nplayer、vidhub等等众多支持webdav协议的影音软件，资源主要来自于作者分享的各个网络云盘的资源，比如阿里云、115等等。<br>
+<img src="https://img.ycyc.win/img/20240904095057.png" alt="20240904095057"><br>
+之前小雅Alist里面的资源都是来自于阿里云盘的，因为之前阿里云盘声称是永不限速，很长一段时间都可以通过小雅来流畅观看阿里云盘里面的视频资源。但是很快就被打脸了。大概在7月底的阿里云盘推出了三方权益包，每月需要额外花十几块钱办理这个包，里面有1TB的流量，可以将阿里云盘挂载到包括小雅Alist在内的其他第三方应用，享受高速传输服务，。如果你不办理这个权益包，速度会被限制在500kb/s左右，别说4k了，连1080的影片都无法流畅观看。让网友无法接受的是之前办理了阿里云盘VIP甚至是SVIP的网友，也需要单独购买这个三方权益包才可以不被限速，而且这个权益包只有1TB流量，用完之后，还是会被限速。。。<br>
+于是乎小雅开始转战115网盘，因为115有个转存阿里云盘的功能，简单来说就是，如果这个阿里的资源在115网盘上也有，会立即转存到你自己的网盘中。这样就跳过了阿里云盘的限制。当然115这边也有限制，需要开通会员才可以实现这个功能。但是115推出了优惠活动，包年会员115元，吸引了很多网友。而且最新的很多资源小雅都放到了115网盘中，所以想要玩小雅Alist，必须要办个115会员了。</p>
+<span id="more"></span>
+<h3 id="小雅alist的安装"><a class="header-anchor" href="#小雅alist的安装">¶</a>小雅alist的安装</h3>
+<p>想要安装小雅ALSIT首先你需要先安装好docker环境，arm或x86平台都可以。<br>
+安装脚本可以使用小雅原生的脚本，也可以使用DD-derek的一键脚本（包括emby和自动清理脚本等功能）。期间需要获取阿里云盘的相关token，具体方法可以参阅小雅说明文档（<a target="_blank" rel="noopener" href="https://xiaoyaliu.notion.site/xiaoya-docker-69404af849504fa5bcf9f2dd5ecaa75f%EF%BC%89">https://xiaoyaliu.notion.site/xiaoya-docker-69404af849504fa5bcf9f2dd5ecaa75f）</a></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bash -c &quot;$(curl http://docker.xiaoya.pro/update_new.sh)&quot;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bash -c &quot;$(curl --insecure -fsSL https://ddsrem.com/xiaoya_install.sh)&quot;</span><br></pre></td></tr></table></figure>
+<p>安装完成之后进入主机IP:5678即可进入小雅ALIST页面。</p>
+<h3 id="一些115的配置"><a class="header-anchor" href="#一些115的配置">¶</a>一些115的配置</h3>
+<p>小雅alist的默认配置文件夹位于/etc/xiaoya路径下，里面有多个txt文档用来配置相关功能。<br>
+如果你办理了115的会员，需要至少配置三个文件。</p>
+<h4 id="ali2115-txt"><a class="header-anchor" href="#ali2115-txt">¶</a>ali2115.txt</h4>
+<p>这个文件是用来加速阿里云盘资源的，如果你没有办理阿里云盘的会员，但是有115的会员，可以配置这个文件来转存阿里的资源到115网盘，实现流畅观看视频。<br>
+格式如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">purge_ali_temp=true</span><br><span class="line">cookie=&quot;UID=800012347_F1_1712345;CID=0f99357f000xxxxx67af8e167fcd68;SEID=0f439555555559d9b227595c0cd37b63c065e5d934d70045e8bfb3089b09b8d843662ad6ac00a90c6ecc3faf0e5abff45d73797470&quot;</span><br><span class="line">purge_pan115_temp=true</span><br><span class="line">dir_id=0</span><br></pre></td></tr></table></figure>
+<p>里面的cookie换成你的115cookie即可。</p>
+<h4 id="115-cookie-txt"><a class="header-anchor" href="#115-cookie-txt">¶</a>115_cookie.txt</h4>
+<p>配置115的cookie来观看存储在115云盘上面的资源<br>
+格式如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">UID=800012347_F1_1712345;CID=0f99357f000xxxxx67af8e167fcd68;SEID=0f439555555559d9b227595c0cd37b63c065e5d934d70045e8bfb3089b09b8d843662ad6ac00a90c6ecc3faf0e5abff45d73797470</span><br></pre></td></tr></table></figure>
+<p>里面的cookie换成你的115cookie即可。</p>
+<h4 id="115share-list-txt"><a class="header-anchor" href="#115share-list-txt">¶</a>115share_list.txt</h4>
+<p>这个文件用来挂载115的分享，可以用小雅现成的，也可以分享你自己115网盘里面的文件。配置生效之后会在小雅根目录生成一个名为“我的115分享”的文件夹。<br>
+<img src="https://img.ycyc.win/img/20240904095438.png" alt="20240904095438"><br>
+格式如下：<br>
+挂载名  分享ID 分享目录id 提取码 （用空格分开，一行一个）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">115音乐 swz1zuk36by 549787817770 kac4</span><br><span class="line">纪录片 sw62frg3wp6 2288331541153662564 n9f5</span><br><span class="line">4KRemux sw6pw793wfp 2628478209787264315 w816</span><br><span class="line">电影1080P sw68fuu3nnw 1926968105722823031 pb57</span><br><span class="line">电视剧 sw68e813nnw 2659063178117250374 n9e0</span><br><span class="line">合集1 swzyiww3wn9 2524811557500852274 w1e0</span><br><span class="line">合集2 swzyiwq3wn9 2637890258378922777 x716</span><br><span class="line">合集3 swzyiwb3wn9 2637896360227215749 qfe8</span><br><span class="line">动画电影 swz6gml3fwo 2783753598167678176 8888</span><br><span class="line">欧美电影 sw68wz93ncb 2656232060400365768 6666</span><br><span class="line">美剧 sw6plt23ncb 2629830185329553796 6666</span><br><span class="line">千部抖音短剧合集 swzqh673h4y 2844388545487961211 5296</span><br><span class="line">无损音乐 sw6u40x3wp6 2748248365866155734 t543</span><br><span class="line">欧美剧 swznm373w1p 2775567116696245412 pe35</span><br><span class="line">音乐22万首 swzmqcr3fs6  2783304403585596566 xd67</span><br><span class="line">音乐22万首/DDS+HiRes sw658uq36x2 2565672403766001435 md98</span><br><span class="line">音乐22万首/母带系列 sw658uq36x2 2565416479709117843 md98</span><br><span class="line">音乐22万首/索尼精选 sw658uq36x2 2565917379515039176 md98</span><br><span class="line">音乐22万首/各类风格 sw658uq36x2 2565466586953464857 md98</span><br><span class="line">音乐22万首/华语27000首无损 sw658ub36x2 2565274055783398734 q7e0</span><br><span class="line">日韩电影 swzg8dd3wye 2932272857134137107 m5b3</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>注意上面分享的这些文件夹可能会由于政策原因或是资源主取消分享而失效，请注意！</p>
+</blockquote>
+<h3 id="登录限制"><a class="header-anchor" href="#登录限制">¶</a>登录限制</h3>
+<p>小雅alist默认是可以匿名登录的，也就是任何人都无需用户名密码即可打开小雅观看影片，如果你想要配置个登录密码，可以在小雅配置文件夹内新建一个名为guestlogin.txt，内容为空就行。然后再新建一个名为guestpass.txt的文本，里面填入你想设置的密码。然后重启docker容器。就可以用户名dav和你设置的密码来登录小雅了。当然如果你在其他地方使用webdav挂载了小雅alist，也需要该用户名密码进行连接。</p>
+<h3 id="关于webdav连接"><a class="header-anchor" href="#关于webdav连接">¶</a>关于webdav连接</h3>
+<p>使用支持webdav协议的播放器来连接小雅资源库，一般需要主机名、端口、用户名、密码、挂载路径等信息。主机名为docker宿主机的IP，端口为5678，用户名为dav，密码为上一步设置的密码，挂载路径为/dav，准确填入这些信息之后一般就可以正常连接小雅Alist了。</p>
+<h3 id="如何判断这个影片是115的还是阿里云盘的"><a class="header-anchor" href="#如何判断这个影片是115的还是阿里云盘的">¶</a>如何判断这个影片是115的还是阿里云盘的</h3>
+<p>小雅里面很多文件夹后面会标注115字样，说明这个资源是存在115网盘的，没有标注的话这个资源是存在阿里云盘的。如果你没有115的付费会员，只有普通会员，目前每天有5次机会可以不限速观看115的资源。还有一种方法，在小雅页面打开一个视频，如果播放器默认调用的是“Aliyun video perviewer&quot;,那说明这个资源是来自阿里云的，如果默认只有“video”选项，那这个资源大概率是115网盘的。<br>
+<img src="https://img.ycyc.win/img/20240904095956.png" alt="20240904095956"></p>
+<blockquote>
+<p>这个资源就是存在阿里云盘</p>
+</blockquote>
+<p><img src="https://img.ycyc.win/img/20240904100104.png" alt="20240904100104"></p>
+<blockquote>
+<p>这个资源就是大概率存在115网盘</p>
+</blockquote>
+<h3 id="如何查看小雅当前版本和升级版本"><a class="header-anchor" href="#如何查看小雅当前版本和升级版本">¶</a>如何查看小雅当前版本和升级版本</h3>
+<p>在小雅根目录下有个©开头的文件夹，这个就是当前小雅的版本号。在网络环境正常的情况下，每次重启小雅docker容器都会自动更新到最新的版本。如果你当前使用的小雅有一些莫名奇妙的问题，试着重启下docker容器，升级到最新版本，或许或解决你的问题。截止到9月4日，最新的小雅版本为v.0821.0535(B)。</p>
+<h3 id="如何自动清理存在阿里云盘的文件"><a class="header-anchor" href="#如何自动清理存在阿里云盘的文件">¶</a>如何自动清理存在阿里云盘的文件</h3>
+<p>每次观看影片之后，都会留一份文件在阿里云盘里面，时间长了之后会导致阿里云盘空间被占满，无法正常观看小雅视频。如果你使用的是DDS的一键安装脚本，里面会有个一键安装自动清理阿里云盘的脚本。其实是在docker中新建了一个名为xiaoyakeeper的容器，其作用是定时清空缓存在阿里云盘的视频文件。不必担心，这个脚本只会清理你在安装小雅docker时设置的缓存文件夹里面的文件，不会清理你存在阿里云盘的其他文件。当然你也可以指定脚本的运行时间。在小雅配置文件夹新建一个myruntime.txt文件，里面写入你希望脚本运行的时间即可，例如我希望在每天的早晚6点各执行一次清理脚本，只需要写入6:00,18:00即可。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/zanshangma.png" alt="渊澄YC 微信赞赏">
+        <span>微信赞赏</span>
+      </div>
+
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/docker/" rel="tag"># docker</a>
+              <a href="/tags/alist/" rel="tag"># alist</a>
+              <a href="/tags/%E5%B0%8F%E9%9B%85/" rel="tag"># 小雅</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/54996.html" rel="prev" title="使用cloudflare+jsdmirror加速github图床访问">
+                  <i class="fa fa-angle-left"></i> 使用cloudflare+jsdmirror加速github图床访问
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/posts/11994.html" rel="next" title="使用cloudflare的worker加速docker镜像下载">
+                  使用cloudflare的worker加速docker镜像下载 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments"><div id="twikoo-comments"></div></div>
+
+
+<!-- Insert google ad blocks -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2779370055018487"
+     crossorigin="anonymous"></script>
+<!-- iycyc -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2779370055018487"
+     data-ad-slot="5260578883"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="beian"><a href="https://icp.gov.moe/?keyword=20241068" rel="noopener" target="_blank">萌ICP备20241068号 </a>
+  </div>
+  <div class="copyright">
+    &copy; 2022 – 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">渊澄|iYCYC.com</span>
+     
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">79k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">4:47</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2779370055018487"
+     crossorigin="anonymous"></script><div class="cc-license animated" itemprop="sponsor">
+  <a href="https://www.foreverblog.cn/blog/6194.html" target="_blank" > <img src="https://foreverblog.cn/assets/logo/logo_en_default.png" alt="" style="width:auto;height:16px;"> </a>
+  <a href="https://www.foreverblog.cn/go.html" class="cc-opacity" title="穿梭虫洞-随机访问十年之约友链博客" target="_blank"><img width="100" src="https://img.foreverblog.cn/wormhole_2.gif" alt="ForeverBlog"></a>
+  <a href="https://www.travellings.cn/go.html" class="cc-opacity" title="开往-友链接力" target="_blank"><img width="100" src="https://www.travellings.cn/assets/logo.gif" alt="travellings"></a>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+  <script class="next-config" data-name="leancloud_visitors" type="application/json">{"enable":true,"app_id":"fBkLaeZXGpwDElmlfn34D9sa-MdYXbMMI","app_key":"Ggv7YHQFQGCnmpQGXsXCxJXX","server_url":"https://leancloud.ycyc.win","security":false}</script>
+  <script src="/js/third-party/statistics/lean-analytics.js"></script>
+
+
+<script class="next-config" data-name="twikoo" type="application/json">{"enable":true,"visitor":true,"envId":"https://twikoo.miaoyang.win:16666","jsUrl":"https://cdn.jsdmirror.com/npm/twikoo/dist/twikoo.all.min.js","el":"#twikoo-comments"}</script>
+<script>
+document.addEventListener('page:loaded', () => {
+  NexT.utils.loadComments(CONFIG.twikoo.el)
+    .then(() => NexT.utils.getScript(
+      CONFIG.twikoo.jsUrl || 'https://cdn.jsdelivr.net/npm/twikoo/dist/twikoo.all.min.js',
+      { condition: window.twikoo }
+    ))
+    .then(() => {
+      twikoo.init(CONFIG.twikoo);
+    });
+});
+</script>
+<style>
+.post-block, .comments {
+  overflow: visible;
+}
+.tk-owo-emotion {
+  display: inline-block;
+}
+</style>
+
+</body>
+</html>

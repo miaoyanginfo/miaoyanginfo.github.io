@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 8.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha256-5eIC48iZUHmSlSUz9XtjRyK2mzQkHScZY1WdMaoz74E=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"ycyc.win","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.21.0","exturl":false,"sidebar":{"position":"right","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"copycode":{"enable":true,"style":"default"},"fold":{"enable":true,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":1,"unescape":false,"preload":false,"trigger":"auto"}}</script><script src="/js/config.js"></script>
+<meta name="baidu-site-verification" content="codeva-bE38FCRhng" />
+
+    <meta name="description" content="¶引言 去年在京东入手的亚瑟路由器，之前刷的是华硕固件（京东AX1800 pro拆机刷uboot及华硕固件 | 渊澄），一直当作AP来使用，也比较稳定。但最近折腾N1旁路由觉得越来越不方便，就想着将主路由也换成OpenWRT，于是就想着将亚瑟刷成istoreOS做主路由来用。但是我进入uboot模式刷了好几遍固件，都刷不进去，具体表现为刷完固件重启之后网卡每隔10秒左右都会断开一次，IP地址也获取">
+<meta property="og:type" content="article">
+<meta property="og:title" content="京东亚瑟重刷istoreOS以及overlay分区扩容记录">
+<meta property="og:url" content="https://ycyc.win/posts/22169.html">
+<meta property="og:site_name" content="渊澄">
+<meta property="og:description" content="¶引言 去年在京东入手的亚瑟路由器，之前刷的是华硕固件（京东AX1800 pro拆机刷uboot及华硕固件 | 渊澄），一直当作AP来使用，也比较稳定。但最近折腾N1旁路由觉得越来越不方便，就想着将主路由也换成OpenWRT，于是就想着将亚瑟刷成istoreOS做主路由来用。但是我进入uboot模式刷了好几遍固件，都刷不进去，具体表现为刷完固件重启之后网卡每隔10秒左右都会断开一次，IP地址也获取">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img.ycyc.win/img/202502101110242.png">
+<meta property="og:image" content="https://img.ycyc.win/img/202502101113376.png">
+<meta property="og:image" content="https://img.ycyc.win/img/202502101121090.png">
+<meta property="og:image" content="https://img.ycyc.win/img/202502101120531.png">
+<meta property="og:image" content="https://img.ycyc.win/img/202502101128683.png">
+<meta property="article:published_time" content="2025-02-10T02:50:00.000Z">
+<meta property="article:modified_time" content="2025-03-10T06:23:00.000Z">
+<meta property="article:author" content="渊澄YC">
+<meta property="article:tag" content="istoreOS">
+<meta property="article:tag" content="openwrt">
+<meta property="article:tag" content="overlay">
+<meta property="article:tag" content="亚瑟">
+<meta property="article:tag" content="京东">
+<meta property="article:tag" content="刷机">
+<meta property="article:tag" content="路由器">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img.ycyc.win/img/202502101110242.png">
+
+
+<link rel="canonical" href="https://ycyc.win/posts/22169.html">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://ycyc.win/posts/22169.html","path":"posts/22169.html","title":"京东亚瑟重刷istoreOS以及overlay分区扩容记录"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>京东亚瑟重刷istoreOS以及overlay分区扩容记录 | 渊澄</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="渊澄" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">渊澄</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">川流不息，渊澄取映<iYCYC.com></p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-哔哔"><a href="/talks/" rel="section"><i class="fa fa-commenting fa-fw"></i>哔哔</a></li><li class="menu-item menu-item-友链"><a href="/links/" rel="section"><i class="fa fa-users fa-fw"></i>友链</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%95%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">引言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%9B%E5%85%A5uboot%E6%A8%A1%E5%BC%8F"><span class="nav-number">2.</span> <span class="nav-text">进入uboot模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%B7%E5%85%A5%E5%BA%95%E5%8C%85"><span class="nav-number">3.</span> <span class="nav-text">刷入底包</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%B7%E5%85%A5%E6%AD%A3%E5%BC%8F%E5%8C%85"><span class="nav-number">4.</span> <span class="nav-text">刷入正式包</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#overlay%E6%89%A9%E5%AE%B9"><span class="nav-number">5.</span> <span class="nav-text">overlay扩容</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E7%A7%8D%E6%96%B9%E6%B3%95"><span class="nav-number">5.1.</span> <span class="nav-text">第一种方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E7%A7%8D%E6%96%B9%E6%B3%95"><span class="nav-number">5.2.</span> <span class="nav-text">第二种方法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E6%8F%92%E4%BB%B6"><span class="nav-number">6.</span> <span class="nav-text">安装插件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%93%E8%AF%AD"><span class="nav-number">7.</span> <span class="nav-text">结语</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="渊澄YC"
+      src="/images/logo_yc_07.png">
+  <p class="site-author-name" itemprop="name">渊澄YC</p>
+  <div class="site-description" itemprop="description">iYCYC.com</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">180</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">283</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/miaoyanginfo" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;miaoyanginfo" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/miaoyanginfo" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;miaoyanginfo" rel="noopener me" target="_blank"><i class="fab fa-x-twitter fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://t.me/yuanchengYC" title="telegram → https:&#x2F;&#x2F;t.me&#x2F;yuanchengYC" rel="noopener me" target="_blank"><i class="fab fa-telegram fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="RSS → &#x2F;atom.xml" rel="noopener me"><i class="fa fa-rss fa-fw"></i></a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://instagram.com/miaoyang1989" title="Instagram → https:&#x2F;&#x2F;instagram.com&#x2F;miaoyang1989" rel="noopener me" target="_blank"><i class="fab fa-instagram fa-fw"></i></a>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></a>
+  </div>
+<div class="cc-license animated" itemprop="sponsor">
+  <a href="/images/zanshangma.png" class="cc-opacity" title="扫码请我喝杯咖啡吧 → " target="_blank"><img width="150" src="/images/zanshangma.png" alt="Netlify"></a>
+</div>
+
+        </div>
+      </div>
+        <div class="back-to-top animated" role="button" aria-label="返回顶部">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+    </div>
+
+    
+    <div class="sidebar-inner sidebar-blogroll">
+      <div class="links-of-blogroll animated">
+        <div class="links-of-blogroll-title"><i class="fa fa-globe fa-fw"></i>
+          链接
+        </div>
+        <ul class="links-of-blogroll-list">
+            <li class="links-of-blogroll-item">
+              <a href="https://ycyc.win/" title="https:&#x2F;&#x2F;ycyc.win">netlify镜像</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://miaoyang.win/" title="https:&#x2F;&#x2F;miaoyang.win" rel="noopener" target="_blank">vercel镜像</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://sshome.win/" title="https:&#x2F;&#x2F;sshome.win" rel="noopener" target="_blank">github镜像</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://iycyc.com/" title="https:&#x2F;&#x2F;iycyc.com" rel="noopener" target="_blank">cloudflare镜像</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://iycyc.com/" title="https:&#x2F;&#x2F;iycyc.com&#x2F;" rel="noopener" target="_blank">首页</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://valine.ycyc.win/" title="https:&#x2F;&#x2F;valine.ycyc.win&#x2F;" rel="noopener" target="_blank">评论管理</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="https://www.travellings.cn/go.html" title="https:&#x2F;&#x2F;www.travellings.cn&#x2F;go.html" rel="noopener" target="_blank">开往</a>
+            </li>
+            <li class="links-of-blogroll-item">
+              <a href="/sitemap.xml" title="&#x2F;sitemap.xml">站点地图</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://ycyc.win/posts/22169.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/logo_yc_07.png">
+      <meta itemprop="name" content="渊澄YC">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="渊澄">
+      <meta itemprop="description" content="iYCYC.com">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="京东亚瑟重刷istoreOS以及overlay分区扩容记录 | 渊澄">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          京东亚瑟重刷istoreOS以及overlay分区扩容记录
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-02-10 10:50:00" itemprop="dateCreated datePublished" datetime="2025-02-10T10:50:00+08:00">2025-02-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-03-10 14:23:00" itemprop="dateModified" datetime="2025-03-10T14:23:00+08:00">2025-03-10</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%BA%94%E7%94%A8/" itemprop="url" rel="index"><span itemprop="name">应用</span></a>
+        </span>
+    </span>
+
+  
+    <span id="/posts/22169.html" class="post-meta-item leancloud_visitors" data-flag-title="京东亚瑟重刷istoreOS以及overlay分区扩容记录" title="阅读次数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span class="leancloud-visitors-count"></span>
+    </span>
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+    <span id="/posts/22169.html" class="post-meta-item twikoo_visitors" data-flag-title="京东亚瑟重刷istoreOS以及overlay分区扩容记录" title="阅读次数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="twikoo_visitors"></span>
+    </span>
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>1.3k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>5 分钟</span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h2 id="引言"><a class="header-anchor" href="#引言">¶</a>引言</h2>
+<p>去年在京东入手的亚瑟路由器，之前刷的是华硕固件（<a target="_blank" rel="noopener" href="https://iycyc.com/posts/12783">京东AX1800 pro拆机刷uboot及华硕固件 | 渊澄</a>），一直当作AP来使用，也比较稳定。但最近折腾N1旁路由觉得越来越不方便，就想着将主路由也换成OpenWRT，于是就想着将亚瑟刷成istoreOS做主路由来用。但是我进入uboot模式刷了好几遍固件，都刷不进去，具体表现为刷完固件重启之后网卡每隔10秒左右都会断开一次，IP地址也获取不了。于是我又回头看了一遍早以前的教程，发现我少了一步，那就是在刷正式版固件之前需要先刷一个底包，然后进入iStoreOS之后再升级正式版。<br>
+教程链接 <a target="_blank" rel="noopener" href="https://post.smzdm.com/p/agq26zlw/">记录自己刷机京东云亚瑟 AX1800 Pro遇到的坑_路由器_什么值得买</a><br>
+以下仅作操作步骤记录。</p>
+<h2 id="进入uboot模式"><a class="header-anchor" href="#进入uboot模式">¶</a>进入uboot模式</h2>
+<p>用卡针按住reset，然后接通电源，指示灯会闪几次红色，然后变成蓝色，这时候就可以放开reset了。<br>
+电脑用网线接入LAN口，IP地址配置为192.168.1.x，子网掩码255.255.255.0，网关192.168.1.1。<br>
+这时候浏览器打开192.168.1.1就可以进入uboot界面了。</p>
+<h2 id="刷入底包"><a class="header-anchor" href="#刷入底包">¶</a>刷入底包</h2>
+<p>将附件中的（底包）istoreos-squashfs-factory.bin文件在uboot中上传并刷入，等待设备重启并指示灯变为绿色，则刷入成功。</p>
+<h2 id="刷入正式包"><a class="header-anchor" href="#刷入正式包">¶</a>刷入正式包</h2>
+<p>浏览器进入192.168.1.1，用户名为root，密码为password。然后在系统-备份/升级中上传正式包，然后升级。<br>
+等待重启后进入路由器后台，状态-概览中确认版本为R23.9.9则升级成功。<br>
+<img src="https://img.ycyc.win/img/202502101110242.png" alt="image.png"><br>
+在koolcenter的固件页面（<a target="_blank" rel="noopener" href="https://fw.koolcenter.com/Lean/JDC_AX1800_Pro/">KoolCenter 固件下载服务器</a>）亚瑟最新版的固件为R24.5.19，但是我尝试刷入该版本固件时，故障和最开始的一样，网卡每隔10秒左右都会掉一下。怀疑是该版本也需要先刷入对应版本的底包才能用。</p>
+<span id="more"></span>
+<p><img src="https://img.ycyc.win/img/202502101113376.png" alt="image.png"></p>
+<h2 id="overlay扩容"><a class="header-anchor" href="#overlay扩容">¶</a>overlay扩容</h2>
+<h3 id="第一种方法"><a class="header-anchor" href="#第一种方法">¶</a>第一种方法</h3>
+<p>刷完之后，默认的overlay分区只有5MB左右，在安装各种插件时都会报空间不足的错误。需要先将overlay扩容后再安装。扩容方法也是按照上面教程内容操作的，这里仅作记录。</p>
+<p>1.首先登录ttyd终端，输入账号root，默认密码password（如果没更改密码的话）完成登录。<br>
+2.输入</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df -h</span><br></pre></td></tr></table></figure>
+<p>查看overlay分区<br>
+3.再输入</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cp -r /overlay/* /mnt/mmcblk0p27</span><br></pre></td></tr></table></figure>
+<p>回车<br>
+4.去iStoreOS里，系统-磁盘管理-挂载点-选择/dev/mmcblk0p27，卸载。<br>
+5.卸载掉mmcblk0p27后,再下面选项中选择设备mmcblk0p27，文件系统ext4，挂载选项rw,relatime,data=ordered，挂载点/overlay，点击挂载。下图为挂载成功的截图。<br>
+<img src="https://img.ycyc.win/img/202502101121090.png" alt="image.png"></p>
+<p>然后去系统-软件包里查看是否成功，图下就是成功。<br>
+<img src="https://img.ycyc.win/img/202502101120531.png" alt="image.png"><br>
+6.再去ttyd终端里，再输入</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sed -i s#/mnt/mmcblk0p27#/overlay# /etc/config/fstab</span><br></pre></td></tr></table></figure>
+<p>后就不会报错了<br>
+7.再输入</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sed -i &#x27;12s/1/0/g&#x27; /etc/config/fstab</span><br></pre></td></tr></table></figure>
+<p>8.都没有报错后输入reboot重启路由器，就成功扩容overlay分区。</p>
+<blockquote>
+<p>如果上面方法没有效果可尝试以下第二种方法</p>
+</blockquote>
+<h3 id="第二种方法"><a class="header-anchor" href="#第二种方法">¶</a>第二种方法</h3>
+<p>在终端中输入以下命令回车 卸载p27分区</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">umount /dev/mmcblk0p27</span><br></pre></td></tr></table></figure>
+<p>输入以下命令回车 格式化P27分区，因为emmc容量大，格式化需要一些时间，耐心等待执行完成</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mkfs.ext4 -F /dev/mmcblk0p27</span><br></pre></td></tr></table></figure>
+<p>输入以下命令回车 手动挂载P27</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mount /dev/mmcblk0p27 /mnt/mmcblk0p27</span><br></pre></td></tr></table></figure>
+<p>输入以下命令回车 拷贝overlay分区文件到P27分区</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cp -r /overlay/* /mnt/mmcblk0p27</span><br></pre></td></tr></table></figure>
+<p>输入以下命令回车 检查是否拷贝成功，输入下面的命令回车看到 lost+found  upper  work文件夹，说明拷贝成功。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ls /mnt/mmcblk0p27</span><br></pre></td></tr></table></figure>
+<p>然后输入以下命令回车生成挂载文件</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">block detect &gt; /etc/config/fstab</span><br></pre></td></tr></table></figure>
+<p>输入以下命令回车把p27分区挂载到overlay</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sed -i s#/mnt/mmcblk0p27#/overlay# /etc/config/fstab</span><br></pre></td></tr></table></figure>
+<p>最后输入以下命令回车把原来的overlay挂载取消（下图少了这一步请知悉，实际要执行这一步的，图我懒得再换了）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sed -i &#x27;12s/1/0/g&#x27; /etc/config/fstab</span><br></pre></td></tr></table></figure>
+<p>最后的最后就是输入reboot后重启就可以</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">reboot</span><br></pre></td></tr></table></figure>
+<h2 id="安装插件"><a class="header-anchor" href="#安装插件">¶</a>安装插件</h2>
+<p>可以前往自带的istore中安装各种插件，如果商店里面没有，可以在下面地址下载run文件，然后在istore中上传手动安装。<br>
+<a target="_blank" rel="noopener" href="https://github.com/bcseputetto/Are-u-ok/releases/tag/iStoreOS">Release iStoreOS 22.03.X · bcseputetto/Are-u-ok · GitHub</a><br>
+比如我这边安装的passwall就是用的下图的版本<br>
+<img src="https://img.ycyc.win/img/202502101128683.png" alt="image.png"></p>
+<h2 id="结语"><a class="header-anchor" href="#结语">¶</a>结语</h2>
+<p>这样亚瑟的istoreos安装就告一段落了，因为亚瑟的内存只有512，日常占用率都在85%以上，所以不适合跑docker容器，目前我的docker容器还是跑在N1上面，目前N1只负责跑容器和vpn server，其他诸如宽带拨号、ddns、科学上网等功能都转移到的亚瑟主路由上了，局域网内的设置只需要自动获取IP就可以随意出国了。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>请我一杯咖啡吧！</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/zanshangma.png" alt="渊澄YC 微信赞赏">
+        <span>微信赞赏</span>
+      </div>
+
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/openwrt/" rel="tag"># openwrt</a>
+              <a href="/tags/%E4%BA%AC%E4%B8%9C/" rel="tag"># 京东</a>
+              <a href="/tags/%E8%B7%AF%E7%94%B1%E5%99%A8/" rel="tag"># 路由器</a>
+              <a href="/tags/%E5%88%B7%E6%9C%BA/" rel="tag"># 刷机</a>
+              <a href="/tags/istoreOS/" rel="tag"># istoreOS</a>
+              <a href="/tags/%E4%BA%9A%E7%91%9F/" rel="tag"># 亚瑟</a>
+              <a href="/tags/overlay/" rel="tag"># overlay</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/49402.html" rel="prev" title="本站已接入Google Adsense广告联盟">
+                  <i class="fa fa-angle-left"></i> 本站已接入Google Adsense广告联盟
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/posts/24512.html" rel="next" title="Docker部署Hexo管理工具QEXO">
+                  Docker部署Hexo管理工具QEXO <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments"><div id="twikoo-comments"></div></div>
+
+
+<!-- Insert google ad blocks -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2779370055018487"
+     crossorigin="anonymous"></script>
+<!-- iycyc -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-2779370055018487"
+     data-ad-slot="5260578883"
+     data-ad-format="auto"
+     data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="beian"><a href="https://icp.gov.moe/?keyword=20241068" rel="noopener" target="_blank">萌ICP备20241068号 </a>
+  </div>
+  <div class="copyright">
+    &copy; 2022 – 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">渊澄|iYCYC.com</span>
+     
+  </div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+    <span title="站点总字数">79k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">4:47</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2779370055018487"
+     crossorigin="anonymous"></script><div class="cc-license animated" itemprop="sponsor">
+  <a href="https://www.foreverblog.cn/blog/6194.html" target="_blank" > <img src="https://foreverblog.cn/assets/logo/logo_en_default.png" alt="" style="width:auto;height:16px;"> </a>
+  <a href="https://www.foreverblog.cn/go.html" class="cc-opacity" title="穿梭虫洞-随机访问十年之约友链博客" target="_blank"><img width="100" src="https://img.foreverblog.cn/wormhole_2.gif" alt="ForeverBlog"></a>
+  <a href="https://www.travellings.cn/go.html" class="cc-opacity" title="开往-友链接力" target="_blank"><img width="100" src="https://www.travellings.cn/assets/logo.gif" alt="travellings"></a>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="reading-progress-bar"></div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+  <script class="next-config" data-name="leancloud_visitors" type="application/json">{"enable":true,"app_id":"fBkLaeZXGpwDElmlfn34D9sa-MdYXbMMI","app_key":"Ggv7YHQFQGCnmpQGXsXCxJXX","server_url":"https://leancloud.ycyc.win","security":false}</script>
+  <script src="/js/third-party/statistics/lean-analytics.js"></script>
+
+
+<script class="next-config" data-name="twikoo" type="application/json">{"enable":true,"visitor":true,"envId":"https://twikoo.miaoyang.win:16666","jsUrl":"https://cdn.jsdmirror.com/npm/twikoo/dist/twikoo.all.min.js","el":"#twikoo-comments"}</script>
+<script>
+document.addEventListener('page:loaded', () => {
+  NexT.utils.loadComments(CONFIG.twikoo.el)
+    .then(() => NexT.utils.getScript(
+      CONFIG.twikoo.jsUrl || 'https://cdn.jsdelivr.net/npm/twikoo/dist/twikoo.all.min.js',
+      { condition: window.twikoo }
+    ))
+    .then(() => {
+      twikoo.init(CONFIG.twikoo);
+    });
+});
+</script>
+<style>
+.post-block, .comments {
+  overflow: visible;
+}
+.tk-owo-emotion {
+  display: inline-block;
+}
+</style>
+
+</body>
+</html>

@@ -1,0 +1,682 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>渊澄</title>
+  
+  <subtitle>川流不息，渊澄取映&lt;iYCYC.com&gt;</subtitle>
+  <link href="https://ycyc.win/atom.xml" rel="self"/>
+  
+  <link href="https://ycyc.win/"/>
+  <updated>2025-11-28T03:02:00.000Z</updated>
+  <id>https://ycyc.win/</id>
+  
+  <author>
+    <name>渊澄YC</name>
+    
+  </author>
+  
+  <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>如何在HomeAssistant中删除小米多功能网关中不存在的旧设备</title>
+    <link href="https://ycyc.win/posts/27193.html"/>
+    <id>https://ycyc.win/posts/27193.html</id>
+    <published>2025-11-28T02:51:00.000Z</published>
+    <updated>2025-11-28T03:02:00.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>前几天在小黄鱼入手了一个二手的小米多功能网关，在使用xiaomi gateway (aqara)组件接入到HomeAssistant中之后发现里面出现了好多并不存在的子设备，包括开关插座、还有各种传感器，而且状态都是不可用，想必是卖家之前连接过的设备。<br>但是我已经将网关初始化连入我自己的网络中，而且在米家APP中也只有我新加的设备，看不到之前连的旧设备。如果想要彻底删除这些设备，可以在HomeAssistant调用xiaomi_aqara.remove_device这个服务。在左侧导航栏进入开发者工具，找到动作，里面选择xiaomi_aqara.remove_device这个服务，设备标识符填入你要删除的子设备的id，一般是这个设备的类型后面的一串数字字母组合，比如plug_158d00015d1bf5这个设备的id就是158d00015d1bf5，网关MAC填入你操作的网关的MAC地址，可以在路由器或米家APP中查看。</p><p><img src="https://img.ycyc.win/img/20251128105154189.png" alt="image.png"><br>最后点击执行动作，将所有需要删除的设备都操作一遍，然后在xiaomi gateway(aqara)中重新添加这个网关就可以了。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;前几天在小黄鱼入手了一个二手的小米多功能网关，在使用xiaomi gateway (aqara)组件接入到HomeAssistant中之后发现里面出现了好多并不存在的子设备，包括开关插座、还有各种传感器，而且状态都是不可用，想必是卖家之前连接过的设备。&lt;br&gt;
+但是我已经将</summary>
+      
+    
+    
+    
+    <category term="应用" scheme="https://ycyc.win/categories/%E5%BA%94%E7%94%A8/"/>
+    
+    
+    <category term="小米" scheme="https://ycyc.win/tags/%E5%B0%8F%E7%B1%B3/"/>
+    
+    <category term="homeassistant" scheme="https://ycyc.win/tags/homeassistant/"/>
+    
+    <category term="米家" scheme="https://ycyc.win/tags/%E7%B1%B3%E5%AE%B6/"/>
+    
+    <category term="多功能网关" scheme="https://ycyc.win/tags/%E5%A4%9A%E5%8A%9F%E8%83%BD%E7%BD%91%E5%85%B3/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>电报某些群聊无法在iOS端显示的解决方法</title>
+    <link href="https://ycyc.win/posts/2134.html"/>
+    <id>https://ycyc.win/posts/2134.html</id>
+    <published>2025-11-27T03:47:00.000Z</published>
+    <updated>2025-11-27T03:49:00.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>如果你在iOS设备上登录电报的时候，发现在电脑端能正常显示群聊，在手机上却打不开，可以尝试登录电报Windows端，在设置中找到如下选项并开启，然后重新登录手机端即可。</p><p><img src="https://img.ycyc.win/img/20251127114828917.png" alt="image.png"></p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;如果你在iOS设备上登录电报的时候，发现在电脑端能正常显示群聊，在手机上却打不开，可以尝试登录电报Windows端，在设置中找到如下选项并开启，然后重新登录手机端即可。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://img.ycyc.win/img/2025112711</summary>
+      
+    
+    
+    
+    <category term="叨叨" scheme="https://ycyc.win/categories/%E5%8F%A8%E5%8F%A8/"/>
+    
+    
+    <category term="电报" scheme="https://ycyc.win/tags/%E7%94%B5%E6%8A%A5/"/>
+    
+    <category term="iOS" scheme="https://ycyc.win/tags/iOS/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>2025最新在HomeAssistant中接入米家多功能网关教程</title>
+    <link href="https://ycyc.win/posts/20020.html"/>
+    <id>https://ycyc.win/posts/20020.html</id>
+    <published>2025-11-25T02:09:00.000Z</published>
+    <updated>2025-11-25T02:27:00.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>最近在小黄鱼入手了一个二代米家多功能网关。原因是我家有的区域没有Zigbee信号覆盖，而且这个网关还带彩灯和报警音播放，这个网关还自带一个光线亮度传感器，在接入HomeAsssistant中可以看到并根据这个传感器创建自动化任务，可玩性比较高。还有这个网关甚至可以在米家APP中操作收听广播节目。比较遗憾的是这个网关只支持米家早期的Zigbee协议，比如早期出的门窗传感器、无线开关或是温湿度传感器，不支持蓝牙Mesh协议。所以如果你的设备是蓝牙协议，是无法使用这个网关接入你的设备的。小黄鱼现在二手的售价一般在50块钱左右，而且很多都包邮，算是比较超值了，接入HomeAssistant之后，主要可以实现以下功能：</p><h4 id="将接入到该网关下面的各种传感器接入到HomeAssistant。"><a class="header-anchor" href="#将接入到该网关下面的各种传感器接入到HomeAssistant。">¶</a>将接入到该网关下面的各种传感器接入到HomeAssistant。</h4><h4 id="将彩色夜灯以light的方式接入到HomeAssistant，可控制彩灯开关、亮度、颜色。"><a class="header-anchor" href="#将彩色夜灯以light的方式接入到HomeAssistant，可控制彩灯开关、亮度、颜色。">¶</a>将彩色夜灯以light的方式接入到HomeAssistant，可控制彩灯开关、亮度、颜色。</h4><h4 id="接入到HomeAssistant可使用命令控制网关播放内置报警铃声，也可以上传自定义铃声用作自动化提示音或报警音。"><a class="header-anchor" href="#接入到HomeAssistant可使用命令控制网关播放内置报警铃声，也可以上传自定义铃声用作自动化提示音或报警音。">¶</a>接入到HomeAssistant可使用命令控制网关播放内置报警铃声，也可以上传自定义铃声用作自动化提示音或报警音。</h4><h4 id="接入到HomeAssistant之后可以调用其内部隐藏的光照度传感器，在HomeAssistant中实现更为丰富的自动化。"><a class="header-anchor" href="#接入到HomeAssistant之后可以调用其内部隐藏的光照度传感器，在HomeAssistant中实现更为丰富的自动化。">¶</a>接入到HomeAssistant之后可以调用其内部隐藏的光照度传感器，在HomeAssistant中实现更为丰富的自动化。</h4><span id="more"></span><p>虽然小米早就出了HomeAssistant的官方插件，名为xiaomi home，但我还是习惯用HomeAssistant官方出的Xiaomi Gateway(Aqara)这个插件，因为这个插件是完全基于本地局域网运行的，也就是如果外网中断，也不影响插件本地的自动化运行，而类似于xiaomi home以及 xaomi miot这些都是通过小米账号添加的，如果外网中断，是会对本地自动化运行有影响的。<br><img src="https://img.ycyc.win/img/20251125101512144.png" alt="image.png"><br>从最早开始玩HomeAssistant的朋友都知道，要将这个多功能网关加入到HomeAssitant，需要在网关中打开一个局域网通讯协议的开关，并且要填入局域网通讯密码。这个操作在很早前的米家APP上很容易操作完成，但是新版的米家APP已经取消了这个入口。<br>我们需要找到在电脑上安装个安卓模拟器，或是找一个系统版本比较旧的安卓手机，手动安装米家5.6.81这个版本的APP，登录到小米账号，找到需要操作的网关。<br>在关于页面的插件版本处连续点击，直到提示打开开发者模式。<br><img src="https://img.ycyc.win/img/20251125103540151.png" alt="image.png"></p><p>然后打开局域网通讯协议，并且复制通讯密码。<br><img src="https://img.ycyc.win/img/20251125103610939.png" alt="image.png"></p><p>在HomeAssistant集成中搜索并下载安装Xiaomi Gateway(aqara)，添加一个条目，输入网关的IP地址，接着在这个界面输入你复制的通讯密码即可完成添加。<br><img src="https://img.ycyc.win/img/20251125102447874.png" alt="image.png"></p>]]></content>
+    
+    
+    <summary type="html">&lt;p&gt;最近在小黄鱼入手了一个二代米家多功能网关。原因是我家有的区域没有Zigbee信号覆盖，而且这个网关还带彩灯和报警音播放，这个网关还自带一个光线亮度传感器，在接入HomeAsssistant中可以看到并根据这个传感器创建自动化任务，可玩性比较高。还有这个网关甚至可以在米家APP中操作收听广播节目。比较遗憾的是这个网关只支持米家早期的Zigbee协议，比如早期出的门窗传感器、无线开关或是温湿度传感器，不支持蓝牙Mesh协议。所以如果你的设备是蓝牙协议，是无法使用这个网关接入你的设备的。小黄鱼现在二手的售价一般在50块钱左右，而且很多都包邮，算是比较超值了，接入HomeAssistant之后，主要可以实现以下功能：&lt;/p&gt;
+&lt;h4 id=&quot;将接入到该网关下面的各种传感器接入到HomeAssistant。&quot;&gt;&lt;a class=&quot;header-anchor&quot; href=&quot;#将接入到该网关下面的各种传感器接入到HomeAssistant。&quot;&gt;¶&lt;/a&gt;将接入到该网关下面的各种传感器接入到HomeAssistant。&lt;/h4&gt;
+&lt;h4 id=&quot;将彩色夜灯以light的方式接入到HomeAssistant，可控制彩灯开关、亮度、颜色。&quot;&gt;&lt;a class=&quot;header-anchor&quot; href=&quot;#将彩色夜灯以light的方式接入到HomeAssistant，可控制彩灯开关、亮度、颜色。&quot;&gt;¶&lt;/a&gt;将彩色夜灯以light的方式接入到HomeAssistant，可控制彩灯开关、亮度、颜色。&lt;/h4&gt;
+&lt;h4 id=&quot;接入到HomeAssistant可使用命令控制网关播放内置报警铃声，也可以上传自定义铃声用作自动化提示音或报警音。&quot;&gt;&lt;a class=&quot;header-anchor&quot; href=&quot;#接入到HomeAssistant可使用命令控制网关播放内置报警铃声，也可以上传自定义铃声用作自动化提示音或报警音。&quot;&gt;¶&lt;/a&gt;接入到HomeAssistant可使用命令控制网关播放内置报警铃声，也可以上传自定义铃声用作自动化提示音或报警音。&lt;/h4&gt;
+&lt;h4 id=&quot;接入到HomeAssistant之后可以调用其内部隐藏的光照度传感器，在HomeAssistant中实现更为丰富的自动化。&quot;&gt;&lt;a class=&quot;header-anchor&quot; href=&quot;#接入到HomeAssistant之后可以调用其内部隐藏的光照度传感器，在HomeAssistant中实现更为丰富的自动化。&quot;&gt;¶&lt;/a&gt;接入到HomeAssistant之后可以调用其内部隐藏的光照度传感器，在HomeAssistant中实现更为丰富的自动化。&lt;/h4&gt;</summary>
+    
+    
+    
+    <category term="应用" scheme="https://ycyc.win/categories/%E5%BA%94%E7%94%A8/"/>
+    
+    
+    <category term="homeassistant" scheme="https://ycyc.win/tags/homeassistant/"/>
+    
+    <category term="米家" scheme="https://ycyc.win/tags/%E7%B1%B3%E5%AE%B6/"/>
+    
+    <category term="多功能网关" scheme="https://ycyc.win/tags/%E5%A4%9A%E5%8A%9F%E8%83%BD%E7%BD%91%E5%85%B3/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>搭建frigate+CD2，监控自动上传百度云</title>
+    <link href="https://ycyc.win/posts/37011.html"/>
+    <id>https://ycyc.win/posts/37011.html</id>
+    <published>2025-10-13T06:51:00.000Z</published>
+    <updated>2025-10-13T07:30:00.000Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="Clouddrive2搭建"><a class="header-anchor" href="#Clouddrive2搭建">¶</a>Clouddrive2搭建</h2><p>如果你使用的是istoreOS，可以在istore商店中搜索安装CD2，安装后会创建一个名为clouddrive2的容器。<br>当然你也可以直接使用docker命令来安装。<br>浏览器访问主机IP+19798即可打开CD2的页面。</p><h2 id="Clouddrive2连接百度云盘并挂载到本地"><a class="header-anchor" href="#Clouddrive2连接百度云盘并挂载到本地">¶</a>Clouddrive2连接百度云盘并挂载到本地</h2><p>你可以在CD2的云存储中添加包括百度网盘、阿里云盘、115、Onedrive在内的多个网盘，但是免费用户只能添加两个网盘服务，并且只能创建一个挂载点。<br><img src="https://img.ycyc.win/img/20251013160937076.png" alt="image.png"></p><p>如果你和我一样是使用istoreOS商店中的CD2插件，需要将网盘挂载到/mnt/cloudNAS目录下才能实现监控视频的实时上传。<br><img src="https://img.ycyc.win/img/20251013161126659.png" alt="image.png"></p><span id="more"></span><h2 id="Frigate搭建"><a class="header-anchor" href="#Frigate搭建">¶</a>Frigate搭建</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">docker run -d \</span><br><span class="line">  --name frigate \</span><br><span class="line">  --restart=unless-stopped \</span><br><span class="line">  --stop-timeout 30 \</span><br><span class="line">  --mount type=tmpfs,target=/tmp/cache,tmpfs-size=1000000000 \</span><br><span class="line">  --device /dev/bus/usb:/dev/bus/usb \</span><br><span class="line">  --shm-size=64m \</span><br><span class="line">  -v /mnt/CloudNAS/frigate:/media/frigate \</span><br><span class="line">  -v /mnt/sata1-1/config/frigate:/config \</span><br><span class="line">  -e FRIGATE_RTSP_PASSWORD=&#x27;password&#x27; \</span><br><span class="line">  -e TZ=&#x27;Asia/Shanghai&#x27; \</span><br><span class="line">  -e HF_ENDPOINT=&#x27;https://huggingface.mirror.frigate-cn.video&#x27; \</span><br><span class="line">  -p 8971:8971 \</span><br><span class="line">  -p 8554:8554 \</span><br><span class="line">  -p 8555:8555/tcp \</span><br><span class="line">  -p 8555:8555/udp \</span><br><span class="line">  docker.cnb.cool/frigate-cn/frigate:stable</span><br></pre></td></tr></table></figure><blockquote><p>将命令中的/mnt/CloudNAS/frigate替换为网盘挂载到本地的目录。<br>将命令中的/mnt/sata1-1/config/frigate替换为你本地存储frigate配置的目录。</p></blockquote><p>容器正常运行后，浏览器访问设备IP:8971端口即可访问frigate页面，默认登录用户名为admin，密码在容器的运行日志中查看。<br><img src="https://img.ycyc.win/img/20251013160218614.png" alt="image.png"></p><h2 id="Frigate添加设备及基本设置"><a class="header-anchor" href="#Frigate添加设备及基本设置">¶</a>Frigate添加设备及基本设置</h2><p>在frigate配置文件夹下有config.yaml，此文件为frigate的主配置文件，想要添加摄像头需要在此文件中按照格式添加设备的rtsp地址或是onvif地址。<br>下面是我目前在用的配置文件，仅供参考</p><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">mqtt:</span></span><br><span class="line">  <span class="attr">enabled:</span> <span class="literal">true</span></span><br><span class="line">  <span class="attr">host:</span> <span class="number">192.168</span><span class="number">.1</span><span class="number">.2</span></span><br><span class="line">  <span class="attr">port:</span> <span class="number">1883</span></span><br><span class="line">  <span class="attr">topic_prefix:</span> <span class="string">frigate</span></span><br><span class="line">  <span class="attr">client_id:</span> <span class="string">frigate</span></span><br><span class="line">  </span><br><span class="line"></span><br><span class="line"><span class="attr">cameras:</span></span><br><span class="line">  <span class="attr">keting:</span> <span class="comment"># &lt;------ Name the camera</span></span><br><span class="line">    <span class="attr">enabled:</span> <span class="literal">true</span></span><br><span class="line">    <span class="attr">ffmpeg:</span></span><br><span class="line">      <span class="attr">inputs:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">path:</span> <span class="string">rtsp://192.168.1.101:554/rtsp/stream1</span> <span class="comment"># &lt;----- The stream you want to use for detection</span></span><br><span class="line">          <span class="attr">roles:</span></span><br><span class="line">            <span class="bullet">-</span> <span class="string">detect</span></span><br><span class="line">    <span class="attr">detect:</span></span><br><span class="line">      <span class="attr">enabled:</span> <span class="literal">false</span> <span class="comment"># &lt;---- disable detection until you have a working camera feed</span></span><br><span class="line">      <span class="attr">width:</span> <span class="number">1280</span></span><br><span class="line">      <span class="attr">height:</span> <span class="number">720</span></span><br><span class="line">  <span class="attr">mendao:</span> <span class="comment"># &lt;------ Name the camera</span></span><br><span class="line">    <span class="attr">enabled:</span> <span class="literal">true</span></span><br><span class="line">    <span class="attr">ffmpeg:</span></span><br><span class="line">      <span class="attr">inputs:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">path:</span> <span class="string">rtsp://192.168.1.103:554/rtsp/stream1</span> <span class="comment"># &lt;----- The stream you want to use for detection</span></span><br><span class="line">          <span class="attr">roles:</span></span><br><span class="line">            <span class="bullet">-</span> <span class="string">detect</span></span><br><span class="line">    <span class="attr">detect:</span></span><br><span class="line">      <span class="attr">enabled:</span> <span class="literal">false</span> <span class="comment"># &lt;---- disable detection until you have a working camera feed</span></span><br><span class="line">      <span class="attr">width:</span> <span class="number">1280</span></span><br><span class="line">      <span class="attr">height:</span> <span class="number">720</span></span><br><span class="line">  <span class="attr">menkou:</span> <span class="comment"># &lt;------ Name the camera</span></span><br><span class="line">    <span class="attr">enabled:</span> <span class="literal">true</span></span><br><span class="line">    <span class="attr">ffmpeg:</span></span><br><span class="line">      <span class="attr">inputs:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">path:</span> <span class="string">rtsp://192.168.1.102:554/rtsp/stream1</span> <span class="comment"># &lt;----- The stream you want to use for detection</span></span><br><span class="line">          <span class="attr">roles:</span></span><br><span class="line">            <span class="bullet">-</span> <span class="string">detect</span></span><br><span class="line">    <span class="attr">detect:</span></span><br><span class="line">      <span class="attr">enabled:</span> <span class="literal">false</span> <span class="comment"># &lt;---- disable detection until you have a working camera feed</span></span><br><span class="line">      <span class="attr">width:</span> <span class="number">1280</span></span><br><span class="line">      <span class="attr">height:</span> <span class="number">720</span></span><br><span class="line"><span class="attr">detect:</span></span><br><span class="line">  <span class="attr">enabled:</span> <span class="literal">true</span></span><br><span class="line"><span class="attr">version:</span> <span class="number">0.16</span><span class="number">-0</span></span><br><span class="line"><span class="attr">go2rtc:</span></span><br><span class="line">  <span class="attr">streams:</span></span><br><span class="line">    <span class="attr">keting:</span> <span class="comment">## &lt;- 这里的back为摄像头名称，根据你的实际情况进行调整</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">rtsp://192.168.1.101:554/rtsp/stream1</span> <span class="comment">## &lt;- 这里的rtsp为摄像头流地址</span></span><br><span class="line">    <span class="attr">mendao:</span> <span class="comment">## &lt;- 这里的back为摄像头名称，根据你的实际情况进行调整</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">rtsp://192.168.1.103:554/rtsp/stream1</span> <span class="comment">## &lt;- 这里的rtsp为摄像头流地址</span></span><br><span class="line">    <span class="attr">menkou:</span> <span class="comment">## &lt;- 这里的back为摄像头名称，根据你的实际情况进行调整</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">rtsp://192.168.1.102:554/rtsp/stream1</span> <span class="comment">## &lt;- 这里的rtsp为摄像头流地址</span></span><br><span class="line">  <span class="attr">webrtc:</span></span><br><span class="line">    <span class="attr">candidates:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="number">192.168</span><span class="number">.1</span><span class="number">.123</span><span class="string">:8555</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">stun:8555</span></span><br><span class="line"><span class="attr">record:</span></span><br><span class="line">  <span class="attr">enabled:</span> <span class="literal">True</span>  <span class="comment"># 只有设置了enabled为True时录制功能才会生效</span></span><br><span class="line">  <span class="attr">retain:</span></span><br><span class="line">    <span class="attr">days:</span> <span class="number">7</span></span><br><span class="line">    <span class="attr">mode:</span> <span class="string">all</span> <span class="comment"># 将在3天期间保存所有的录制视频，包括没有画面变动或没有检测到物体/目标的视频</span></span><br><span class="line">  <span class="attr">alerts:</span></span><br><span class="line">    <span class="attr">retain:</span></span><br><span class="line">      <span class="attr">days:</span> <span class="number">30</span></span><br><span class="line">      <span class="attr">mode:</span> <span class="string">motion</span> <span class="comment"># 将在最上面的3天后，仅保存画面有变动且属于核查中&quot;警报&quot;的视频30天</span></span><br><span class="line">  <span class="attr">detections:</span></span><br><span class="line">    <span class="attr">retain:</span></span><br><span class="line">      <span class="attr">days:</span> <span class="number">30</span></span><br><span class="line">      <span class="attr">mode:</span> <span class="string">motion</span> <span class="comment"># 将在最上面的3天后，仅保存画面有变动且属于核查中&quot;检测&quot;的视频30天</span></span><br></pre></td></tr></table></figure><p>如果你和我一样是用的TP-LINK的设备，可以很轻松的获取到设备的rtsp地址，地址为rtsp://admin@ip:553/rtsp/stream1 ，如果是其他品牌的设备，可在网上自行搜索相关教程。</p><h2 id="网盘查看监控录像"><a class="header-anchor" href="#网盘查看监控录像">¶</a>网盘查看监控录像</h2><p>如果一切正常的话，你的网盘对应文件夹里就会有以下三个文件夹，<br><img src="https://img.ycyc.win/img/20251013161414445.png" alt="image.png"></p><p>recording文件夹即监控视频存储文件夹，视频时长一般是10秒一个文件，里面的子文件夹安装日期和时间命名，但需要注意时间为UTC0的时间，咱们这边需要+8。文件以分钟+秒命名。<br><img src="https://img.ycyc.win/img/20251013161707738.png" alt="image.png"></p>]]></content>
+    
+    
+    <summary type="html">&lt;h2 id=&quot;Clouddrive2搭建&quot;&gt;&lt;a class=&quot;header-anchor&quot; href=&quot;#Clouddrive2搭建&quot;&gt;¶&lt;/a&gt;Clouddrive2搭建&lt;/h2&gt;
+&lt;p&gt;如果你使用的是istoreOS，可以在istore商店中搜索安装CD2，安装后会创建一个名为clouddrive2的容器。&lt;br&gt;
+当然你也可以直接使用docker命令来安装。&lt;br&gt;
+浏览器访问主机IP+19798即可打开CD2的页面。&lt;/p&gt;
+&lt;h2 id=&quot;Clouddrive2连接百度云盘并挂载到本地&quot;&gt;&lt;a class=&quot;header-anchor&quot; href=&quot;#Clouddrive2连接百度云盘并挂载到本地&quot;&gt;¶&lt;/a&gt;Clouddrive2连接百度云盘并挂载到本地&lt;/h2&gt;
+&lt;p&gt;你可以在CD2的云存储中添加包括百度网盘、阿里云盘、115、Onedrive在内的多个网盘，但是免费用户只能添加两个网盘服务，并且只能创建一个挂载点。&lt;br&gt;
+&lt;img src=&quot;https://img.ycyc.win/img/20251013160937076.png&quot; alt=&quot;image.png&quot;&gt;&lt;/p&gt;
+&lt;p&gt;如果你和我一样是使用istoreOS商店中的CD2插件，需要将网盘挂载到/mnt/cloudNAS目录下才能实现监控视频的实时上传。&lt;br&gt;
+&lt;img src=&quot;https://img.ycyc.win/img/20251013161126659.png&quot; alt=&quot;image.png&quot;&gt;&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="应用" scheme="https://ycyc.win/categories/%E5%BA%94%E7%94%A8/"/>
+    
+    
+    <category term="Frigate" scheme="https://ycyc.win/tags/Frigate/"/>
+    
+    <category term="NVR" scheme="https://ycyc.win/tags/NVR/"/>
+    
+    <category term="Clouddrive2" scheme="https://ycyc.win/tags/Clouddrive2/"/>
+    
+    <category term="监控" scheme="https://ycyc.win/tags/%E7%9B%91%E6%8E%A7/"/>
+    
+    <category term="网盘" scheme="https://ycyc.win/tags/%E7%BD%91%E7%9B%98/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>HomeAssistant配置备份到OneDrive操作指引</title>
+    <link href="https://ycyc.win/posts/60784.html"/>
+    <id>https://ycyc.win/posts/60784.html</id>
+    <published>2025-04-10T02:06:00.000Z</published>
+    <updated>2025-04-10T05:37:00.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>进入HomeAssistant 设置-设备与服务，点击页面右下角的添加集成按钮，搜索onedrive，会出来Microsoft。<br><img src="https://img.ycyc.win/img/20250410100830526.png" alt="image.png"></p><p>然后在二级菜单中选择OneDrive跳转到登录和授权页面。</p><p><img src="https://img.ycyc.win/img/20250410100856978.png" alt="image.png"></p><span id="more"></span><p>授权完成，出现下图提示后可将页面关闭，返回到HomeAssistant继续操作。<br><img src="https://img.ycyc.win/img/20250410100918364.png" alt="image.png"><br>然后进入设置-系统-备份。<br><img src="https://img.ycyc.win/img/20250410101107361.png" alt="image.png"><br>下面开始设置备份。<br><img src="https://img.ycyc.win/img/20250410101134288.png" alt="image.png"><br>首次设置会出现加密密钥，HomeAssistant默认的备份都是经过加密的，还原备份的时候需要输入此密钥进行二次认证，当然如果你不需要加密也可以在之后将其关闭。<br><img src="https://img.ycyc.win/img/20250410101205392.png" alt="image.png"><br>默认使用推荐的自动备份即可。<br><img src="https://img.ycyc.win/img/20250410101223078.png" alt="image.png"><br>在位置设置中将Onedrive开关打开。<br><img src="https://img.ycyc.win/img/20250410101301158.png" alt="image.png"><br>如果你需要关闭加密，可以点击齿轮按钮将其关闭，这样以后还原配置的时候无需输入加密密钥，只要上传tar文件就可以。<br><img src="https://img.ycyc.win/img/20250410101330872.png" alt="image.png"><br>OneDrive会将备份存放在应用文件夹下的HomeAssistant文件夹内。需要还原的时候可以从此位置下载到备份文件。<br>HomeAssistant除了支持备份到OneDrive之外，还支持Google Drive，群晖NAS ，甚至还有WEBDAV协议的网盘。等有了时间研究下WEBDAV备份方式。</p>]]></content>
+    
+    
+    <summary type="html">&lt;p&gt;进入HomeAssistant 设置-设备与服务，点击页面右下角的添加集成按钮，搜索onedrive，会出来Microsoft。&lt;br&gt;
+&lt;img src=&quot;https://img.ycyc.win/img/20250410100830526.png&quot; alt=&quot;image.png&quot;&gt;&lt;/p&gt;
+&lt;p&gt;然后在二级菜单中选择OneDrive跳转到登录和授权页面。&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://img.ycyc.win/img/20250410100856978.png&quot; alt=&quot;image.png&quot;&gt;&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="HomeAssistant" scheme="https://ycyc.win/categories/HomeAssistant/"/>
+    
+    
+    <category term="homeassistant" scheme="https://ycyc.win/tags/homeassistant/"/>
+    
+    <category term="备份" scheme="https://ycyc.win/tags/%E5%A4%87%E4%BB%BD/"/>
+    
+    <category term="OneDrive" scheme="https://ycyc.win/tags/OneDrive/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>站点评论系统由valine切换到twikoo记录</title>
+    <link href="https://ycyc.win/posts/19025.html"/>
+    <id>https://ycyc.win/posts/19025.html</id>
+    <published>2025-04-03T02:51:00.000Z</published>
+    <updated>2025-04-03T03:18:00.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>今天将站点的评论系统切换到了twikoo，原先使用的Valine。简单记录一下twikoo的部署和配置过程。</p><h2 id="twikoo容器部署"><a class="header-anchor" href="#twikoo容器部署">¶</a>twikoo容器部署</h2><p>twikoo支持多种方式部署，常用的有vercel，netlify以及cloudflare worker等等，详细对比了各种部署方式的优缺点后，我选择了使用docker来部署。因为我现在家里的旁路由有现成的Docker环境，而且基本上是24小时开机，更重要的是数据存在本地，比较放心。😅<br>官方支持的部署方式及描述对比可参阅（<a href="https://twikoo.js.org/backend.html#%E4%BA%91%E5%87%BD%E6%95%B0%E9%83%A8%E7%BD%B2">云函数部署 | Twikoo 文档</a>）<br>Docker 部署命令如下：</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run --name twikoo -e TWIKOO_THROTTLE=1000 -p 8080:8080 -v /mnt/sata1-1/opt/docker/config/twikoo/data:/app/data -d imaegoo/twikoo</span><br></pre></td></tr></table></figure><blockquote><p>如果你的8080端口已被占用，请替换为其他可用端口。<br>/mnt/sata1-1/opt/docker/config/twikoo/替换为你本地存放twikoo数据的路径。</p></blockquote><p>容器运行后访问IP:8080端口，出现下面提示则说明部署成功。<br><img src="https://img.ycyc.win/img/20250403110133015.png" alt="image.png"></p><span id="more"></span><h2 id="证书申请及方向代理设置"><a class="header-anchor" href="#证书申请及方向代理设置">¶</a>证书申请及方向代理设置</h2><p>因为我的旁路由安装了lucky插件，之前也配置过证书和反向代理，现在新增一条记录即可。<br><img src="https://r2.ycyc.win/2025/04/ae879b360fbc9550f0b28a79c1b3c36f.png" alt="image.png"></p><p>如果你还未配置过Lucky，可参阅<a href="https://zhuanlan.zhihu.com/p/660282355">Site Unreachable</a></p><p>配置成功后可以在公网通过https加配置好的域名和端口访问到twikoo服务。</p><h2 id="Next主题配置twikoo"><a class="header-anchor" href="#Next主题配置twikoo">¶</a>Next主题配置twikoo</h2><p>根据twikoo给出的文档，如果和我一样HEXO使用的是Next主题，需要先安装twikoo插件</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># For NexT version &gt;= 8.0.0 &amp;&amp; &lt; 8.4.0</span><br><span class="line">npm install hexo-next-twikoo@1.0.0</span><br><span class="line"># For NexT version &gt;= 8.4.0</span><br><span class="line">npm install hexo-next-twikoo@1.0.3</span><br></pre></td></tr></table></figure><p>然后在Hexo的配置文件中加入下面字段</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">twikoo:</span><br><span class="line">  enable: true</span><br><span class="line">  visitor: true</span><br><span class="line">  envId: xxxxxxxxxxxxxxx #填入配置好的twikoo公网地址</span><br></pre></td></tr></table></figure><p>配置完成之后重新生成HEXO即可。</p><h2 id="twikoo相关配置"><a class="header-anchor" href="#twikoo相关配置">¶</a>twikoo相关配置</h2><p>重新生成HEXO就可以在文章页面下方看到twikoo的评论框，点击齿轮进入twikoo的配置页面，第一次访问需要设置密码。<br>下面主要说一下如何从之前的valine中将历史评论导入到twikoo中。<br>首先我们登录leancloud，找到创建的应用，如下图所示，点击导出。随后邮箱会收到导出的备份文件<br><img src="https://img.ycyc.win/img/20250403111407926.png" alt=""><br>将邮箱收到的备份文件解压后得到名为comment的json文件，然后在twikoo设置中将该文件导入，即可完成valine历史评论的导入工作。<br><img src="https://img.ycyc.win/img/20250403111227038.png" alt=""></p><p>到此，就基本上完成了valine到twikoo的切换工作。</p>]]></content>
+    
+    
+    <summary type="html">&lt;p&gt;今天将站点的评论系统切换到了twikoo，原先使用的Valine。简单记录一下twikoo的部署和配置过程。&lt;/p&gt;
+&lt;h2 id=&quot;twikoo容器部署&quot;&gt;&lt;a class=&quot;header-anchor&quot; href=&quot;#twikoo容器部署&quot;&gt;¶&lt;/a&gt;twikoo容器部署&lt;/h2&gt;
+&lt;p&gt;twikoo支持多种方式部署，常用的有vercel，netlify以及cloudflare worker等等，详细对比了各种部署方式的优缺点后，我选择了使用docker来部署。因为我现在家里的旁路由有现成的Docker环境，而且基本上是24小时开机，更重要的是数据存在本地，比较放心。😅&lt;br&gt;
+官方支持的部署方式及描述对比可参阅（&lt;a href=&quot;https://twikoo.js.org/backend.html#%E4%BA%91%E5%87%BD%E6%95%B0%E9%83%A8%E7%BD%B2&quot;&gt;云函数部署 | Twikoo 文档&lt;/a&gt;）&lt;br&gt;
+Docker 部署命令如下：&lt;/p&gt;
+&lt;figure class=&quot;highlight plaintext&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;docker run --name twikoo -e TWIKOO_THROTTLE=1000 -p 8080:8080 -v /mnt/sata1-1/opt/docker/config/twikoo/data:/app/data -d imaegoo/twikoo&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;blockquote&gt;
+&lt;p&gt;如果你的8080端口已被占用，请替换为其他可用端口。&lt;br&gt;
+/mnt/sata1-1/opt/docker/config/twikoo/替换为你本地存放twikoo数据的路径。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;容器运行后访问IP:8080端口，出现下面提示则说明部署成功。&lt;br&gt;
+&lt;img src=&quot;https://img.ycyc.win/img/20250403110133015.png&quot; alt=&quot;image.png&quot;&gt;&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="应用" scheme="https://ycyc.win/categories/%E5%BA%94%E7%94%A8/"/>
+    
+    
+    <category term="valine" scheme="https://ycyc.win/tags/valine/"/>
+    
+    <category term="twikoo" scheme="https://ycyc.win/tags/twikoo/"/>
+    
+    <category term="评论" scheme="https://ycyc.win/tags/%E8%AF%84%E8%AE%BA/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>京东亚瑟AX1800pro刷写GPT大分区记录</title>
+    <link href="https://ycyc.win/posts/49158.html"/>
+    <id>https://ycyc.win/posts/49158.html</id>
+    <published>2025-03-13T01:25:00.000Z</published>
+    <updated>2025-03-13T01:43:00.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>由于亚瑟原有的分区大小只有60M，所以我们只能刷写60M以内的固件，超过60M的固件写入就启动不了了，这也是我之前刷其他固件失败的根本原因。<br>刷写教程选自<a href="https://www.yindan.me/tutorial/jdc-ax1800-pro.html">小白也能看懂的京东云亚瑟 AX1800 Pro 刷机教程 - 银弹博客</a>，这里仅做记录。</p><h3 id="上传所需文件"><a class="header-anchor" href="#上传所需文件">¶</a>上传所需文件</h3><p>使用 WINSCP 将sgdisk.ipk安装包以及 GPT 分区表文件上传到 <code>/tmp</code> 目录，为方便操作，这里将sgdisk安装包重命名为sgdisk.ipk，GPT文件重命名为GPT.bin。</p><h3 id="安装sgdisk"><a class="header-anchor" href="#安装sgdisk">¶</a>安装sgdisk</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">opkg install /tmp/sgdisk.ipk</span><br></pre></td></tr></table></figure><h3 id="刷入GPT"><a class="header-anchor" href="#刷入GPT">¶</a>刷入GPT</h3><p>然后执行以下命令，注意修改命令中的 <code>GPT.bin</code> 为实际的文件名称：</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">dd if=/tmp/GPT.bin of=/dev/mmcblk0 bs=512 count=34 conv=fsync</span><br><span class="line"></span><br><span class="line"># 验证刷入的 MD5</span><br><span class="line">dd if=/dev/mmcblk0 bs=512 count=34 | md5sum</span><br></pre></td></tr></table></figure><h3 id="新建-storage-分区："><a class="header-anchor" href="#新建-storage-分区：">¶</a>新建 storage 分区：</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sgdisk -e -n 0:0:0 -c 0:storage -t 0:1B1720DA-A8BB-4B6F-92D2-0A93AB9609CA -p /dev/mmcblk0</span><br></pre></td></tr></table></figure><p>提示 <code>The operation has completed successfully</code> 说明成功新建分区。</p><span id="more"></span><h3 id="备份并下载修改后的分区表："><a class="header-anchor" href="#备份并下载修改后的分区表：">¶</a>备份并下载修改后的分区表：</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dd if=/dev/mmcblk0 bs=512 count=34 of=/tmp/mmcblk0_GPT_resize.bin conv=fsync</span><br></pre></td></tr></table></figure><p>最后运行 <code>reboot</code> 重启路由器。<br>如果重启后overlay分区大小没有变化，或者不是你刷入的大小，可进入uboot后重写刷写固件。</p><h3 id="附件下载"><a class="header-anchor" href="#附件下载">¶</a>附件下载</h3><p>压缩包内有三个GPT文件，分别对应512M、1G和2G，可按需选择所刷入的分区大小。</p><p>通过网盘分享的文件：亚瑟刷写GPT大分区文件包.rar<br>链接: <a href="https://pan.baidu.com/s/1Y2VILheJHhskefQvqwQj2Q?pwd=yttp">https://pan.baidu.com/s/1Y2VILheJHhskefQvqwQj2Q?pwd=yttp</a> 提取码: yttp<br>–来自百度网盘超级会员v3的分享</p><h3 id="引用"><a class="header-anchor" href="#引用">¶</a>引用</h3><p><a href="https://www.yindan.me/tutorial/jdc-ax1800-pro.html">小白也能看懂的京东云亚瑟 AX1800 Pro 刷机教程 - 银弹博客</a><br>刷机过程中的其他步骤也可以参阅，整个过程都比较详细。</p>]]></content>
+    
+    
+    <summary type="html">&lt;p&gt;由于亚瑟原有的分区大小只有60M，所以我们只能刷写60M以内的固件，超过60M的固件写入就启动不了了，这也是我之前刷其他固件失败的根本原因。&lt;br&gt;
+刷写教程选自&lt;a href=&quot;https://www.yindan.me/tutorial/jdc-ax1800-pro.html&quot;&gt;小白也能看懂的京东云亚瑟 AX1800 Pro 刷机教程 - 银弹博客&lt;/a&gt;，这里仅做记录。&lt;/p&gt;
+&lt;h3 id=&quot;上传所需文件&quot;&gt;&lt;a class=&quot;header-anchor&quot; href=&quot;#上传所需文件&quot;&gt;¶&lt;/a&gt;上传所需文件&lt;/h3&gt;
+&lt;p&gt;使用 WINSCP 将sgdisk.ipk安装包以及 GPT 分区表文件上传到 &lt;code&gt;/tmp&lt;/code&gt; 目录，为方便操作，这里将sgdisk安装包重命名为sgdisk.ipk，GPT文件重命名为GPT.bin。&lt;/p&gt;
+&lt;h3 id=&quot;安装sgdisk&quot;&gt;&lt;a class=&quot;header-anchor&quot; href=&quot;#安装sgdisk&quot;&gt;¶&lt;/a&gt;安装sgdisk&lt;/h3&gt;
+&lt;figure class=&quot;highlight plaintext&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;opkg install /tmp/sgdisk.ipk&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;h3 id=&quot;刷入GPT&quot;&gt;&lt;a class=&quot;header-anchor&quot; href=&quot;#刷入GPT&quot;&gt;¶&lt;/a&gt;刷入GPT&lt;/h3&gt;
+&lt;p&gt;然后执行以下命令，注意修改命令中的 &lt;code&gt;GPT.bin&lt;/code&gt; 为实际的文件名称：&lt;/p&gt;
+&lt;figure class=&quot;highlight plaintext&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;dd if=/tmp/GPT.bin of=/dev/mmcblk0 bs=512 count=34 conv=fsync&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;# 验证刷入的 MD5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;dd if=/dev/mmcblk0 bs=512 count=34 | md5sum&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;h3 id=&quot;新建-storage-分区：&quot;&gt;&lt;a class=&quot;header-anchor&quot; href=&quot;#新建-storage-分区：&quot;&gt;¶&lt;/a&gt;新建 storage 分区：&lt;/h3&gt;
+&lt;figure class=&quot;highlight plaintext&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;sgdisk -e -n 0:0:0 -c 0:storage -t 0:1B1720DA-A8BB-4B6F-92D2-0A93AB9609CA -p /dev/mmcblk0&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;提示 &lt;code&gt;The operation has completed successfully&lt;/code&gt; 说明成功新建分区。&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="应用" scheme="https://ycyc.win/categories/%E5%BA%94%E7%94%A8/"/>
+    
+    
+    <category term="京东" scheme="https://ycyc.win/tags/%E4%BA%AC%E4%B8%9C/"/>
+    
+    <category term="AX1800PRO" scheme="https://ycyc.win/tags/AX1800PRO/"/>
+    
+    <category term="亚瑟" scheme="https://ycyc.win/tags/%E4%BA%9A%E7%91%9F/"/>
+    
+    <category term="GPT" scheme="https://ycyc.win/tags/GPT/"/>
+    
+    <category term="大分区" scheme="https://ycyc.win/tags/%E5%A4%A7%E5%88%86%E5%8C%BA/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>istoreos外接网卡做主路由获取不到IP地址解决方法</title>
+    <link href="https://ycyc.win/posts/42078.html"/>
+    <id>https://ycyc.win/posts/42078.html</id>
+    <published>2025-02-24T01:49:00.000Z</published>
+    <updated>2025-02-24T03:20:00.000Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="事件经过及故障现象"><a class="header-anchor" href="#事件经过及故障现象">¶</a>事件经过及故障现象</h2><p>目前手头有N1和oect两个设备，两个机器都自带一个千兆网口，都刷了istoreos作为旁路由使用，使用也很正常。于是我就想着外接一个USB网卡作为wan口，让设备可以拥有两个网口来当作主路由使用。<br>插入网卡后系统可以正常识别为eth1接口，于是我将eth1设置为了wan口，用于pppoe拨号，机器自带的网桥br-lan作为lan口。<br><img src="https://img.iycyc.com/img/20250224095617351.png" alt="image.png"><br>并将lan口的dhcp功能以及强制选项打开。<br><img src="https://img.iycyc.com/img/20250224095800904.png" alt="image.png"><br>以为这样就万事大吉可以正常分配IP地址了，但是当我将电脑接入到lan口后，死活获取不到IP地址，必须手动设置和路由器同一网段的地址才能登录到路由器。<br>接着我找遍了可能的所有设置，均未解决无法自动分配IP地址的问题，而且该问题同时存在于N1和oect。</p><span id="more"></span><h2 id="解决方法"><a class="header-anchor" href="#解决方法">¶</a>解决方法</h2><p>于是我向万能的电报群友求助，感谢群里Jerry大佬的帮助，最终发现是dhcp配置文件里面将v4地址禁用了。和外接网卡没有半毛钱关系。<br>该文件位于/etc/config/dhcp，文件内的dhcpv4字段为disabled，改为server或是将该字段去除，然后重启系统，就可以解决不能分配IP地址的问题了。<br><img src="https://img.iycyc.com/img/20250224100538777.png" alt="image.png"><br>至于为什么该字段被设置为disabled，可能是作者没想到有人会用单网口的设备主路由，所以为了引起不必要的故障，直接在文件里写死了dhcp功能，无论你界面上怎么设置，都无法开启。</p>]]></content>
+    
+    
+    <summary type="html">&lt;h2 id=&quot;事件经过及故障现象&quot;&gt;&lt;a class=&quot;header-anchor&quot; href=&quot;#事件经过及故障现象&quot;&gt;¶&lt;/a&gt;事件经过及故障现象&lt;/h2&gt;
+&lt;p&gt;目前手头有N1和oect两个设备，两个机器都自带一个千兆网口，都刷了istoreos作为旁路由使用，使用也很正常。于是我就想着外接一个USB网卡作为wan口，让设备可以拥有两个网口来当作主路由使用。&lt;br&gt;
+插入网卡后系统可以正常识别为eth1接口，于是我将eth1设置为了wan口，用于pppoe拨号，机器自带的网桥br-lan作为lan口。&lt;br&gt;
+&lt;img src=&quot;https://img.iycyc.com/img/20250224095617351.png&quot; alt=&quot;image.png&quot;&gt;&lt;br&gt;
+并将lan口的dhcp功能以及强制选项打开。&lt;br&gt;
+&lt;img src=&quot;https://img.iycyc.com/img/20250224095800904.png&quot; alt=&quot;image.png&quot;&gt;&lt;br&gt;
+以为这样就万事大吉可以正常分配IP地址了，但是当我将电脑接入到lan口后，死活获取不到IP地址，必须手动设置和路由器同一网段的地址才能登录到路由器。&lt;br&gt;
+接着我找遍了可能的所有设置，均未解决无法自动分配IP地址的问题，而且该问题同时存在于N1和oect。&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="网络" scheme="https://ycyc.win/categories/%E7%BD%91%E7%BB%9C/"/>
+    
+    
+    <category term="istoreOS" scheme="https://ycyc.win/tags/istoreOS/"/>
+    
+    <category term="dhcp" scheme="https://ycyc.win/tags/dhcp/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>群晖Cloud sync中添加Cloudflare R2存储</title>
+    <link href="https://ycyc.win/posts/28567.html"/>
+    <id>https://ycyc.win/posts/28567.html</id>
+    <published>2025-02-21T08:20:00.000Z</published>
+    <updated>2025-02-25T18:52:40.923Z</updated>
+    
+    <content type="html"><![CDATA[<p>群晖的Cloud sync是一个网盘同步套件，可以将你的各种网盘和NAS本地文件夹进行同步，将重要数据做云端备份。Cloud sync除了支持百度网盘、OneDrive等常规主流网盘的接入外，还支持Amazon S3以及兼容S3标准的其他存储对象的接入，而Cloudflare R2就支持S3标准协议，下面一起看看如何在群晖的Cloud sync中接入Cloudflare R2存储对象吧。</p><p>首先在Cloud sync中添加一个新的网盘接入，云供应商中搜索S3，选择S3 storage。</p><p><img src="https://img.iycyc.com/img/202502211621975.png" alt="image.png"></p><hr><h3 id="参数填写说明"><a class="header-anchor" href="#参数填写说明">¶</a>参数填写说明</h3><p>S3服务器选择自定义服务器URL。<br>Cloudflare的其他信息参照<a href="https://iycyc.com/posts/36618?highlight=r2#%E6%93%8D%E4%BD%9C">曲线救国，使用Alist挂载CloudflareR2存储桶 | 渊澄</a>获取。<br>服务器地址填入Cloudflare提供的S3终结点，记得去掉地址前面的https://。<br>签名版本选择V4版本。<br>另外就是Bucket名称这里不能自己输入，填入Access Key和Secret Key之后会自动获取你在Clouddflare中的所有R2实例，选取你需要同步的实例即可。</p><p><img src="https://img.iycyc.com/img/202502211632645.png" alt="image.png"><br>点击下一步选择你本地以及远程需要同步的文件夹，根据你的需求选择同步方向类型即可。。。<br><img src="https://img.iycyc.com/img/202502211633604.png" alt="image.png"><br>这样就完成了Cloudflare R2在群晖Cloud sync中的添加动作。</p>]]></content>
+    
+    
+    <summary type="html">群晖的Cloud sync是一个网盘同步套件，可以将你的各种网盘和NAS本地文件夹进行同步，将重要数据做云端备份。Cloud sync除了支持百度网盘、OneDrive等常规主流网盘的接入外，还支持Amazon S3以及兼容S3标准的其他存储对象的接入，而Cloudflare R2就支持S3标准协议，下面一起看看如何在群晖的Cloud sync中接入Cloudflare R2存储对象吧。 首先在C...</summary>
+    
+    
+    
+    <category term="应用" scheme="https://ycyc.win/categories/%E5%BA%94%E7%94%A8/"/>
+    
+    
+    <category term="群晖" scheme="https://ycyc.win/tags/%E7%BE%A4%E6%99%96/"/>
+    
+    <category term="Cloudflare" scheme="https://ycyc.win/tags/Cloudflare/"/>
+    
+    <category term="R2" scheme="https://ycyc.win/tags/R2/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>解决HomeAssistant设置反向代理时出现400报错</title>
+    <link href="https://ycyc.win/posts/61463.html"/>
+    <id>https://ycyc.win/posts/61463.html</id>
+    <published>2025-02-17T09:05:00.000Z</published>
+    <updated>2025-02-17T09:15:00.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>之前在外网访问HomeAssistant的时候一直使用的是端口映射的方法，也就是把本地的8123直接映射到外网，然后通过ddns+端口的方式进行访问，一直都很正常。<br>今天试着用Lucky中的反向代理方法进行了设置，其他诸如Alist、小雅等其他服务，用常规方法设置之后均能实现外网的访问，唯独在访问HomeAssistant的时候浏览器返回400: Bad Request错误。<br>经查该报错是由于HomeAssistant默认是不允许在外网进行访问的，需要在configuration.yaml中进行单独配置才可以。<br>将下面配置增加到到HomeAssistant配置文件夹的configuration.yaml文件中，记得将配置中的192.168.1.0换成你本地的网段。</p><figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">http:</span></span><br><span class="line">  <span class="attr">use_x_forwarded_for:</span> <span class="literal">true</span></span><br><span class="line">  <span class="attr">trusted_proxies:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="number">192.168</span><span class="number">.1</span><span class="number">.0</span><span class="string">/24</span></span><br></pre></td></tr></table></figure><p>然后重启HomeAssistant实例即可解决400报错问题。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;之前在外网访问HomeAssistant的时候一直使用的是端口映射的方法，也就是把本地的8123直接映射到外网，然后通过ddns+端口的方式进行访问，一直都很正常。&lt;br&gt;
+今天试着用Lucky中的反向代理方法进行了设置，其他诸如Alist、小雅等其他服务，用常规方法设置之</summary>
+      
+    
+    
+    
+    <category term="HomeAssistant" scheme="https://ycyc.win/categories/HomeAssistant/"/>
+    
+    
+    <category term="homeassistant" scheme="https://ycyc.win/tags/homeassistant/"/>
+    
+    <category term="反向代理" scheme="https://ycyc.win/tags/%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86/"/>
+    
+    <category term="lucky" scheme="https://ycyc.win/tags/lucky/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>openvpn指定网段是否走vpn隧道</title>
+    <link href="https://ycyc.win/posts/28254.html"/>
+    <id>https://ycyc.win/posts/28254.html</id>
+    <published>2025-02-14T08:27:00.000Z</published>
+    <updated>2025-03-10T07:48:00.000Z</updated>
+    
+    <content type="html"><![CDATA[<p><img src="https://img.ycyc.win/img/202502141633298.png" alt="image.png"></p><p>一旦拨了openvpn之后，默认本地所有的流量都会走vpn隧道。如果你有特定的需求，只希望某个网段走vpn，其他网段还是走本地流量，或者是希望除了某个网段外，其他流量都走vpn，可以在openvpn的配置文件中增加以下配置：</p><h2 id="除了指定网段外其他网段走本地流量"><a class="header-anchor" href="#除了指定网段外其他网段走本地流量">¶</a>除了指定网段外其他网段走本地流量</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">route-nopull</span><br><span class="line">route 192.168.1.0 255.255.255.0 vpn_gateway</span><br></pre></td></tr></table></figure><h2 id="除了指定网段外其他网段走VPN"><a class="header-anchor" href="#除了指定网段外其他网段走VPN">¶</a>除了指定网段外其他网段走VPN</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">route 192.168.1.0 255.255.255.0 net_gateway</span><br></pre></td></tr></table></figure>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;&lt;img src=&quot;https://img.ycyc.win/img/202502141633298.png&quot; alt=&quot;image.png&quot;&gt;&lt;/p&gt;
+&lt;p&gt;一旦拨了openvpn之后，默认本地所有的流量都会走vpn隧道。如果你有特定的需求，只希望某个网段走vpn，其他网</summary>
+      
+    
+    
+    
+    <category term="网络" scheme="https://ycyc.win/categories/%E7%BD%91%E7%BB%9C/"/>
+    
+    
+    <category term="OPENVPN" scheme="https://ycyc.win/tags/OPENVPN/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>网心云oecturbo刷机记录</title>
+    <link href="https://ycyc.win/posts/43673.html"/>
+    <id>https://ycyc.win/posts/43673.html</id>
+    <published>2025-02-13T03:03:00.000Z</published>
+    <updated>2025-02-13T05:48:00.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>oec turbo是网心云推出 的一款pcdn盒子，整体配置还行，瑞芯微RK3566处理器，4G内存+8G EMMC，可以外接一个sata接口的2.5寸硬盘。最近我从海鲜市场入手了一个，根据网上流传出来的教程试着刷了一下istoreOS，看看能不能代替已经运行了五六年的斐讯N1，做一个合格的旁路由。<br>本文所用到的驱动软件和固件包下载链接会放在文章结尾。<br><img src="https://img.ycyc.win/img/202502131134655.png" alt="image.png"></p><h2 id="拆机"><a class="header-anchor" href="#拆机">¶</a>拆机</h2><p>拆机很简单，图片就不上了，大概说下流程：<br>1.推开底部盖板，可以看到四颗十字螺丝，拆掉；<br>2.拆掉螺丝后可以推开侧板，看到硬盘sata转接板，把固定的三颗拆掉，然后小心把排线拆掉，拆下转接板；<br>3.拆掉固定硬盘托架的八颗长螺丝，然后取出硬盘托架就可以看到黑色主板了。</p><span id="more"></span><h2 id="安装瑞芯微驱动和软件"><a class="header-anchor" href="#安装瑞芯微驱动和软件">¶</a>安装瑞芯微驱动和软件</h2><p>打开DriverAssistant_v5.1.1文件夹，运行DriverInstall.exe文件，注意先点击驱动卸载，再点击驱动安装。<br><img src="https://img.ycyc.win/img/202502131110099.png" alt="image.png"></p><p>然后打开tool文件夹中的RKDevTool.exe，第一行LoaderToDDR浏览到tool文件夹下的MiniLoaderAll.bin文件，第二行的system浏览到你需要刷入系统的img文件。<br><img src="https://img.ycyc.win/img/202502131114836.png" alt="image.png"></p><h2 id="短接触点进入maskrom模式"><a class="header-anchor" href="#短接触点进入maskrom模式">¶</a>短接触点进入maskrom模式</h2><p>需要准备typeC-A的数据线，A口接入电脑。<br>如下图所示，用镊子等工具短接主板上的两个触点，然后将数据线的C口插入主板的USB-C口，等待三秒左右放开短接，软件会提示发现一个maskrom设备。<br><img src="https://img.ycyc.win/img/202502131124027.png" alt="image.png"></p><p>然后点击执行，开始刷写固件，直到右侧提示下载完成，可断开设备连接。<br><img src="https://img.ycyc.win/img/202502131119045.png" alt="image.png"></p><blockquote><p>在刷写过程中如果遇到下载boot失败，可以尝试更换电脑、更换数据线、重装驱动尝试。<br><img src="https://img.ycyc.win/img/202502131126264.png" alt="image.png"></p></blockquote><h2 id="通电接网"><a class="header-anchor" href="#通电接网">¶</a>通电接网</h2><p>将设备接入通电接网，然后在路由器中查看获取到的IP就可以愉快的玩耍了。默认用户名root，密码password。</p><h2 id="刷写工具下载"><a class="header-anchor" href="#刷写工具下载">¶</a>刷写工具下载</h2><p>链接: <a href="https://pan.baidu.com/s/1QxFHcq17nxZpSxDU8VbtRg?pwd=d6m2">https://pan.baidu.com/s/1QxFHcq17nxZpSxDU8VbtRg?pwd=d6m2</a> 提取码: d6m2</p><h2 id="系统镜像下载"><a class="header-anchor" href="#系统镜像下载">¶</a>系统镜像下载</h2><p>链接: <a href="https://pan.baidu.com/s/1xYw0uLwAEqEAFCp7bOFvRQ?pwd=p8nx">https://pan.baidu.com/s/1xYw0uLwAEqEAFCp7bOFvRQ?pwd=p8nx</a> 提取码: p8nx</p>]]></content>
+    
+    
+    <summary type="html">&lt;p&gt;oec turbo是网心云推出 的一款pcdn盒子，整体配置还行，瑞芯微RK3566处理器，4G内存+8G EMMC，可以外接一个sata接口的2.5寸硬盘。最近我从海鲜市场入手了一个，根据网上流传出来的教程试着刷了一下istoreOS，看看能不能代替已经运行了五六年的斐讯N1，做一个合格的旁路由。&lt;br&gt;
+本文所用到的驱动软件和固件包下载链接会放在文章结尾。&lt;br&gt;
+&lt;img src=&quot;https://img.ycyc.win/img/202502131134655.png&quot; alt=&quot;image.png&quot;&gt;&lt;/p&gt;
+&lt;h2 id=&quot;拆机&quot;&gt;&lt;a class=&quot;header-anchor&quot; href=&quot;#拆机&quot;&gt;¶&lt;/a&gt;拆机&lt;/h2&gt;
+&lt;p&gt;拆机很简单，图片就不上了，大概说下流程：&lt;br&gt;
+1.推开底部盖板，可以看到四颗十字螺丝，拆掉；&lt;br&gt;
+2.拆掉螺丝后可以推开侧板，看到硬盘sata转接板，把固定的三颗拆掉，然后小心把排线拆掉，拆下转接板；&lt;br&gt;
+3.拆掉固定硬盘托架的八颗长螺丝，然后取出硬盘托架就可以看到黑色主板了。&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="应用" scheme="https://ycyc.win/categories/%E5%BA%94%E7%94%A8/"/>
+    
+    
+    <category term="istoreOS" scheme="https://ycyc.win/tags/istoreOS/"/>
+    
+    <category term="网心云" scheme="https://ycyc.win/tags/%E7%BD%91%E5%BF%83%E4%BA%91/"/>
+    
+    <category term="oecturbo" scheme="https://ycyc.win/tags/oecturbo/"/>
+    
+    <category term="oect" scheme="https://ycyc.win/tags/oect/"/>
+    
+    <category term="oec" scheme="https://ycyc.win/tags/oec/"/>
+    
+    <category term="瑞芯微" scheme="https://ycyc.win/tags/%E7%91%9E%E8%8A%AF%E5%BE%AE/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>本站已接入Google Adsense广告联盟</title>
+    <link href="https://ycyc.win/posts/49402.html"/>
+    <id>https://ycyc.win/posts/49402.html</id>
+    <published>2025-02-11T07:05:00.000Z</published>
+    <updated>2025-02-13T03:45:00.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>本站已于昨日通过了Google Adsense审核，正式部署了GoogleAdsense代码，投放广告。就我这点可怜的流量，压根赚不了钱，也没指望赚钱，就是玩玩儿。</p><p>为了最大限度降低广告对访问者的浏览体验，如果你使用的是桌面版浏览器访问本站点，基本上不会看到广告，如果使用手机等移动端访问的本站，是有可能会在首页或是文章详情页看到谷歌投放的广告，当然前提是你的身处的网络环境可以访问到谷歌服务。<br>下面我大致记录一下接入Google Adsense的流程，如果有兴趣接入Google Adsense的朋友，可以参考。</p><h3 id="注册Google-Adsense账户。"><a class="header-anchor" href="#注册Google-Adsense账户。">¶</a>注册Google Adsense账户。</h3><p><a href="https://adsense.google.com/start/">Google AdSense - 利用网站创收</a></p><h3 id="添加站点信息，然后认证网站。"><a class="header-anchor" href="#添加站点信息，然后认证网站。">¶</a>添加站点信息，然后认证网站。</h3><p>在左侧网站选项卡，添加站点信息，然后将相关认证代码部署到你的站点，直到谷歌可以检测到。<br><img src="https://img.ycyc.win/img/202502111645622.png" alt="image.png"><br>然后就是等待审批，直到状态变为绿色的准备就绪。</p><span id="more"></span><h3 id="添加广告位，部署代码。"><a class="header-anchor" href="#添加广告位，部署代码。">¶</a>添加广告位，部署代码。</h3><p>在广告选项卡中根据你站点的实际情况选择广告位类型。然后将广告代码插入到你站点相应的位置。<br><img src="https://img.ycyc.win/img/202502111647731.png" alt="image.png"></p><h3 id="在站点根目录部署ads-txt文件。"><a class="header-anchor" href="#在站点根目录部署ads-txt文件。">¶</a>在站点根目录部署ads.txt文件。</h3><p>最后我们需要在站点的根目录部署一个ads.txt文件，内容参考以下链接：<br><a href="https://support.google.com/adsense/answer/12171612?sjid=16306355872242802495-NC#create">ads.txt 指南 - Google AdSense帮助</a><br>一切就绪之后部署工作就完成了。<br>然后就可以在Google Adsense网站看到你的收益情况了。<br>如果在部署过程中遇到其他问题请参阅更为详细的GOOGLE相关帮助文档。</p>]]></content>
+    
+    
+    <summary type="html">&lt;p&gt;本站已于昨日通过了Google Adsense审核，正式部署了GoogleAdsense代码，投放广告。就我这点可怜的流量，压根赚不了钱，也没指望赚钱，就是玩玩儿。&lt;/p&gt;
+&lt;p&gt;为了最大限度降低广告对访问者的浏览体验，如果你使用的是桌面版浏览器访问本站点，基本上不会看到广告，如果使用手机等移动端访问的本站，是有可能会在首页或是文章详情页看到谷歌投放的广告，当然前提是你的身处的网络环境可以访问到谷歌服务。&lt;br&gt;
+下面我大致记录一下接入Google Adsense的流程，如果有兴趣接入Google Adsense的朋友，可以参考。&lt;/p&gt;
+&lt;h3 id=&quot;注册Google-Adsense账户。&quot;&gt;&lt;a class=&quot;header-anchor&quot; href=&quot;#注册Google-Adsense账户。&quot;&gt;¶&lt;/a&gt;注册Google Adsense账户。&lt;/h3&gt;
+&lt;p&gt;&lt;a href=&quot;https://adsense.google.com/start/&quot;&gt;Google AdSense - 利用网站创收&lt;/a&gt;&lt;/p&gt;
+&lt;h3 id=&quot;添加站点信息，然后认证网站。&quot;&gt;&lt;a class=&quot;header-anchor&quot; href=&quot;#添加站点信息，然后认证网站。&quot;&gt;¶&lt;/a&gt;添加站点信息，然后认证网站。&lt;/h3&gt;
+&lt;p&gt;在左侧网站选项卡，添加站点信息，然后将相关认证代码部署到你的站点，直到谷歌可以检测到。&lt;br&gt;
+&lt;img src=&quot;https://img.ycyc.win/img/202502111645622.png&quot; alt=&quot;image.png&quot;&gt;&lt;br&gt;
+然后就是等待审批，直到状态变为绿色的准备就绪。&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="叨叨" scheme="https://ycyc.win/categories/%E5%8F%A8%E5%8F%A8/"/>
+    
+    
+    <category term="广告" scheme="https://ycyc.win/tags/%E5%B9%BF%E5%91%8A/"/>
+    
+    <category term="GOOGLE" scheme="https://ycyc.win/tags/GOOGLE/"/>
+    
+    <category term="Adsense" scheme="https://ycyc.win/tags/Adsense/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>京东亚瑟重刷istoreOS以及overlay分区扩容记录</title>
+    <link href="https://ycyc.win/posts/22169.html"/>
+    <id>https://ycyc.win/posts/22169.html</id>
+    <published>2025-02-10T02:50:00.000Z</published>
+    <updated>2025-03-10T06:23:00.000Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="引言"><a class="header-anchor" href="#引言">¶</a>引言</h2><p>去年在京东入手的亚瑟路由器，之前刷的是华硕固件（<a href="https://iycyc.com/posts/12783">京东AX1800 pro拆机刷uboot及华硕固件 | 渊澄</a>），一直当作AP来使用，也比较稳定。但最近折腾N1旁路由觉得越来越不方便，就想着将主路由也换成OpenWRT，于是就想着将亚瑟刷成istoreOS做主路由来用。但是我进入uboot模式刷了好几遍固件，都刷不进去，具体表现为刷完固件重启之后网卡每隔10秒左右都会断开一次，IP地址也获取不了。于是我又回头看了一遍早以前的教程，发现我少了一步，那就是在刷正式版固件之前需要先刷一个底包，然后进入iStoreOS之后再升级正式版。<br>教程链接 <a href="https://post.smzdm.com/p/agq26zlw/">记录自己刷机京东云亚瑟 AX1800 Pro遇到的坑_路由器_什么值得买</a><br>以下仅作操作步骤记录。</p><h2 id="进入uboot模式"><a class="header-anchor" href="#进入uboot模式">¶</a>进入uboot模式</h2><p>用卡针按住reset，然后接通电源，指示灯会闪几次红色，然后变成蓝色，这时候就可以放开reset了。<br>电脑用网线接入LAN口，IP地址配置为192.168.1.x，子网掩码255.255.255.0，网关192.168.1.1。<br>这时候浏览器打开192.168.1.1就可以进入uboot界面了。</p><h2 id="刷入底包"><a class="header-anchor" href="#刷入底包">¶</a>刷入底包</h2><p>将附件中的（底包）istoreos-squashfs-factory.bin文件在uboot中上传并刷入，等待设备重启并指示灯变为绿色，则刷入成功。</p><h2 id="刷入正式包"><a class="header-anchor" href="#刷入正式包">¶</a>刷入正式包</h2><p>浏览器进入192.168.1.1，用户名为root，密码为password。然后在系统-备份/升级中上传正式包，然后升级。<br>等待重启后进入路由器后台，状态-概览中确认版本为R23.9.9则升级成功。<br><img src="https://img.ycyc.win/img/202502101110242.png" alt="image.png"><br>在koolcenter的固件页面（<a href="https://fw.koolcenter.com/Lean/JDC_AX1800_Pro/">KoolCenter 固件下载服务器</a>）亚瑟最新版的固件为R24.5.19，但是我尝试刷入该版本固件时，故障和最开始的一样，网卡每隔10秒左右都会掉一下。怀疑是该版本也需要先刷入对应版本的底包才能用。</p><span id="more"></span><p><img src="https://img.ycyc.win/img/202502101113376.png" alt="image.png"></p><h2 id="overlay扩容"><a class="header-anchor" href="#overlay扩容">¶</a>overlay扩容</h2><h3 id="第一种方法"><a class="header-anchor" href="#第一种方法">¶</a>第一种方法</h3><p>刷完之后，默认的overlay分区只有5MB左右，在安装各种插件时都会报空间不足的错误。需要先将overlay扩容后再安装。扩容方法也是按照上面教程内容操作的，这里仅作记录。</p><p>1.首先登录ttyd终端，输入账号root，默认密码password（如果没更改密码的话）完成登录。<br>2.输入</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">df -h</span><br></pre></td></tr></table></figure><p>查看overlay分区<br>3.再输入</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cp -r /overlay/* /mnt/mmcblk0p27</span><br></pre></td></tr></table></figure><p>回车<br>4.去iStoreOS里，系统-磁盘管理-挂载点-选择/dev/mmcblk0p27，卸载。<br>5.卸载掉mmcblk0p27后,再下面选项中选择设备mmcblk0p27，文件系统ext4，挂载选项rw,relatime,data=ordered，挂载点/overlay，点击挂载。下图为挂载成功的截图。<br><img src="https://img.ycyc.win/img/202502101121090.png" alt="image.png"></p><p>然后去系统-软件包里查看是否成功，图下就是成功。<br><img src="https://img.ycyc.win/img/202502101120531.png" alt="image.png"><br>6.再去ttyd终端里，再输入</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sed -i s#/mnt/mmcblk0p27#/overlay# /etc/config/fstab</span><br></pre></td></tr></table></figure><p>后就不会报错了<br>7.再输入</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sed -i &#x27;12s/1/0/g&#x27; /etc/config/fstab</span><br></pre></td></tr></table></figure><p>8.都没有报错后输入reboot重启路由器，就成功扩容overlay分区。</p><blockquote><p>如果上面方法没有效果可尝试以下第二种方法</p></blockquote><h3 id="第二种方法"><a class="header-anchor" href="#第二种方法">¶</a>第二种方法</h3><p>在终端中输入以下命令回车 卸载p27分区</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">umount /dev/mmcblk0p27</span><br></pre></td></tr></table></figure><p>输入以下命令回车 格式化P27分区，因为emmc容量大，格式化需要一些时间，耐心等待执行完成</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mkfs.ext4 -F /dev/mmcblk0p27</span><br></pre></td></tr></table></figure><p>输入以下命令回车 手动挂载P27</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mount /dev/mmcblk0p27 /mnt/mmcblk0p27</span><br></pre></td></tr></table></figure><p>输入以下命令回车 拷贝overlay分区文件到P27分区</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cp -r /overlay/* /mnt/mmcblk0p27</span><br></pre></td></tr></table></figure><p>输入以下命令回车 检查是否拷贝成功，输入下面的命令回车看到 lost+found  upper  work文件夹，说明拷贝成功。</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ls /mnt/mmcblk0p27</span><br></pre></td></tr></table></figure><p>然后输入以下命令回车生成挂载文件</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">block detect &gt; /etc/config/fstab</span><br></pre></td></tr></table></figure><p>输入以下命令回车把p27分区挂载到overlay</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sed -i s#/mnt/mmcblk0p27#/overlay# /etc/config/fstab</span><br></pre></td></tr></table></figure><p>最后输入以下命令回车把原来的overlay挂载取消（下图少了这一步请知悉，实际要执行这一步的，图我懒得再换了）</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sed -i &#x27;12s/1/0/g&#x27; /etc/config/fstab</span><br></pre></td></tr></table></figure><p>最后的最后就是输入reboot后重启就可以</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">reboot</span><br></pre></td></tr></table></figure><h2 id="安装插件"><a class="header-anchor" href="#安装插件">¶</a>安装插件</h2><p>可以前往自带的istore中安装各种插件，如果商店里面没有，可以在下面地址下载run文件，然后在istore中上传手动安装。<br><a href="https://github.com/bcseputetto/Are-u-ok/releases/tag/iStoreOS">Release iStoreOS 22.03.X · bcseputetto/Are-u-ok · GitHub</a><br>比如我这边安装的passwall就是用的下图的版本<br><img src="https://img.ycyc.win/img/202502101128683.png" alt="image.png"></p><h2 id="结语"><a class="header-anchor" href="#结语">¶</a>结语</h2><p>这样亚瑟的istoreos安装就告一段落了，因为亚瑟的内存只有512，日常占用率都在85%以上，所以不适合跑docker容器，目前我的docker容器还是跑在N1上面，目前N1只负责跑容器和vpn server，其他诸如宽带拨号、ddns、科学上网等功能都转移到的亚瑟主路由上了，局域网内的设置只需要自动获取IP就可以随意出国了。</p>]]></content>
+    
+    
+    <summary type="html">&lt;h2 id=&quot;引言&quot;&gt;&lt;a class=&quot;header-anchor&quot; href=&quot;#引言&quot;&gt;¶&lt;/a&gt;引言&lt;/h2&gt;
+&lt;p&gt;去年在京东入手的亚瑟路由器，之前刷的是华硕固件（&lt;a href=&quot;https://iycyc.com/posts/12783&quot;&gt;京东AX1800 pro拆机刷uboot及华硕固件 | 渊澄&lt;/a&gt;），一直当作AP来使用，也比较稳定。但最近折腾N1旁路由觉得越来越不方便，就想着将主路由也换成OpenWRT，于是就想着将亚瑟刷成istoreOS做主路由来用。但是我进入uboot模式刷了好几遍固件，都刷不进去，具体表现为刷完固件重启之后网卡每隔10秒左右都会断开一次，IP地址也获取不了。于是我又回头看了一遍早以前的教程，发现我少了一步，那就是在刷正式版固件之前需要先刷一个底包，然后进入iStoreOS之后再升级正式版。&lt;br&gt;
+教程链接 &lt;a href=&quot;https://post.smzdm.com/p/agq26zlw/&quot;&gt;记录自己刷机京东云亚瑟 AX1800 Pro遇到的坑_路由器_什么值得买&lt;/a&gt;&lt;br&gt;
+以下仅作操作步骤记录。&lt;/p&gt;
+&lt;h2 id=&quot;进入uboot模式&quot;&gt;&lt;a class=&quot;header-anchor&quot; href=&quot;#进入uboot模式&quot;&gt;¶&lt;/a&gt;进入uboot模式&lt;/h2&gt;
+&lt;p&gt;用卡针按住reset，然后接通电源，指示灯会闪几次红色，然后变成蓝色，这时候就可以放开reset了。&lt;br&gt;
+电脑用网线接入LAN口，IP地址配置为192.168.1.x，子网掩码255.255.255.0，网关192.168.1.1。&lt;br&gt;
+这时候浏览器打开192.168.1.1就可以进入uboot界面了。&lt;/p&gt;
+&lt;h2 id=&quot;刷入底包&quot;&gt;&lt;a class=&quot;header-anchor&quot; href=&quot;#刷入底包&quot;&gt;¶&lt;/a&gt;刷入底包&lt;/h2&gt;
+&lt;p&gt;将附件中的（底包）istoreos-squashfs-factory.bin文件在uboot中上传并刷入，等待设备重启并指示灯变为绿色，则刷入成功。&lt;/p&gt;
+&lt;h2 id=&quot;刷入正式包&quot;&gt;&lt;a class=&quot;header-anchor&quot; href=&quot;#刷入正式包&quot;&gt;¶&lt;/a&gt;刷入正式包&lt;/h2&gt;
+&lt;p&gt;浏览器进入192.168.1.1，用户名为root，密码为password。然后在系统-备份/升级中上传正式包，然后升级。&lt;br&gt;
+等待重启后进入路由器后台，状态-概览中确认版本为R23.9.9则升级成功。&lt;br&gt;
+&lt;img src=&quot;https://img.ycyc.win/img/202502101110242.png&quot; alt=&quot;image.png&quot;&gt;&lt;br&gt;
+在koolcenter的固件页面（&lt;a href=&quot;https://fw.koolcenter.com/Lean/JDC_AX1800_Pro/&quot;&gt;KoolCenter 固件下载服务器&lt;/a&gt;）亚瑟最新版的固件为R24.5.19，但是我尝试刷入该版本固件时，故障和最开始的一样，网卡每隔10秒左右都会掉一下。怀疑是该版本也需要先刷入对应版本的底包才能用。&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="应用" scheme="https://ycyc.win/categories/%E5%BA%94%E7%94%A8/"/>
+    
+    
+    <category term="openwrt" scheme="https://ycyc.win/tags/openwrt/"/>
+    
+    <category term="京东" scheme="https://ycyc.win/tags/%E4%BA%AC%E4%B8%9C/"/>
+    
+    <category term="路由器" scheme="https://ycyc.win/tags/%E8%B7%AF%E7%94%B1%E5%99%A8/"/>
+    
+    <category term="刷机" scheme="https://ycyc.win/tags/%E5%88%B7%E6%9C%BA/"/>
+    
+    <category term="istoreOS" scheme="https://ycyc.win/tags/istoreOS/"/>
+    
+    <category term="亚瑟" scheme="https://ycyc.win/tags/%E4%BA%9A%E7%91%9F/"/>
+    
+    <category term="overlay" scheme="https://ycyc.win/tags/overlay/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Docker部署Hexo管理工具QEXO</title>
+    <link href="https://ycyc.win/posts/24512.html"/>
+    <id>https://ycyc.win/posts/24512.html</id>
+    <published>2025-02-08T08:05:00.000Z</published>
+    <updated>2025-02-18T01:50:00.000Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="引言"><a class="header-anchor" href="#引言">¶</a>引言</h2><p>去年的时候我在Vercel平台部署过QEXO-一款可以管理Hexo博客系统的管理后台。<a href="https://iycyc.com/posts/23533">让HEXO“动起来”-体验Qexo静态博客管理面板 | 渊澄</a>但是由于vercel在国内的访问速度并不快，所以我很少使用，还是一直用VScode或是Obsidian来更新站点。其实Qexo也可以通过docker部署在本地。下面记录一下我在istoreOS上使用docker部署Qexo的过程。</p><h2 id="开干"><a class="header-anchor" href="#开干">¶</a>开干</h2><h3 id="SSH到istoreOS拉取镜像"><a class="header-anchor" href="#SSH到istoreOS拉取镜像">¶</a>SSH到istoreOS拉取镜像</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker pull abudulin/qexo:latest</span><br></pre></td></tr></table></figure><p>如果你的网络环境无法直接拉取，可以尝试运行下面命令：</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker pull docker.miaoyang.win/abudulin/qexo:latest</span><br></pre></td></tr></table></figure><h3 id="创建容器"><a class="header-anchor" href="#创建容器">¶</a>创建容器</h3><p>使用下面的命令行创建并运行容器</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">docker run -d \</span><br><span class="line">    --restart=unless-stopped \</span><br><span class="line">    -v $(pwd)/db:/app/db \</span><br><span class="line">    -p 8000:8000 \</span><br><span class="line">    -e TIMEOUT=600 \</span><br><span class="line">    --name=&quot;qexo&quot; \</span><br><span class="line">    abudulin/qexo:latest</span><br></pre></td></tr></table></figure><blockquote><p>将命令中的$(pwd)换成本地存储数据的路径，将8000替换为你喜欢的端口号。</p></blockquote><h3 id="基本设置"><a class="header-anchor" href="#基本设置">¶</a>基本设置</h3><p>如果容器成功创建并运行之后就可以在浏览器中输入ip:8000访问到搭建好的Qexo页面了。<br><img src="https://img.ycyc.win/img/202502081617665.png" alt="image.png"></p><p>根据设置向导填入相关信息即可进入管理面板。<br><img src="https://img.ycyc.win/img/202502081621296.png" alt="image.png"></p><h3 id="外网访问"><a class="header-anchor" href="#外网访问">¶</a>外网访问</h3><p>如果你需要在外网环境下访问搭建的Qexo，可以使用NAT端口映射或是内网穿透等方法来实现。顺便说一下，如果你需要在网页中调用说说或是友情链接组件，需要确保你的实例在外网可以通过https访问。</p><h3 id="数据迁移"><a class="header-anchor" href="#数据迁移">¶</a>数据迁移</h3><p>如果你和我一样之前在vercel部署过QEXO，然后现在想把数据迁回本地部署的Docker实例中，可以登录之前的QEXO，然后在设置中找到迁移选项，导出配置文件，导入到新搭建的QEXO中。导入完成后重启Docker容器即可。<br><img src="https://img.ycyc.win/img/202502180946038.png" alt="image.png"></p><p><img src="https://img.ycyc.win/img/202502180945878.png" alt="image.png"></p><p>⚠️upload failed, check dev console<br>⚠️upload failed, check dev console</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h2 id=&quot;引言&quot;&gt;&lt;a class=&quot;header-anchor&quot; href=&quot;#引言&quot;&gt;¶&lt;/a&gt;引言&lt;/h2&gt;
+&lt;p&gt;去年的时候我在Vercel平台部署过QEXO-一款可以管理Hexo博客系统的管理后台。&lt;a href=&quot;https://iycyc.com/posts/</summary>
+      
+    
+    
+    
+    <category term="应用" scheme="https://ycyc.win/categories/%E5%BA%94%E7%94%A8/"/>
+    
+    
+    <category term="HEXO" scheme="https://ycyc.win/tags/HEXO/"/>
+    
+    <category term="QEXO" scheme="https://ycyc.win/tags/QEXO/"/>
+    
+    <category term="docker" scheme="https://ycyc.win/tags/docker/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>祝大家新春快乐</title>
+    <link href="https://ycyc.win/posts/2924.html"/>
+    <id>https://ycyc.win/posts/2924.html</id>
+    <published>2025-02-02T00:04:00.000Z</published>
+    <updated>2025-02-02T00:08:00.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>今天是大年初五了，转眼春节假期已经快接近尾声了。<br>今年是蛇年，也是我的本命年，不敢想自己已经37了。🤣<br>祝大家新春快乐，蛇年大吉，身体健康，巳巳顺意。。🎇</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;今天是大年初五了，转眼春节假期已经快接近尾声了。&lt;br&gt;
+今年是蛇年，也是我的本命年，不敢想自己已经37了。🤣&lt;br&gt;
+祝大家新春快乐，蛇年大吉，身体健康，巳巳顺意。。🎇&lt;/p&gt;
+</summary>
+      
+    
+    
+    
+    <category term="叨叨" scheme="https://ycyc.win/categories/%E5%8F%A8%E5%8F%A8/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>iycyc.com域名上线，欢迎访问</title>
+    <link href="https://ycyc.win/posts/39632.html"/>
+    <id>https://ycyc.win/posts/39632.html</id>
+    <published>2025-01-06T03:34:00.000Z</published>
+    <updated>2025-01-06T03:40:00.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>今天注册了一个.com域名：<a href="http://iycyc.com">iycyc.com</a> 。用于渊澄网站的访问。<br>目前可通过以下三个域名访问到本站点：</p><blockquote><p><a href="https://iycyc.com">https://iycyc.com</a><br><a href="https://ycyc.win">https://ycyc.win</a><br><a href="https://miaoyang.win">https://miaoyang.win</a></p></blockquote><p>建议通过iycyc.com这个域名进行访问。稍后会将其他一系列服务都指向这个域名，但是另外两个域名作为备用也会继续提供正常服务。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;今天注册了一个.com域名：&lt;a href=&quot;http://iycyc.com&quot;&gt;iycyc.com&lt;/a&gt; 。用于渊澄网站的访问。&lt;br&gt;
+目前可通过以下三个域名访问到本站点：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&quot;https://iycyc.com&quot;</summary>
+      
+    
+    
+    
+    <category term="叨叨" scheme="https://ycyc.win/categories/%E5%8F%A8%E5%8F%A8/"/>
+    
+    
+    <category term="域名" scheme="https://ycyc.win/tags/%E5%9F%9F%E5%90%8D/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>使用cloudflare ddns 解析群晖NAS ipv4和ipv6地址</title>
+    <link href="https://ycyc.win/posts/63020.html"/>
+    <id>https://ycyc.win/posts/63020.html</id>
+    <published>2024-12-25T05:27:00.000Z</published>
+    <updated>2024-12-25T05:54:00.000Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="引言"><a class="header-anchor" href="#引言">¶</a>引言</h2><p>家庭宽带现在基本上都很难要到公网IP了，但是IPv6却很有可能会直接获取到。如果你的群晖NAS能获取到IPV6地址，并且这个地址是公网地址，那就可以利用这个地址来远程访问和管理你的NAS了。</p><h2 id="确认获取IPV6公网地址"><a class="header-anchor" href="#确认获取IPV6公网地址">¶</a>确认获取IPV6公网地址</h2><p>确认之前需要确保你的路由器或光猫中相关IPV6的选项已经开启。<br>如下图所示，在群晖的网络界面IPV6选项中看到2408开头的V6地址（不同运营商前缀不一样），说明IPV6已经获取成功，可以跟着我往下操作了。<br><img src="https://img.ycyc.win/img/202412251332771.png" alt="image.png"></p><h2 id="IPV4解析"><a class="header-anchor" href="#IPV4解析">¶</a>IPV4解析</h2><p>关于IPV4地址的解析可以参阅我之前写的文章，这里不在赘述。<br><a href="https://ycyc.win/posts/44166">群晖安装cloudflare的ddns服务 | 渊澄</a></p><span id="more"></span><h2 id="IPV6解析"><a class="header-anchor" href="#IPV6解析">¶</a>IPV6解析</h2><p>那有小伙伴会问，我同一个域名能不能既设置IPV4解析，又设置IPV6解析呢？答案是肯定可以的，两种地址都设置解析的话，如果你的网络支持IPV6访问，浏览器会默认优先使用IPV6地址来访问。但是目前在群晖自带的ddns服务中，仅有synology自家的ddns服务支持V4和V6双解析，其他三方的ddns服务都只能设置IPV4地址的解析。如果你和我一样使用的是黑群晖，就无法使用这个服务了。但是方法总比困难多，我们可以docker来创建一个容器，进行ipv6地址的解析。<br>首先ssh登录到NAS，使用下面的命令拉取镜像：</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker pull docker.miaoyang.win/oznu/cloudflare-ddns</span><br></pre></td></tr></table></figure><p>然后打开docker界面创建容器，在环境变量中添加API_KEY，ZONE及SUBDOMAIN三个变量，分别对应cloudflare的API KEY，一级域名以及二级域名前缀。这里的域名需要与你IPV4解析中设置的域名一致。另外需要将RRTYPE的值修改为AAAA。</p><p><img src="https://img.ycyc.win/img/202412251342211.png" alt="image.png"><br>最后勾选“启用自动重新启动”，即可运行容器。<br>容器启动后可通过日志查看服务是否正常运行，另外可登录cloudflare网站查看相关域名的解析是否已正确添加。</p><h2 id="结尾"><a class="header-anchor" href="#结尾">¶</a>结尾</h2><p>如果一切顺利的话你设置的二级域名已经可以成功解析到IPV4和IPV6两个地址了，在支持IPV6访问的环境下，就会优先使用IPV6地址来访问我们的NAS了。如果你的宽带只获取到了IPV6地址，也可以尝试只设置IPV6解析，这样在支持IPV6的地方也能访问到NAS设备，无需再搞什么内网穿透了。</p>]]></content>
+    
+    
+    <summary type="html">&lt;h2 id=&quot;引言&quot;&gt;&lt;a class=&quot;header-anchor&quot; href=&quot;#引言&quot;&gt;¶&lt;/a&gt;引言&lt;/h2&gt;
+&lt;p&gt;家庭宽带现在基本上都很难要到公网IP了，但是IPv6却很有可能会直接获取到。如果你的群晖NAS能获取到IPV6地址，并且这个地址是公网地址，那就可以利用这个地址来远程访问和管理你的NAS了。&lt;/p&gt;
+&lt;h2 id=&quot;确认获取IPV6公网地址&quot;&gt;&lt;a class=&quot;header-anchor&quot; href=&quot;#确认获取IPV6公网地址&quot;&gt;¶&lt;/a&gt;确认获取IPV6公网地址&lt;/h2&gt;
+&lt;p&gt;确认之前需要确保你的路由器或光猫中相关IPV6的选项已经开启。&lt;br&gt;
+如下图所示，在群晖的网络界面IPV6选项中看到2408开头的V6地址（不同运营商前缀不一样），说明IPV6已经获取成功，可以跟着我往下操作了。&lt;br&gt;
+&lt;img src=&quot;https://img.ycyc.win/img/202412251332771.png&quot; alt=&quot;image.png&quot;&gt;&lt;/p&gt;
+&lt;h2 id=&quot;IPV4解析&quot;&gt;&lt;a class=&quot;header-anchor&quot; href=&quot;#IPV4解析&quot;&gt;¶&lt;/a&gt;IPV4解析&lt;/h2&gt;
+&lt;p&gt;关于IPV4地址的解析可以参阅我之前写的文章，这里不在赘述。&lt;br&gt;
+&lt;a href=&quot;https://ycyc.win/posts/44166&quot;&gt;群晖安装cloudflare的ddns服务 | 渊澄&lt;/a&gt;&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="网络" scheme="https://ycyc.win/categories/%E7%BD%91%E7%BB%9C/"/>
+    
+    
+    <category term="NAS" scheme="https://ycyc.win/tags/NAS/"/>
+    
+    <category term="群晖" scheme="https://ycyc.win/tags/%E7%BE%A4%E6%99%96/"/>
+    
+    <category term="Cloudflare" scheme="https://ycyc.win/tags/Cloudflare/"/>
+    
+    <category term="DDNS" scheme="https://ycyc.win/tags/DDNS/"/>
+    
+    <category term="IPV6" scheme="https://ycyc.win/tags/IPV6/"/>
+    
+    <category term="IPV4" scheme="https://ycyc.win/tags/IPV4/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>利用青龙面板激活唤醒leancloud自动休眠</title>
+    <link href="https://ycyc.win/posts/39304.html"/>
+    <id>https://ycyc.win/posts/39304.html</id>
+    <published>2024-12-04T06:34:00.000Z</published>
+    <updated>2024-12-05T01:18:00.000Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="引言"><a class="header-anchor" href="#引言">¶</a>引言</h2><p>上篇文章写了如何在装有NEXT主题的HEXO站点上接入valine评论系统，valine是基于leancloud服务的，而Leancloud免费版有两个休眠机制，一个是每天6个小时强制休眠，另一个机制是如果半个小时内没有检测到访问，实例会自动进入休眠状态，等到下次有评论的时候才会触发，但是从触发到正常运行有一定的时间间隔，如果使用了valine-admin的话会导致邮件发送失败。网上也有许多应对leancloud休眠机制的方法，比如在leancloud中添加定时任务，或者是使用github action来定时访问管理面板等等。</p><h2 id="操作"><a class="header-anchor" href="#操作">¶</a>操作</h2><p>之前我写了一篇文章介绍如何使用青龙面板来定时启动serv00的进程，链接如下：<br><a href="https://ycyc.win/posts/1316">靠谱的serv00保活办法-利用青龙定时启动PM2 | 渊澄</a></p><p>这次也是用到类似的方法，只不过脚本更简单，我们只需要定时访问valine的后台页面，无需登录和其他操作就可以激活实例，所以只需要用到curl就可以了。其他操作按照链接中的步骤操作就可以了。</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl https://yourdomian.com</span><br></pre></td></tr></table></figure><blockquote><p>将网址替换为你的valine-admin后台地址即可。</p></blockquote><span id="more"></span><p>运行时间可以设置为*/29 7-23 * * * ，也就是每天7-23点的每小时29分钟执行一次脚本。<br>试着运行一下脚本，查看运行日志是否正常。然后登录leancloud管理后台查看实例是否已被激活。<br><img src="https://img.ycyc.win/img/202412041448103.png" alt="image.png"></p><h2 id="测试"><a class="header-anchor" href="#测试">¶</a>测试</h2><p>实测在没用使用其他唤醒服务的前提下，此唤醒方法目前可稳定运行。<br><img src="https://img.ycyc.win/img/202412050831188.png" alt="image.png"></p><h2 id="引用"><a class="header-anchor" href="#引用">¶</a>引用</h2><p><a href="https://www.aimtao.net/slef-wake-leancloud/">Gtihub Action｜一行命令解决 LeanCloud 流控问题 - AimTao</a></p>]]></content>
+    
+    
+    <summary type="html">&lt;h2 id=&quot;引言&quot;&gt;&lt;a class=&quot;header-anchor&quot; href=&quot;#引言&quot;&gt;¶&lt;/a&gt;引言&lt;/h2&gt;
+&lt;p&gt;上篇文章写了如何在装有NEXT主题的HEXO站点上接入valine评论系统，valine是基于leancloud服务的，而Leancloud免费版有两个休眠机制，一个是每天6个小时强制休眠，另一个机制是如果半个小时内没有检测到访问，实例会自动进入休眠状态，等到下次有评论的时候才会触发，但是从触发到正常运行有一定的时间间隔，如果使用了valine-admin的话会导致邮件发送失败。网上也有许多应对leancloud休眠机制的方法，比如在leancloud中添加定时任务，或者是使用github action来定时访问管理面板等等。&lt;/p&gt;
+&lt;h2 id=&quot;操作&quot;&gt;&lt;a class=&quot;header-anchor&quot; href=&quot;#操作&quot;&gt;¶&lt;/a&gt;操作&lt;/h2&gt;
+&lt;p&gt;之前我写了一篇文章介绍如何使用青龙面板来定时启动serv00的进程，链接如下：&lt;br&gt;
+&lt;a href=&quot;https://ycyc.win/posts/1316&quot;&gt;靠谱的serv00保活办法-利用青龙定时启动PM2 | 渊澄&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;这次也是用到类似的方法，只不过脚本更简单，我们只需要定时访问valine的后台页面，无需登录和其他操作就可以激活实例，所以只需要用到curl就可以了。其他操作按照链接中的步骤操作就可以了。&lt;/p&gt;
+&lt;figure class=&quot;highlight plaintext&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;curl https://yourdomian.com&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;blockquote&gt;
+&lt;p&gt;将网址替换为你的valine-admin后台地址即可。&lt;/p&gt;
+&lt;/blockquote&gt;</summary>
+    
+    
+    
+    <category term="HEXO" scheme="https://ycyc.win/categories/HEXO/"/>
+    
+    
+    <category term="valine" scheme="https://ycyc.win/tags/valine/"/>
+    
+    <category term="青龙面板" scheme="https://ycyc.win/tags/%E9%9D%92%E9%BE%99%E9%9D%A2%E6%9D%BF/"/>
+    
+    <category term="定时" scheme="https://ycyc.win/tags/%E5%AE%9A%E6%97%B6/"/>
+    
+    <category term="激活" scheme="https://ycyc.win/tags/%E6%BF%80%E6%B4%BB/"/>
+    
+    <category term="leancloud" scheme="https://ycyc.win/tags/leancloud/"/>
+    
+    <category term="valine-admin" scheme="https://ycyc.win/tags/valine-admin/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Hexo Next国内IP使用leancloud国际版添加Valine评论设置邮件通知功能</title>
+    <link href="https://ycyc.win/posts/21191.html"/>
+    <id>https://ycyc.win/posts/21191.html</id>
+    <published>2024-12-04T00:51:00.000Z</published>
+    <updated>2024-12-04T03:02:00.000Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="楔子"><a class="header-anchor" href="#楔子">¶</a>楔子</h2><p>之前我的Hexo使用的评论系统是Gitalk，调用的是Github的服务，但是github在国内经常无法正常使用，所以决定换一个评论系统，虽然也没啥人来评论😅。Valine是一款简洁快速的无后端评论系统，依赖于leancloud服务。Leancloud分为国际版和国内版，国内版域名必须绑定自定义域名才可以使用，而且域名必须备案。而国际版目前对国内的IP进行了屏蔽，使用国内的IP无法正常使用Leancloud国际版的服务，具体表现为评论框无法加载，留言点击发送后无任何反应等等，也就无法正常通过valine进行评论。这篇文章的目的是使用国内IP可以正常访问国际版的Leancloud，从而使用valine进行评论，另外通过在Leancloud部署Valine-Admin服务来实现新留言和评论邮件提醒功能。</p><h2 id="环境"><a class="header-anchor" href="#环境">¶</a>环境</h2><p>Hexo 7.3.0<br>Next主题版本：8.21.0<br>部署：Github+Cloudflare Pages<br>另外还需要准备两个二级域名来绑定Leancloud的相关服务，一个用于设置自定义API地址，另一个用于访问valine-admin面板。</p><h2 id="Valine插件安装"><a class="header-anchor" href="#Valine插件安装">¶</a>Valine插件安装</h2><p>目前最新的Next主题虽然已经移除了对Valine的原生支持，但是可以通过插件来启用Valine功能。<br><a href="https://github.com/next-theme/hexo-next-valine">GitHub - next-theme/hexo-next-valine: Valine comment system for NexT.</a></p><p>在hexo目录下面执行命令进行安装</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install next-theme/hexo-next-valine</span><br></pre></td></tr></table></figure><span id="more"></span><h2 id="Leancloud账号设置"><a class="header-anchor" href="#Leancloud账号设置">¶</a>Leancloud账号设置</h2><p>登录到Leancloud国际站<a href="https://leancloud.app/">LeanCloud</a>创建应用并获取对应的AppID和AppKey。</p><p>进入设置-域名绑定，根据提示绑定API访问域名。直到提示如下图所示已绑定。<br><img src="https://img.ycyc.win/img/202412040916569.png" alt="image.png"></p><h2 id="Valine插件设置"><a class="header-anchor" href="#Valine插件设置">¶</a>Valine插件设置</h2><p>在hexo 的_config.yml文件中插入以下字段：</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"># Valine</span><br><span class="line"># For more information: https://valine.js.org, https://github.com/xCss/Valine</span><br><span class="line">valine:</span><br><span class="line">  enable: true</span><br><span class="line">  appId:  # your leancloud application appid</span><br><span class="line">  appKey:  # your leancloud application appkey</span><br><span class="line">  serverURLs: # When the custom domain name is enabled, fill it in here</span><br><span class="line">  placeholder: Just go go # comment box placeholder</span><br><span class="line">  avatar: mm # gravatar style</span><br><span class="line">  meta: [nick, mail, link] # Custom comment header</span><br><span class="line">  pageSize: 10 # pagination size</span><br><span class="line">  visitor: false # leancloud-counter-security is not supported for now. When visitor is set to be true, appid and appkey are recommended to be the same as leancloud_visitors&#x27; for counter compatibility. Article reading statistic https://valine.js.org/visitor.html</span><br><span class="line">  comment_count: true # If false, comment count will only be displayed in post page, not in home page</span><br><span class="line">  recordIP: false # Whether to record the commenter IP</span><br></pre></td></tr></table></figure><blockquote><p>将字段中的appid以及appkey替换为自己的信息，serverURLs处填写上一步设置的API访问域名。其他设置根据自己实际情况参阅插件Github进行设置<a href="https://github.com/next-theme/hexo-next-valine">GitHub - next-theme/hexo-next-valine: Valine comment system for NexT.</a></p></blockquote><p>设置完成之后重新部署hexo即可。经过上面设置之后 我们现在就可以用国内IP使用Leancloud国际版的服务了。如果你还需要在收到新留言或是留言被回复的时候给自己或是留言者发送邮件提醒的话可以接着往下看。</p><h2 id="部署Valine-Admin服务"><a class="header-anchor" href="#部署Valine-Admin服务">¶</a>部署Valine-Admin服务</h2><p>Valine-Admin是用于管理valine的简单面板，可以在Leancloud中进行部署。项目Github主页：<a href="https://github.com/DesertsP/Valine-Admin">GitHub - DesertsP/Valine-Admin: 🔥A simple comment system based on LeanCloud and Valine.</a></p><p>按下图所示，进入云引擎-管理部署，新建一个分组，类型选择免费版。<br><img src="https://img.ycyc.win/img/202412040928077.png" alt="image.png"></p><p>部署选择git部署，目标环境为生产环境。git URL输入<a href="https://github.com/DesertsP/Valine-Admin.git%EF%BC%8C%E5%88%86%E6%94%AF%E5%A1%AB%E5%85%A5master%EF%BC%8C%E7%84%B6%E5%90%8E%E7%82%B9%E5%87%BB%E9%83%A8%E7%BD%B2%E3%80%82">https://github.com/DesertsP/Valine-Admin.git，分支填入master，然后点击部署。</a></p><p><img src="https://img.ycyc.win/img/202412040931433.png" alt="image.png"></p><p>接着按照下图设置环境变量<br><img src="https://img.ycyc.win/img/202412040935826.png" alt="image.png"></p><blockquote><p>ADMIN_URL 输入我们设置的第二个二级自定义域名，用于访问留言面板。</p></blockquote><p>参数详细说明如下：</p><table><thead><tr><th>变量</th><th>示例</th><th>说明</th></tr></thead><tbody><tr><td>SITE_NAME</td><td>Deserts</td><td>[必填]博客名称</td></tr><tr><td>SITE_URL</td><td><a href="https://panjunwen.com/">https://panjunwen.com</a></td><td>[必填]首页地址</td></tr><tr><td><strong>SMTP_SERVICE</strong></td><td>QQ</td><td>[新版支持]邮件服务提供商，支持 QQ、163、126、Gmail 以及 <a href="https://nodemailer.com/smtp/well-known/#supported-services">更多</a></td></tr><tr><td>SMTP_USER</td><td><a href="mailto:xxxxxx@qq.com">xxxxxx@qq.com</a></td><td>[必填]SMTP登录用户</td></tr><tr><td>SMTP_PASS</td><td>ccxxxxxxxxch</td><td>[必填]SMTP登录密码（QQ邮箱需要获取独立密码）</td></tr><tr><td>SENDER_NAME</td><td>Deserts</td><td>[必填]发件人</td></tr><tr><td>SENDER_EMAIL</td><td><a href="mailto:xxxxxx@qq.com">xxxxxx@qq.com</a></td><td>[必填]发件邮箱</td></tr><tr><td>ADMIN_URL</td><td><a href="https://xxx.leanapp.cn/">https://xxx.leanapp.cn/</a></td><td>[建议]Web主机二级域名（云引擎域名），用于自动唤醒</td></tr><tr><td>BLOGGER_EMAIL</td><td><a href="mailto:xxxxx@gmail.com">xxxxx@gmail.com</a></td><td>[可选]博主通知收件地址，默认使用SENDER_EMAIL</td></tr><tr><td>AKISMET_KEY</td><td>xxxxxxxx</td><td>[可选]Akismet Key 用于垃圾评论检测，设为MANUAL_REVIEW开启人工审核，留空不使用反垃圾</td></tr></tbody></table><p>下载该页面设置自定义域名，这里设置的域名要与你在变量中填入的ADMIN_URL一致，直到提示已绑定。<br><img src="https://img.ycyc.win/img/202412040939299.png" alt="image.png"></p><p>变量设置并保存之后重新部署该项目，然后访问自定义域名/sign-up，注册管理员信息之后就可以登录面板了。如果你的相关变量设置无误，在有新留言或是留言被回复的时候，相应的邮箱就会收到提醒邮件了。如果接收不到邮件，可以查阅日志，根据报错提示查找问题所在。<br><img src="https://img.ycyc.win/img/202412040943756.png" alt="image.png"></p>]]></content>
+    
+    
+    <summary type="html">&lt;h2 id=&quot;楔子&quot;&gt;&lt;a class=&quot;header-anchor&quot; href=&quot;#楔子&quot;&gt;¶&lt;/a&gt;楔子&lt;/h2&gt;
+&lt;p&gt;之前我的Hexo使用的评论系统是Gitalk，调用的是Github的服务，但是github在国内经常无法正常使用，所以决定换一个评论系统，虽然也没啥人来评论😅。Valine是一款简洁快速的无后端评论系统，依赖于leancloud服务。Leancloud分为国际版和国内版，国内版域名必须绑定自定义域名才可以使用，而且域名必须备案。而国际版目前对国内的IP进行了屏蔽，使用国内的IP无法正常使用Leancloud国际版的服务，具体表现为评论框无法加载，留言点击发送后无任何反应等等，也就无法正常通过valine进行评论。这篇文章的目的是使用国内IP可以正常访问国际版的Leancloud，从而使用valine进行评论，另外通过在Leancloud部署Valine-Admin服务来实现新留言和评论邮件提醒功能。&lt;/p&gt;
+&lt;h2 id=&quot;环境&quot;&gt;&lt;a class=&quot;header-anchor&quot; href=&quot;#环境&quot;&gt;¶&lt;/a&gt;环境&lt;/h2&gt;
+&lt;p&gt;Hexo 7.3.0&lt;br&gt;
+Next主题版本：8.21.0&lt;br&gt;
+部署：Github+Cloudflare Pages&lt;br&gt;
+另外还需要准备两个二级域名来绑定Leancloud的相关服务，一个用于设置自定义API地址，另一个用于访问valine-admin面板。&lt;/p&gt;
+&lt;h2 id=&quot;Valine插件安装&quot;&gt;&lt;a class=&quot;header-anchor&quot; href=&quot;#Valine插件安装&quot;&gt;¶&lt;/a&gt;Valine插件安装&lt;/h2&gt;
+&lt;p&gt;目前最新的Next主题虽然已经移除了对Valine的原生支持，但是可以通过插件来启用Valine功能。&lt;br&gt;
+&lt;a href=&quot;https://github.com/next-theme/hexo-next-valine&quot;&gt;GitHub - next-theme/hexo-next-valine: Valine comment system for NexT.&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;在hexo目录下面执行命令进行安装&lt;/p&gt;
+&lt;figure class=&quot;highlight shell&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;npm install next-theme/hexo-next-valine&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;</summary>
+    
+    
+    
+    <category term="HEXO" scheme="https://ycyc.win/categories/HEXO/"/>
+    
+    
+    <category term="HEXO" scheme="https://ycyc.win/tags/HEXO/"/>
+    
+    <category term="valine" scheme="https://ycyc.win/tags/valine/"/>
+    
+    <category term="leancloud" scheme="https://ycyc.win/tags/leancloud/"/>
+    
+    <category term="valine-admin" scheme="https://ycyc.win/tags/valine-admin/"/>
+    
+    <category term="next" scheme="https://ycyc.win/tags/next/"/>
+    
+    <category term="国际" scheme="https://ycyc.win/tags/%E5%9B%BD%E9%99%85/"/>
+    
+    <category term="国内" scheme="https://ycyc.win/tags/%E5%9B%BD%E5%86%85/"/>
+    
+    <category term="邮件" scheme="https://ycyc.win/tags/%E9%82%AE%E4%BB%B6/"/>
+    
+    <category term="提醒" scheme="https://ycyc.win/tags/%E6%8F%90%E9%86%92/"/>
+    
+  </entry>
+  
+</feed>
