@@ -1,0 +1,33 @@
+<h1>将最新版的memos嵌入hexo</h1>
+<p>注意memos的版本号（Version: v0.22.4），我是最近的memos版本。<br>
+在网上找到的一些js脚本他使用的api是memos旧版的，导致无法获取到memos的数据。这边直接修改js代码使其正常工作。</p>
+<p>网上找了个解决方案，原链接丢了，如您感兴趣可以自行搜索最初的脚本来源，本文仅记录整个js的api升级注意事项。<br>
+总共需要引入四个脚本，其中三个都是功能脚本，可以尝试找cdn上的源，需要修改的是memos.js脚本，使其兼容最新api。</p>
+<p><img src="https://wiki.vrast.cn/assets/files/2024-09-04/1725459527-54992-image.png" alt=""></p>
+<h2 id="修改"><a class="header-anchor" href="#修改">¶</a>修改</h2>
+<p>旧版的api使用上面注释的，下面对应的则是修改后的<br>
+新版缩略图的api很有意思，是在url的最后添加 <code>?thumbnail=true</code> 与七牛云的api有点类似。</p>
+<pre><code>// var bbUrl = memos + &quot;api/v1/memo?creatorId=&quot; + bbMemo.creatorId + &quot;&amp;rowStatus=NORMAL&amp;limit=&quot; + limit; 
+ 
+var bbUrl = memos + &quot;api/v1/memos?filter=creator=='users/&quot;+ bbMemo.creatorId + &quot;'&amp;&amp;visibilities=='PUBLIC'&amp;&amp;pageSize=&quot; + limit;
+
+//resUrl += '&lt;a target=&quot;_blank&quot; rel=&quot;noreferrer&quot; href=&quot;' + memos + 'o/r/' + resources[j].id + '/' + resources[j].filename + '&quot;&gt;' + resources[j].filename + '&lt;/a&gt;' 
+resUrl += '&lt;a target=&quot;_blank&quot; rel=&quot;noreferrer&quot; href=&quot;' + memos + 'flie/' + resources[j].name + '/' + resources[j].filename + '?thumbnail=true&quot;&gt;' + resources[j].filename + '&lt;/a&gt;' 
+
+
+// imgUrl += '&lt;figure class=&quot;gallery-thumbnail&quot;&gt;&lt;img class=&quot;img thumbnail-image&quot; src=&quot;' + memos + 'o/r/' + resources[j].id + '/' + resources[j].filename + '&quot;/&gt;&lt;/figure&gt;'
+imgUrl += '&lt;figure class=&quot;gallery-thumbnail&quot;&gt;&lt;img class=&quot;img thumbnail-image&quot; src=&quot;' + memos + 'file/' + resources[j].name + '/' + resources[j].filename + '?thumbnail=true&quot;/&gt;&lt;/figure&gt;'
+ 
+</code></pre>
+<h2 id="Github地址"><a class="header-anchor" href="#Github地址">¶</a>Github地址</h2>
+<p>我已经整理好了修改后的脚本并且提交到github了。如果你感兴趣，可以在下面的地址获取所有代码。</p>
+<p>其中 marked.js 我找到一个CDN 替换脚本：</p>
+<blockquote>
+<p>marked.js  -&gt; <a href="https://cdn.bootcdn.net/ajax/libs/marked/14.0.0/marked.min.js">https://cdn.bootcdn.net/ajax/libs/marked/14.0.0/marked.min.js</a></p>
+</blockquote>
+<h2 id="演示地址"><a class="header-anchor" href="#演示地址">¶</a>演示地址</h2>
+<blockquote>
+<p><a href="https://vrast.cn/talking/">https://vrast.cn/talking/</a></p>
+</blockquote>
+<h2 id="效果图"><a class="header-anchor" href="#效果图">¶</a>效果图</h2>
+<p><img src="https://wiki.vrast.cn/assets/files/2024-09-04/1725460066-104481-image.png" alt=""></p>
